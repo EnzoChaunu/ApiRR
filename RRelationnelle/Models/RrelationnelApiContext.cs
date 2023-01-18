@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle.Models
 {
+
+    //test23
     
    public class RrelationnelApiContext : DbContext
     {
@@ -14,8 +16,7 @@ namespace RRelationnelle.Models
             : base(options)
         {
         }
-        //testtestest
-        //public DbSet<User> User { get; set; }
+        
         public DbSet<Ressource> Ressource { get; set; }
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Category> Category { get; set; }
