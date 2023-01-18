@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle.Models
 {
-    //toto la pute 2
+    
    public class RrelationnelApiContext : DbContext
     {
         public RrelationnelApiContext(DbContextOptions<RrelationnelApiContext> options)
             : base(options)
         {
         }
-
+        //testtestest
         //public DbSet<User> User { get; set; }
         public DbSet<Ressource> Ressource { get; set; }
         public DbSet<Admin> Admin { get; set; }
