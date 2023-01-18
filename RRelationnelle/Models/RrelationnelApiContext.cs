@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle.Models
 {
-    //toto la pute
+    //toto la pute 2
    public class RrelationnelApiContext : DbContext
     {
         public RrelationnelApiContext(DbContextOptions<RrelationnelApiContext> options)
