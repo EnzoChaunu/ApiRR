@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace RessourcesRelationelles.Class
 {
-    public class Category
+    public class Categorie
     {
         [Key]
         public int Id_Category { get; set; }
@@ -17,5 +17,11 @@ namespace RessourcesRelationelles.Class
         public int idcreator { get; set; }
         //public Admin Creator { get; set; }
 
+        public Categorie (string name,DateTime creation,int creator)
+        {
+            _name = name;
+            creation = _creationDate;
+            idcreator = creator;
+        }
     }
 }
