@@ -31,8 +31,8 @@ namespace RessourcesRelationelles.Class
 
             foreach (Comments c in _comments)
             {
-                if (c.Id == comment.Id)
-                    c.Content = content;
+               // if (c.Id == comment.Id)
+               //     c.Content = content;
             }
         }
 
