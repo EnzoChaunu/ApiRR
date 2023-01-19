@@ -1,24 +1,33 @@
 ﻿
 
 using System;
-
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+// commmm
 namespace RessourcesRelationelles.Class
 {
     public class Comments
     {
-        private int _id;
-        private User _user;
-        private Ressource _ressource;
-        private string _content;
-        private int _likes;
-        private int _dislikes;
-        private bool _activation;
-        private bool _modified;
-        private DateTime _creationDate;
-        private DateTime _modificationDate;
+        [Key]
+        public int id_comments { get; set; }
 
-        public int Id { get { return _id; } }
-        public string Content { get { return _content; } set { _content = value; } }
+
+        [ForeignKey("Id_User")]
+        public User  id_user { get; set; }
+
+        [ForeignKey("ID_Ressource")]
+        public Ressource id_ressource { get; set; }
+
+        public string content { get; set; }
+        public int likes { get; set; }
+        public int dislikes { get; set; }
+        public bool activation { get; set; }
+        public bool modified { get; set; }
+        public DateTime creationDate { get; set; }
+        public DateTime modificationDate { get; set; }
+
+        //public int Id { get { return _id; } }
+        // public string Content { get { return _content; } set { _content = value; } }
 
 
     }
