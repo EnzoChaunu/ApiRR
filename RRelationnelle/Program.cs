@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RessourcesRelationelles.Class;
+using RRelationnelle.Controllers;
+using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +25,6 @@ namespace RRelationnelle
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        
     }
 }

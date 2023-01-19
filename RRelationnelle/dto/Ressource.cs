@@ -18,7 +18,7 @@ namespace RessourcesRelationelles.Class
         public string _content { get; set; }
 
         [ForeignKey("Id_Category")]
-        public Category category { get; set; }
+        public Categorie category { get; set; }
         //public Category Id_Category { get; set; }
         public bool _activation { get; set; }
         //private User _modification;
