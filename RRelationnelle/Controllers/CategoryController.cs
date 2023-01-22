@@ -15,18 +15,18 @@ namespace RRelationnelle.Controllers
     public class CategoryController : Controller
     {
        private ICategoryService _service;
-       private readonly RrelationnelApiContext _cxt;
+      
 
         public CategoryController(ICategoryService service, RrelationnelApiContext ctx)
         {
             _service = service;
-            _cxt = ctx;
+            
         }
 
        
 
         [HttpPost]
-        public IActionResult CreateCategory (Categorie category)
+        public async Task<ActionResult> CreateCategory (Categorie category)
         {
             if (_service.CreateCategory(category))
             {
