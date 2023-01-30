@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using RessourcesRelationelles.Class;
 using RRelationnelle.Controllers;
 using RRelationnelle.Modèles;
+using RRelationnelle.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace RRelationnelle
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //webBuilder.Services.AddSingleton<ICategoryService, CategoryService>();
+                    //webBuilder.ConfigureServices.AddScoped<ICategoryService, CategoryService>();
                 });
         
     }

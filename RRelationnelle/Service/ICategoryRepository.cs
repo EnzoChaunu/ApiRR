@@ -1,14 +1,15 @@
-﻿using RessourcesRelationelles.Class;
+﻿using Microsoft.AspNetCore.Mvc;
+using RessourcesRelationelles.Class;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Modèles
+namespace RRelationnelle.Service
 {
     public interface ICategoryRepository
     {
         bool CreateCategory(Categorie category);
-        IEnumerable<Categorie> ListCategory();
+        public Task<ActionResult<IEnumerable<Categorie>>> ListCategory();
     }
 }

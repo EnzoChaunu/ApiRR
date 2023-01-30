@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RessourcesRelationelles.Class;
-using RRelationnelle.Modèles;
 using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,15 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle.Service
 {
-    public class CategoryRepository : Modèles.ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
-        private Categorie _entities;
+        //private Categorie _entities;
         private readonly RrelationnelApiContext _ctx;
+
+        public CategoryRepository(RrelationnelApiContext ctx)
+        {
+            _ctx = ctx;
+        }
 
         public bool CreateCategory(Categorie category)
         {
@@ -28,9 +33,14 @@ namespace RRelationnelle.Service
             }
         }
 
-        public IEnumerable<Categorie> ListCategory()
+        //public IEnumerable<Categorie> ListCategory()
+       // {
+                
+        //}
+
+      public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
         {
-                return _ctx.Category.ToList();
+            return await _ctx.Category.ToListAsync();
         }
     }
 

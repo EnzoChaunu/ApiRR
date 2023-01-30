@@ -13,15 +13,11 @@ namespace RessourcesRelationelles.Class
         [Column]
         public string _name { get; set; }
         public DateTime _creationDate { get; set; }
+
         [ForeignKey("Creator")]
         public int idcreator { get; set; }
         //public Admin Creator { get; set; }
 
-        public Categorie (string name,DateTime creation,int creator)
-        {
-            _name = name;
-            creation = _creationDate;
-            idcreator = creator;
-        }
+        
     }
 }

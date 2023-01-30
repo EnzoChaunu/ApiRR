@@ -1,30 +1,29 @@
-﻿using RRelationnelle.dto;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
+﻿using System;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle.Modèles
 {
-    public class User
+    public abstract class User
     {
-     
-        [Key]
-        public int Id_User { get; set; }
+        //65108
+        public int Id { get; private set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Login { get; set; }
+        public bool Activation { get; set; }
+        public DateTime CreationDate { get; set; }
 
-        [Column]
-        public string _fName { get; set; }
-        public string _lName { get; set; }
-        public string _email { get; set; }
-        public string _password { get; set; }
-        public string _login { get; set; }
-        public bool _activation { get; set; }
-        public DateTime _creationDate { get; set; }
-
-        [ForeignKey("id_role")]
-        public Roles Role { get; set; }
-
-
-
+        public User(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate)
+        {
+            Id = id;
+            FName = fName;
+            LName = lName;
+            Email = email;
+            Password = password;
+            Login = login;
+            Activation = activation;
+            CreationDate = creationDate;
+        }
     }
 }

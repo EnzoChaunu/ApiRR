@@ -1,12 +1,19 @@
-﻿//using EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle.Modèles
 {
     public class Mod : User
     {
-        private List<Citizen> _citizens = new List<Citizen>();
-        private List<Comments> _comments = new List<Comments>();
+        private List<Citizen> _citizens { get; set; }
+        private List<Comment> _comments { get; set; }
+
+        public Mod(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate, List<Citizen> citizens, List<Comment> comments) : base(id, fName, lName, email, password, login, activation, creationDate)
+        {
+            _citizens = citizens;
+            _comments = comments;
+        }
+
 
         public void DeleteCom()
         {

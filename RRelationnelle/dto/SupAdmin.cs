@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
+using System;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle.Modèles
 {
     public class SupAdmin : User
     {
+        private List<Admin> _admins { get; set; }
+        private List<Mod> _mods { get; set; }
 
-
-        private List<Admin> _admins = new List<Admin>();
-        private List<Mod> _mods = new List<Mod>();
-
+        public SupAdmin(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate, List<Admin> admins, List<Mod> mods) : base(id, fName, lName, email, password, login, activation, creationDate)
+        {
+            _admins = admins;
+            _mods = mods;
+        }
 
         public void CreateAdmin(User admin)
         {

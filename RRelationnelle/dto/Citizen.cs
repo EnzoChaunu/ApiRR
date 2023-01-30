@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle.Modèles
 {
     public class Citizen : User
     {
-        private int _id;
-        private string _fName;
-        private string _lName;
-        private string _email;
-        private string _password;
-        private string _login;
-        private bool _activation;
-        private DateTime _creationDate;
-        private List<Ressource> _favRessources = new List<Ressource>();
-        private List<Comments> _comments = new List<Comments>();
+        private List<Ressource> _favRessources { get; set; }
+        private List<Comment> _comments { get; set; }
 
-        public void UpdateAccount() 
-        { 
-            
+        public Citizen(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate, List<Ressource> favRessources, List<Comment> comments) : base(id, fName, lName, email, password, login, activation, creationDate)
+        {
+            _favRessources = favRessources;
+            _comments = comments;
+        }
+
+        public void UpdateAccount()
+        {
+
         }
 
         public void PostComment()
@@ -26,17 +24,17 @@ namespace RessourcesRelationelles.Class
 
         }
 
-        public void ModifyComment(Comments comment, string content) 
+        public void ModifyComment(Comment comment, string content)
         {
 
-            foreach (Comments c in _comments)
+            foreach (Comment c in _comments)
             {
-               // if (c.Id == comment.Id)
-               //     c.Content = content;
+                if (c.Id == comment.Id)
+                    c.Content = content;
             }
         }
 
-        
+
 
         public void AddFavRessource(Ressource res)
         {

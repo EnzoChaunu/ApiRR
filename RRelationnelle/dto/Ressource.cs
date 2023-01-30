@@ -1,33 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle.Modèles
 {
     public class Ressource
     {
-        
-        [Key]
-        public int ID_Ressource { get; set; }
+        private int _id { get; set; }
+        private string _title { get; set; }
+        private string _description { get; set; }
+        private string _content { get; set; }
+        private Category _category { get; set; }
+        private bool _activation { get; set; }
+        private Admin _modification { get; set; }
+        private int _views { get; set; }
+        private DateTime _creationDate { get; set; }
+        private string _url { get; set; }
+        private List<Comment> _comments { get; set; }
 
-        [Column]
-        public string _title { get; set; }
-        public string _description { get; set; }
-        public string _content { get; set; }
-
-        [ForeignKey("Id_Category")]
-        public Categorie category { get; set; }
-        //public Category Id_Category { get; set; }
-        public bool _activation { get; set; }
-        //private User _modification;
-
-        public int _views { get; set; }
-        public DateTime _creationDate { get; set; }
-        public string _url { get; set; }
-
-
-       // private List<Comments> _comments = new List<Comments>();
+        public Ressource(int id, string title, string description, string content, Category category, bool activation, Admin modification, int views, DateTime creationDate, string url, List<Comment> comments)
+        {
+            _id = id;
+            _title = title;
+            _description = description;
+            _content = content;
+            _category = category;
+            _activation = activation;
+            _modification = modification;
+            _views = views;
+            _creationDate = creationDate;
+            _url = url;
+            _comments = comments;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using RessourcesRelationelles.Class;
+﻿using Microsoft.AspNetCore.Mvc;
+using RessourcesRelationelles.Class;
 using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
@@ -9,56 +10,60 @@ namespace RRelationnelle.Service
 {
     public class CategoryService : ICategoryService
     {
-        private ICategoryValidation _validations { get; set; }
-        private ICategoryRepository _repos { get; set; }
-
-        public CategoryService(ICategoryRepository _repo, ICategoryValidation _validation)
+        private readonly ICategoryValidation _validations;
+        private readonly ICategoryRepository _repos;
+        public CategoryService(ICategoryRepository repo, ICategoryValidation validations)
         {
-            _validations = _validation;
-            _repos = _repo;
+            _repos = repo;
+            _validations =validations;
         }
 
-
-        protected bool ValidateCategory(Categorie categorie)
-        {
-            if (categorie._name == "")
-            {
-                _validations.AddError("name", "Veuillez rentrer un nom");
-            }
-            return _validations.IsValid;
-        }
 
         public bool CreateCategory(Categorie category)
         {
-            
-                if (!ValidateCategory(category))
+            if (!ValidateCategory(category))
+            {
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    _repos.CreateCategory(category);
+                }
+                catch
                 {
                     return false;
                 }
-                else
-                {
-                    try
-                    {
-                        _repos.CreateCategory(category);
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                    return true;
-                }
-            
-
-          
-               
+                return true;
             }
-
-        public IEnumerable<Categorie> ListCategory()
-        {
-            
-                return _repos.ListCategory();
-            
         }
+
+        public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
+        {
+            return await _repos.ListCategory();
+        }
+
+
+
+        // public IEnumerable<Categorie> ListCategory()
+        //{
+
+        // }
+
+
+
+        protected bool ValidateCategory(Category categorie)
+        {
+            if (categorie._name == "")
+            {
+                categorie.AddError("name", "Veuillez rentrer un nom");
+            }
+            return categorie.IsValid;
+        }
+
+
+
     }
 
       
