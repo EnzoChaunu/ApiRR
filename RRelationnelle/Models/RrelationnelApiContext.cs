@@ -13,7 +13,7 @@ namespace RRelationnelle.Models
     
    public class RrelationnelApiContext : DbContext
     {
-        public RrelationnelApiContext(DbContextOptions<RrelationnelApiContext> options)
+       public RrelationnelApiContext(DbContextOptions<RrelationnelApiContext> options)
             : base(options)
         {
         }

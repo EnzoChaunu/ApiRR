@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RessourcesRelationelles.Class;
+using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace RRelationnelle.Service
 {
     public interface ICategoryService
     {
-        bool CreateCategory(Categorie category);
-        public Task<ActionResult<IEnumerable<Categorie>>> ListCategory();
+        Category CreateCategory(Category category);
+        public Task<ActionResult<IEnumerable<Category>>> ListCategory();
+        public Task<IEnumerable<Category>> ListCategory2();
     }
 }

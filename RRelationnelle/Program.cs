@@ -24,10 +24,13 @@ namespace RRelationnelle
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+
                     webBuilder.UseStartup<Startup>();
+   
                     //webBuilder.Services.AddSingleton<ICategoryService, CategoryService>();
                     //webBuilder.ConfigureServices.AddScoped<ICategoryService, CategoryService>();
                 });
+       
         
     }
 

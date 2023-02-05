@@ -9,7 +9,9 @@ namespace RRelationnelle.Service
 {
     public interface ICategoryRepository
     {
-        bool CreateCategory(Categorie category);
+        Categorie CreateCategory(Categorie category);
         public Task<ActionResult<IEnumerable<Categorie>>> ListCategory();
+        public Task<IEnumerable<Categorie>> ListCategory2();
+
     }
 }

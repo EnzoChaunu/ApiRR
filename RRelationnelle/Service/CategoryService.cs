@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RessourcesRelationelles.Class;
+using RRelationnelle.Mapping;
 using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
@@ -12,37 +14,63 @@ namespace RRelationnelle.Service
     {
         private readonly ICategoryValidation _validations;
         private readonly ICategoryRepository _repos;
-        public CategoryService(ICategoryRepository repo, ICategoryValidation validations)
+        public CategoryService(ICategoryRepository repo)
         {
             _repos = repo;
-            _validations =validations;
+           // _validations =validations;
         }
 
 
-        public bool CreateCategory(Categorie category)
+       public Category CreateCategory(Category category)
         {
-            if (!ValidateCategory(category))
+         
+            if (ValidateCategory(category) != 0)
             {
-                return false;
+                return null;
             }
             else
             {
                 try
                 {
-                    _repos.CreateCategory(category);
+                    var mapper = MappingCategory.MappingCategoryL();
+                    Categorie categorieDb = mapper.Map<Category, Categorie>(category);
+                    var rep = _repos.CreateCategory(categorieDb);
+                    if (rep != null)
+                    {
+                    Category Categ = mapper.Map<Categorie, Category>(rep);
+                        return Categ;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
                 }
                 catch
                 {
-                    return false;
+                    return null;
                 }
-                return true;
+               
             }
         }
 
-        public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
+        public async Task<ActionResult<IEnumerable<Category>>> ListCategory()
         {
-            return await _repos.ListCategory();
+            List<Categorie> categorie = new List<Categorie>();
+            var categ = await _repos.ListCategory2();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingCategory>();
+            });
+
+            var mapper = config.CreateMapper();
+            List<Category> categoriedto= new List<Category>(); 
+           // mapper.Map(List<Category>, List<Categorie>)(categ);
+            return categoriedto;
+            
         }
+
+       
 
 
 
@@ -53,17 +81,28 @@ namespace RRelationnelle.Service
 
 
 
-        protected bool ValidateCategory(Category categorie)
+        protected int ValidateCategory(Category categorie)
         {
             if (categorie._name == "")
             {
-                categorie.AddError("name", "Veuillez rentrer un nom");
+               return categorie.Id_Category;
             }
-            return categorie.IsValid;
+            else
+            {
+             return 0;
+            }
         }
 
+         async Task<IEnumerable<Category>> ICategoryService.ListCategory2()
+        {
 
-
+            List<Categorie> categorie = new List<Categorie>();
+            var categ = await _repos.ListCategory2();
+            categorie = categ.ToList();
+            var mapper = MappingCategory.MappingCategoryL();
+            List<Category> categoriedto = mapper.Map<List<Categorie>,List<Category>>(categorie);
+            return categoriedto;
+        }
     }
 
       

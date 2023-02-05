@@ -2,26 +2,26 @@
 
 namespace RRelationnelle.Modèles
 {
-    public class Category : ICategoryValidation
+    public class Category 
     {
 
-        public int Id_Category { get; set; }
+        public int Id_Category { get; }
         public int _creator { get; set; }
         public string _name { get; set; }
-        public User user { get; set; }
-        public DateTime _creationDate { get; set; }
+        private User user { get; }
+        public DateTime _creationDate { get;}
 
-        public bool IsValid { get; set; }
+        public bool IsValid {get;}
 
-        public Category(int id, string name, int creator, DateTime creationDate)
+     /*   public Category(int id, string name, int creator, DateTime creationDate)
         {
             Id_Category = id;
             _name = name;
             _creator = creator;
             _creationDate = creationDate;
-        }
+        }*/
 
-        public void AddError(string key, string errorMessage)
+       /* public void AddError(string key, string errorMessage)
         {
             if (errorMessage != "")
             {
@@ -30,7 +30,7 @@ namespace RRelationnelle.Modèles
             {
                 IsValid = true;
             }
-        }
+        }*/
 
 
 

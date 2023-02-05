@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RessourcesRelationelles.Class;
+using RRelationnelle.Modèles;
 using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
@@ -19,17 +20,17 @@ namespace RRelationnelle.Service
             _ctx = ctx;
         }
 
-        public bool CreateCategory(Categorie category)
+        public Categorie CreateCategory(Categorie category)
         {
             try
             {
                 _ctx.Category.Add(category);
                 _ctx.SaveChanges();
-                return true;
+                return category;
             }
             catch
             {
-                return false;
+                return null;
             }
         }
 
@@ -40,7 +41,16 @@ namespace RRelationnelle.Service
 
       public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
         {
-            return await _ctx.Category.ToListAsync();
+             List<Categorie> categorie = new List<Categorie>();
+            categorie = await _ctx.Category.ToListAsync();
+            return categorie;
+        }
+
+        public async Task<IEnumerable<Categorie>> ListCategory2()
+        {
+            List<Categorie> categorie = new List<Categorie>();
+            categorie = await _ctx.Category.ToListAsync();
+            return categorie;
         }
     }
 

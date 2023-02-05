@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RRelationnelle.Controllers;
+using RRelationnelle.Mapping;
 using RRelationnelle.Modèles;
 using RRelationnelle.Models;
 using RRelationnelle.Service;
@@ -43,9 +44,11 @@ namespace RRelationnelle
             services.AddDbContext<RrelationnelApiContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
             services.AddMemoryCache();
+            
 
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+            
             
             
          

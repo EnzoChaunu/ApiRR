@@ -15,43 +15,29 @@ namespace RRelationnelle.Controllers
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
-        private readonly RrelationnelApiContext ctx;
+       
         private readonly ICategoryService _service;
         public Category categori = new Category();
-       /* public CategoryController(ICategoryService service)
+       
+        public CategoryController(RrelationnelApiContext context)
         {
-            _service = service;
-            
-        }*/
-
-        public CategoryController(RrelationnelApiContext _ctx)
-        {
-            ctx = _ctx;
-            _service = new CategoryService(new CategoryRepository(ctx));
-
+            _service = new CategoryService(new CategoryRepository(context));
         }
 
         [HttpGet("CategoryAll")]
-        public async Task<ActionResult<IEnumerable<Categorie>>> List()
+        public async Task<IEnumerable<Category>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            var p = await _service.ListCategory(); ;
-            return p;
+            return await _service.ListCategory2(); 
+            
         }
 
 
 
         [HttpPost]
-        public async Task<ActionResult> CreateCategory (Categorie category)
+        public  IActionResult CreateCategory(Category category)
         {
-            /* if (_service.CreateCategory(category))
-             {
-                 return View();
-             }else
-             {
-                 return RedirectToAction("Index");
-             }*/
-            return  View();
+            return Ok( _service.CreateCategory(category));
         }
 
 
