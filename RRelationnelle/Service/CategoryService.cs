@@ -33,11 +33,11 @@ namespace RRelationnelle.Service
                 try
                 {
                     var mapper = MappingCategory.MappingCategoryL();
-                    Categorie categorieDb = mapper.Map<Category, Categorie>(category);
+                    Roles categorieDb = mapper.Map<Category, Roles>(category);
                     var rep = _repos.CreateCategory(categorieDb);
                     if (rep != null)
                     {
-                    Category Categ = mapper.Map<Categorie, Category>(rep);
+                    Category Categ = mapper.Map<Roles, Category>(rep);
                         return Categ;
                     }
                     else
@@ -56,7 +56,7 @@ namespace RRelationnelle.Service
 
         public async Task<ActionResult<IEnumerable<Category>>> ListCategory()
         {
-            List<Categorie> categorie = new List<Categorie>();
+            List<Roles> categorie = new List<Roles>();
             var categ = await _repos.ListCategory2();
             var config = new MapperConfiguration(cfg =>
             {
@@ -96,11 +96,11 @@ namespace RRelationnelle.Service
          async Task<IEnumerable<Category>> ICategoryService.ListCategory2()
         {
 
-            List<Categorie> categorie = new List<Categorie>();
+            List<Roles> categorie = new List<Roles>();
             var categ = await _repos.ListCategory2();
             categorie = categ.ToList();
             var mapper = MappingCategory.MappingCategoryL();
-            List<Category> categoriedto = mapper.Map<List<Categorie>,List<Category>>(categorie);
+            List<Category> categoriedto = mapper.Map<List<Roles>,List<Category>>(categorie);
             return categoriedto;
         }
     }

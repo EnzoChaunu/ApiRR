@@ -14,7 +14,7 @@ namespace RRelationnelle.Mapping
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Categorie, Category>()
+                cfg.CreateMap<Roles, Category>()
 
                .ForMember(dest =>
                    dest._name,
