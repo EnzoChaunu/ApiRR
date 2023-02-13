@@ -3,7 +3,7 @@ using System;
 
 namespace RRelationnelle.Modèles
 {
-    public class SupAdmin : User
+    public class SupAdmin : UserDto
     {
         private List<Admin> _admins { get; set; }
         private List<Mod> _mods { get; set; }
@@ -14,7 +14,7 @@ namespace RRelationnelle.Modèles
             _mods = mods;
         }
 
-        public void CreateAdmin(User admin)
+        public void CreateAdmin(UserDto admin)
         {
 
         }

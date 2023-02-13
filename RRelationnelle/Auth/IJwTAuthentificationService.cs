@@ -1,4 +1,5 @@
 ﻿using RessourcesRelationelles.Class;
+using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace RRelationnelle.Auth
 {
     public interface IJwTAuthentificationService
     {
-        User Authenticate(string email, string pswd);
+        UserDto Authenticate(string email, string pswd);
         string GenerateToken(string secretKey, List<Claim> claim);
+
     }
 }

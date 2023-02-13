@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using RessourcesRelationelles.Class;
 using RRelationnelle.Auth;
+using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,12 +14,12 @@ namespace RRelationnelle.Service
 {
     public class JwtAuthentificationServices : IJwTAuthentificationService
     {
-        private readonly List<User> users;
+        private readonly List<UserDto> users;
 
-        public User Authenticate(string email, string pswd)
+        public UserDto Authenticate(string email, string pswd)
         {
-            return users.Where(u => u._email.ToUpper().Equals(email.ToUpper())
-                && u._password.Equals(pswd)).FirstOrDefault();
+            return users.Where(u => u.Email.ToUpper().Equals(email.ToUpper())
+                && u.Password.Equals(pswd)).FirstOrDefault();
         }
 
         public string GenerateToken(string secretKey, List<Claim> claim)

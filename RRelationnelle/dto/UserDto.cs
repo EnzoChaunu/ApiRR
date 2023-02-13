@@ -2,7 +2,7 @@
 
 namespace RRelationnelle.Modèles
 {
-    public abstract class User
+    public class UserDto
     {
         //65108
         public int Id { get; private set; }
@@ -14,7 +14,7 @@ namespace RRelationnelle.Modèles
         public bool Activation { get; set; }
         public DateTime CreationDate { get; set; }
 
-        public User(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate)
+       /* public User(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate)
         {
             Id = id;
             FName = fName;
@@ -24,6 +24,6 @@ namespace RRelationnelle.Modèles
             Login = login;
             Activation = activation;
             CreationDate = creationDate;
-        }
+        }*/
     }
 }

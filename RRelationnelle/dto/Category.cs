@@ -8,7 +8,7 @@ namespace RRelationnelle.Modèles
         public int Id_Category { get; }
         public int _creator { get; set; }
         public string _name { get; set; }
-        private User user { get; }
+        private UserDto user { get; }
         public DateTime _creationDate { get;}
 
         public bool IsValid {get;}

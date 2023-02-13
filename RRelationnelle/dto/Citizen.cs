@@ -3,7 +3,7 @@ using System;
 
 namespace RRelationnelle.Modèles
 {
-    public class Citizen : User
+    public class Citizen : UserDto
     {
         private List<Ressource> _favRessources { get; set; }
         private List<Comment> _comments { get; set; }

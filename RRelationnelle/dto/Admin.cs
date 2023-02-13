@@ -3,7 +3,7 @@ using System;
 
 namespace RRelationnelle.Modèles
 {
-    public class Admin : User
+    public class Admin : UserDto
     {
 
         private DateTime _creationDate { get; set; }
