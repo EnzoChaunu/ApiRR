@@ -19,7 +19,7 @@ namespace RRelationnelle.Migrations
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("RRelationnelle.dto.Roles", b =>
+            modelBuilder.Entity("RessourcesRelationelles.Class", b =>
                 {
                     b.Property<int>("id_role")
                         .ValueGeneratedOnAdd()

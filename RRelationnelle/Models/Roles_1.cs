@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace RessourcesRelationelles.Class
 {
-    public class Categorie
+    public class Roles
     {
         [Key]
         public int Id_Category { get; set; }

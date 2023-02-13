@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.dto
+namespace RessourcesRelationelles.Class
 {
     public class Roles
     {

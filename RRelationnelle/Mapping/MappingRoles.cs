@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using RessourcesRelationelles.Class;
 using RRelationnelle.Modèles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRelationnelle.Mapping
 {
-    public class MappingCategory : Profile
+    public class MappingRoles : Profile
     {
-        public static Mapper MappingCategoryL()
+        public static Mapper MappingRolesL()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -34,6 +30,5 @@ namespace RRelationnelle.Mapping
 
 
         }
-
     }
 }
