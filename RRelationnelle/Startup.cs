@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RRelationnelle.Auth;
 using RRelationnelle.Controllers;
 using RRelationnelle.Mapping;
 using RRelationnelle.Modèles;
@@ -40,6 +41,25 @@ namespace RRelationnelle
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
 
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+            .AddJwtBearer(options => {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+            services.AddTransient<IJwTAuthentificationService, JwtAuthentificationServices>();
+
+
 
             services.AddDbContext<RrelationnelApiContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
