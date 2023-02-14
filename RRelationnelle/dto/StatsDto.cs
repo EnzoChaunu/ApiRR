@@ -1,6 +1,6 @@
 ﻿namespace RRelationnelle
 {
-    public class Stats
+    public class StatsDto
     {
     }
 }

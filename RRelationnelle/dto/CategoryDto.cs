@@ -2,7 +2,7 @@
 
 namespace RRelationnelle
 {
-    public class Category 
+    public class CategoryDto
     {
 
         public int Id_Category { get; }

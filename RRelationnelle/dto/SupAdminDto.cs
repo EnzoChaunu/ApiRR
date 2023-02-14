@@ -3,7 +3,7 @@ using System;
 
 namespace RRelationnelle
 {
-    public class SupAdmin : UserDto
+    public class SupAdminDto : UserDto
     {
         private List<Admin> _admins { get; set; }
         private List<Mod> _mods { get; set; }

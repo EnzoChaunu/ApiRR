@@ -3,11 +3,11 @@ using System;
 
 namespace RRelationnelle
 {
-    public class Admin : UserDto
+    public class AdminDto : UserDto
     {
 
         private DateTime _creationDate { get; set; }
-        private List<Citizen> _citizens { get; set; }
+        private List<CitizenDto> _citizens { get; set; }
       /*  public Admin(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate, List<Citizen> citizens) : base(id, fName, lName, email, password, login, activation, creationDate)
         {
 

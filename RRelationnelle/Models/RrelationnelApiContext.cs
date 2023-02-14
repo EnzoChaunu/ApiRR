@@ -20,7 +20,7 @@ namespace RRelationnelle
         public DbSet<User> User { get; set; }
         public DbSet<Categorie> Category { get; set; }
         public DbSet<Roles> Role { get; set; }
-        public DbSet<Stats> Stats { get; set; }
+        public DbSet<StatsDto> Stats { get; set; }
         public DbSet<Comments> Comments { get; set; }
     }
 }

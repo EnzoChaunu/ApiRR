@@ -2,7 +2,7 @@
 
 namespace RRelationnelle
 {
-    public class Comment
+    public class CommentDto
     {
         private int _id { get; set; }
         private Citizen _user { get; set; }
@@ -15,7 +15,7 @@ namespace RRelationnelle
         private DateTime _creationDate { get; set; }
         private DateTime _modificationDate { get; set; }
 
-        public Comment(int id, Citizen user, Ressource ressource, string content, int likes, int dislikes, bool activation, bool modified, DateTime creationDate, DateTime modificationDate)
+        public CommentDto(int id, Citizen user, Ressource ressource, string content, int likes, int dislikes, bool activation, bool modified, DateTime creationDate, DateTime modificationDate)
         {
             _id = id;
             _user = user;
