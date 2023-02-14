@@ -8,8 +8,8 @@ namespace RRelationnelle
 {
     public interface ICategoryService
     {
-        Category CreateCategory(Category category);
-        public Task<ActionResult<IEnumerable<Category>>> ListCategory();
-        public Task<IEnumerable<Category>> ListCategory2();
+        CategoryDto CreateCategory(CategoryDto category);
+        public Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory();
+        public Task<IEnumerable<CategoryDto>> ListCategory2();
     }
 }

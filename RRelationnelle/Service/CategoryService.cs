@@ -18,7 +18,7 @@ namespace RRelationnelle
         }
 
 
-       public Category CreateCategory(Category category)
+       public CategoryDto CreateCategory(CategoryDto category)
         {
          
             if (ValidateCategory(category) != 0)
@@ -30,11 +30,11 @@ namespace RRelationnelle
                 try
                 {
                     var mapper = MappingCategory.MappingCategoryL();
-                    Categorie categorieDb = mapper.Map<Category, Categorie>(category);
+                    Categorie categorieDb = mapper.Map<CategoryDto, Categorie>(category);
                     var rep = _repos.CreateCategory(categorieDb);
                     if (rep != null)
                     {
-                    Category Categ = mapper.Map<Categorie, Category>(rep);
+                    CategoryDto Categ = mapper.Map<Categorie, CategoryDto>(rep);
                         return Categ;
                     }
                     else
@@ -51,7 +51,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<ActionResult<IEnumerable<Category>>> ListCategory()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory()
         {
             List<Roles> categorie = new List<Roles>();
             var categ = await _repos.ListCategory2();
@@ -61,7 +61,7 @@ namespace RRelationnelle
             });
 
             var mapper = config.CreateMapper();
-            List<Category> categoriedto= new List<Category>(); 
+            List<CategoryDto> categoriedto= new List<CategoryDto>(); 
            // mapper.Map(List<Category>, List<Categorie>)(categ);
             return categoriedto;
             
@@ -78,7 +78,7 @@ namespace RRelationnelle
 
 
 
-        protected int ValidateCategory(Category categorie)
+        protected int ValidateCategory(CategoryDto categorie)
         {
             if (categorie._name == "")
             {
@@ -90,14 +90,14 @@ namespace RRelationnelle
             }
         }
 
-         async Task<IEnumerable<Category>> ICategoryService.ListCategory2()
+         async Task<IEnumerable<CategoryDto>> ICategoryService.ListCategory2()
         {
 
             List<Categorie> categorie = new List<Categorie>();
             var categ = await _repos.ListCategory2();
             categorie = categ.ToList();
             var mapper = MappingCategory.MappingCategoryL();
-            List<Category> categoriedto = mapper.Map<List<Categorie>,List<Category>>(categorie);
+            List<CategoryDto> categoriedto = mapper.Map<List<Categorie>,List<CategoryDto>>(categorie);
             return categoriedto;
         }
     }

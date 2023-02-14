@@ -14,7 +14,7 @@ namespace RRelationnelle
     {
        
         private readonly ICategoryService _service;
-        public Category categori = new Category();
+        public CategoryDto categori = new CategoryDto();
        
         public CategoryController(RrelationnelApiContext context)
         {
@@ -23,7 +23,7 @@ namespace RRelationnelle
 
         [HttpGet("CategoryAll")]
         [Authorize]
-        public async Task<IEnumerable<Category>> List()
+        public async Task<IEnumerable<CategoryDto>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.ListCategory2(); 
@@ -33,7 +33,7 @@ namespace RRelationnelle
 
 
         [HttpPost]
-        public  IActionResult CreateCategory(Category category)
+        public  IActionResult CreateCategory(CategoryDto category)
         {
             return Ok( _service.CreateCategory(category));
         }
