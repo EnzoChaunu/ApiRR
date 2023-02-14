@@ -20,7 +20,7 @@ namespace RRelationnelle.Service
             _ctx = ctx;
         }
 
-        public Roles CreateCategory(Roles category)
+        public Categorie CreateCategory(Categorie category)
         {
             try
             {
@@ -39,16 +39,16 @@ namespace RRelationnelle.Service
                 
         //}
 
-      public async Task<ActionResult<IEnumerable<Roles>>> ListCategory()
+      public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
         {
-             List<Roles> categorie = new List<Roles>();
+             List<Categorie> categorie = new List<Categorie>();
             categorie = await _ctx.Category.ToListAsync();
             return categorie;
         }
 
-        public async Task<IEnumerable<Roles>> ListCategory2()
+        public async Task<IEnumerable<Categorie>> ListCategory2()
         {
-            List<Roles> categorie = new List<Roles>();
+            List<Categorie> categorie = new List<Categorie>();
             categorie = await _ctx.Category.ToListAsync();
             return categorie;
         }

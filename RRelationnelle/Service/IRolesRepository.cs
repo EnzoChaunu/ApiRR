@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using RessourcesRelationelles.Class
+using RessourcesRelationelles.Class;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;

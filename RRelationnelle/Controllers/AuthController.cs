@@ -19,6 +19,7 @@ namespace RRelationnelle.Controllers
         public AuthController(IJwTAuthentificationService JwtAuthService,IConfiguration config)
         {
             this._JwtAuthService = JwtAuthService;
+            this._config = config;
         }
 
         [HttpPost]
@@ -30,10 +31,11 @@ namespace RRelationnelle.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email,user._email),
+                    new Claim(ClaimTypes.Email,user.Email),
 
                 };
                 var token = _JwtAuthService.GenerateToken(_config["Jwt:Key"],claims);
+                return Ok(token);
             }
             return Unauthorized();
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RessourcesRelationelles.Class;
 using RRelationnelle.Modèles;
@@ -25,6 +26,7 @@ namespace RRelationnelle.Controllers
         }
 
         [HttpGet("CategoryAll")]
+        [Authorize]
         public async Task<IEnumerable<Category>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache

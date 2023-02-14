@@ -6,21 +6,18 @@ namespace RRelationnelle.Mapping
 {
     public class MappingRoles : Profile
     {
-        public static Mapper MappingRolesL()
+        public static Mapper MappingUserLog()
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Roles, Category>()
+                cfg.CreateMap< User, UserDto>()
 
                .ForMember(dest =>
-                   dest._name,
-                   opt => opt.MapFrom(src => src._name))
+                   dest.Email,
+                   opt => opt.MapFrom(src => src._email))
               .ForMember(dest =>
-                    dest._creationDate, src => src.Ignore())
-                .ForMember(dest =>
-                    dest.Id_Category, src => src.Ignore())
-                .ForMember(dest =>
-                    dest._creator, opt => opt.MapFrom(src => src.idcreator))
+                    dest.Password,
+                     opt => opt.MapFrom(src => src._password))
                 .ReverseMap();
 
             });

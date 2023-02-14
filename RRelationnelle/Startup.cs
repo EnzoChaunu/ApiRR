@@ -61,6 +61,7 @@ namespace RRelationnelle
                 };
             });
             services.AddTransient<IJwTAuthentificationService, JwtAuthentificationServices>();
+            services.AddTransient<IJwTAuthRepository, JwTAuthRepository>();
 
 
 
@@ -90,6 +91,8 @@ namespace RRelationnelle
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

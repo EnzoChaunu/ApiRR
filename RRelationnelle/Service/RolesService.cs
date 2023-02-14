@@ -19,7 +19,8 @@ namespace RRelationnelle.Service
 
         public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)
         {
-            List<Roles> roles = new List<Roles>();
+            return null;
+           /* List<Roles> roles = new List<Roles>();
             var categ = await _repos.ListCategory2();
             var config = new MapperConfiguration(cfg =>
             {
@@ -29,12 +30,12 @@ namespace RRelationnelle.Service
             var mapper = config.CreateMapper();
             List<Category> categoriedto = new List<Category>();
             // mapper.Map(List<Category>, List<Categorie>)(categ);
-            return categoriedto;
+            return categoriedto;*/
         }
 
         public async Task<ActionResult<IEnumerable<Roles>>> GetAllRolesAsync()
         {
-
+            return null;
         }
     }
 }
