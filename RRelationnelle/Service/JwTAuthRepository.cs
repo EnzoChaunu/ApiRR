@@ -1,16 +1,13 @@
-﻿
-using RessourcesRelationelles.Class;
-using RRelationnelle.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public class JwTAuthRepository : IJwTAuthRepository
     {
-        private readonly Models.RrelationnelApiContext _ctx;
+        private readonly RrelationnelApiContext _ctx;
         public JwTAuthRepository(RrelationnelApiContext ctx)
         {
             this._ctx = ctx;

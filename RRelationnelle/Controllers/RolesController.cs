@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RRelationnelle.Models;
-using RRelationnelle.Service;
 
-namespace RRelationnelle.Controllers
+namespace RRelationnelle
 {
     [ApiController]
     [Route("api/[controller]")]

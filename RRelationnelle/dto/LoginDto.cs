@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.dto
+namespace RRelationnelle
 {
     public class LoginDto
     {

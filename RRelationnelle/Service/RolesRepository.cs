@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RRelationnelle.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RessourcesRelationelles.Class;
 using Microsoft.EntityFrameworkCore;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public class RolesRepository : IRolesRepository
     {

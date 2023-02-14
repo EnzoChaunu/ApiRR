@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using RessourcesRelationelles.Class;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public interface IRolesRepository
     {

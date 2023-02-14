@@ -1,4 +1,4 @@
-﻿namespace RRelationnelle.Modèles
+﻿namespace RRelationnelle
 {
     public class Stats
     {

@@ -1,7 +1,7 @@
 ﻿//using EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle
 {
     public class Mod : User
     {

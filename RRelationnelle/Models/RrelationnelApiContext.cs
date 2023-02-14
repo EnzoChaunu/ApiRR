@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RessourcesRelationelles.Class;
-using RRelationnelle.dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Models
+namespace RRelationnelle
 {
 
     //test23

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace RRelationnelle.Modèles
+namespace RRelationnelle
 {
     public class Mod : UserDto
     {

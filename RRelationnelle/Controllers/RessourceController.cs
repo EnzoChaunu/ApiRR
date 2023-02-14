@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RessourcesRelationelles.Class;
-using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Controllers
+namespace RRelationnelle
 {
     [ApiController]
     [Route("api/[controller]")]

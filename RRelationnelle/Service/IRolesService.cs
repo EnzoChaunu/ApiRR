@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RessourcesRelationelles.Class;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public interface IRolesService
     {

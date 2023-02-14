@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle
 {
     public class Stats
     {

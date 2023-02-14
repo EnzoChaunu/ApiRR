@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RRelationnelle.Modèles
+namespace RRelationnelle
 {
     public class Comment
     {

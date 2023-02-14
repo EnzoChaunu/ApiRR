@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Modèles
+namespace RRelationnelle
 {
     public interface ICategoryValidation
     {

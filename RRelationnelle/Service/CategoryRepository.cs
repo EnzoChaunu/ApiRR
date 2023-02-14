@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RessourcesRelationelles.Class;
-using RRelationnelle.Modèles;
-using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public class CategoryRepository : ICategoryRepository
     {

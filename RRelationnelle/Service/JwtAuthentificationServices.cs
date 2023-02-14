@@ -1,8 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using RessourcesRelationelles.Class;
-using RRelationnelle.Auth;
-using RRelationnelle.Mapping;
-using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public class JwtAuthentificationServices : IJwTAuthentificationService
     {

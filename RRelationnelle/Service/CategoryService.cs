@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RessourcesRelationelles.Class;
-using RRelationnelle.Mapping;
-using RRelationnelle.Modèles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Service
+namespace RRelationnelle
 {
     public class CategoryService : ICategoryService
     {

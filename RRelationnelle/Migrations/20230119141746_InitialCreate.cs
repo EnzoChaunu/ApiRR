@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace RRelationnelle.Migrations
+namespace RRelationnelle
 {
     public partial class InitialCreate : Migration
     {

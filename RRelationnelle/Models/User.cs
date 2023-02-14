@@ -1,10 +1,9 @@
-﻿using RRelationnelle.dto;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle
 {
     public class User
     {

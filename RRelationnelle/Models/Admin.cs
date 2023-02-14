@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle
 {
     public class Admin : User
     {

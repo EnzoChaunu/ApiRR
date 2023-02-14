@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using RessourcesRelationelles.Class;
-using RRelationnelle.Modèles;
 
-namespace RRelationnelle.Mapping
+namespace RRelationnelle
 {
     public class MappingRoles : Profile
     {
@@ -13,7 +11,7 @@ namespace RRelationnelle.Mapping
                 cfg.CreateMap< User, UserDto>()
 
                .ForMember(dest =>
-                   dest.Email,
+                   dest.Id,
                    opt => opt.MapFrom(src => src._email))
               .ForMember(dest =>
                     dest.Password,

@@ -1,10 +1,8 @@
-﻿
-
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 // commmm
-namespace RessourcesRelationelles.Class
+namespace RRelationnelle
 {
     public class Comments
     {

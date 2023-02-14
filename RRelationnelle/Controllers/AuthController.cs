@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using RRelationnelle.Auth;
-using RRelationnelle.dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Controllers
+namespace RRelationnelle
 {
     [ApiController]
     [Route("api/[controller]")]
