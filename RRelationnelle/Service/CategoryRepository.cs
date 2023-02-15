@@ -17,12 +17,12 @@ namespace RRelationnelle
             _ctx = ctx;
         }
 
-        public Categorie CreateCategory(Categorie category)
+        public async Task<Categorie> CreateCategory(Categorie category)
         {
             try
             {
                 _ctx.Category.Add(category);
-                _ctx.SaveChanges();
+               await _ctx.SaveChangesAsync();
                 return category;
             }
             catch
@@ -48,6 +48,16 @@ namespace RRelationnelle
             List<Categorie> categorie = new List<Categorie>();
             categorie = await _ctx.Category.ToListAsync();
             return categorie;
+        }
+
+        public async Task<Categorie> Update(Categorie category,int id)
+        {
+           var entity = await _ctx.Category.FindAsync(id);
+            entity.idcreator = category.idcreator;
+            entity._name = category._name;
+            _ctx.Category.Update(entity);
+            await _ctx.SaveChangesAsync();
+            return entity;
         }
     }
 

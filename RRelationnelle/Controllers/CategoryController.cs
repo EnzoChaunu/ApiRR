@@ -22,20 +22,45 @@ namespace RRelationnelle
         }
 
         [HttpGet("CategoryAll")]
-        [Authorize]
         public async Task<IEnumerable<CategoryDto>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.ListCategory2(); 
             
         }
+        
+        
+        [HttpPut("{id}")]
+        public async Task<CategoryDto> Update(int id,CategoryDto categ)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            var catego = await _service.UpdateCategory(categ,id);
+            if (categ != null)
+            {
+                return categ;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
 
 
 
         [HttpPost]
-        public  IActionResult CreateCategory(CategoryDto category)
+        [Authorize]
+        public async Task<CategoryDto> CreateCategory(CategoryDto category)
         {
-            return Ok( _service.CreateCategory(category));
+            var categ = await _service.CreateCategory(category);
+            if (categ!= null)
+            {
+                return categ;
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
