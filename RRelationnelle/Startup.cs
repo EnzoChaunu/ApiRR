@@ -36,6 +36,7 @@ namespace RRelationnelle
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RRelationnelle", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
+                
 
             });
 
@@ -83,7 +84,7 @@ namespace RRelationnelle
             }
 
             app.UseHttpsRedirection();
-
+            app.UseDeveloperExceptionPage();
             app.UseRouting();
 
             app.UseAuthentication();

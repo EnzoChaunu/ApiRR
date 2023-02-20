@@ -13,7 +13,7 @@ namespace RRelationnelle
             _service = new RolesService(new RolesRepository(context));
         }
 
-
+        [HttpPost]
         public IActionResult Index()
         {
             return View();

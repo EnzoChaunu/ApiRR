@@ -8,6 +8,6 @@ namespace RRelationnelle
     public interface ICategoryValidation
     {
         void AddError(string key, string errorMessage);
-        bool IsValid{ get; }
+        bool CheckValues(CategoryDto categ);
     }
 }
