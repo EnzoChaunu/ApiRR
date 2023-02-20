@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RRelationnelle.Migrations
 {
-    //bilou
     public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,6 +14,7 @@ namespace RRelationnelle.Migrations
                     Id_Category = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     idcreator = table.Column<int>(type: "int", nullable: false)
                 },

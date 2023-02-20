@@ -17,6 +17,15 @@ namespace RRelationnelle
             _ctx = ctx;
         }
 
+        public async Task<bool> Archive(int id)
+        {
+            var entity = await _ctx.Category.FindAsync(id);
+            entity.isActive = false;
+            _ctx.Category.Update(entity);
+            await _ctx.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<Categorie> CreateCategory(Categorie category)
         {
             try

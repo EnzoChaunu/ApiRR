@@ -10,6 +10,7 @@ namespace RRelationnelle
     {
         Task<CategoryDto> CreateCategory(CategoryDto category);
         Task<CategoryDto> UpdateCategory(CategoryDto category,int id);
+        Task<bool> Archive(int id);
         public Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory();
         public Task<IEnumerable<CategoryDto>> ListCategory2();
     }

@@ -55,8 +55,8 @@ namespace RRelationnelle
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
-            services.AddTransient<IJwTAuthentificationService, JwtAuthentificationServices>();
-            services.AddTransient<IJwTAuthRepository, JwTAuthRepository>();
+            services.AddScoped<IJwTAuthentificationService, JwtAuthentificationServices>();
+            services.AddScoped<IJwTAuthRepository, JwTAuthRepository>();
 
 
 
@@ -65,8 +65,8 @@ namespace RRelationnelle
             services.AddMemoryCache();
             
 
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             
             
             

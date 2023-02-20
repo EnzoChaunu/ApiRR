@@ -10,7 +10,7 @@ using RRelationnelle;
 namespace RRelationnelle.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230214163034_InitialCreate")]
+    [Migration("20230220214749_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,9 @@ namespace RRelationnelle.Migrations
 
                     b.Property<int>("idcreator")
                         .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id_Category");
 

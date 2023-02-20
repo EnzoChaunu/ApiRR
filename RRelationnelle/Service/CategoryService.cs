@@ -7,19 +7,32 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
-    public class CategoryService : ICategoryService,ICategoryValidation
+    public class CategoryService : ICategoryService, ICategoryValidation
     {
-        
+
         private readonly ICategoryRepository _repos;
         public CategoryService(ICategoryRepository repo)
         {
             _repos = repo;
-           // _validations =validations;
+            // _validations =validations;
         }
 
         public void AddError(string key, string errorMessage)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> Archive(int id)
+        {
+            var categ = await _repos.ListCategory2();
+            if (categ != null)
+            {
+                return await _repos.Archive(id);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool CheckValues(CategoryDto categ)
@@ -36,7 +49,7 @@ namespace RRelationnelle
 
         public async Task<CategoryDto> CreateCategory(CategoryDto category)
         {
-            
+
             if (!CheckValues(category))
             {
                 return null;
@@ -47,10 +60,10 @@ namespace RRelationnelle
                 {
                     var mapper = MappingCategory.MappingCategoryL();
                     Categorie categorieDb = mapper.Map<CategoryDto, Categorie>(category);
-                    var rep = await  _repos.CreateCategory(categorieDb);
+                    var rep = await _repos.CreateCategory(categorieDb);
                     if (rep != null)
                     {
-                    CategoryDto Categ = mapper.Map<Categorie, CategoryDto>(rep);
+                        CategoryDto Categ = mapper.Map<Categorie, CategoryDto>(rep);
                         return Categ;
                     }
                     else
@@ -63,7 +76,7 @@ namespace RRelationnelle
                 {
                     return null;
                 }
-               
+
             }
         }
 
@@ -77,13 +90,13 @@ namespace RRelationnelle
             });
 
             var mapper = config.CreateMapper();
-            List<CategoryDto> categoriedto= new List<CategoryDto>(); 
-           // mapper.Map(List<Category>, List<Categorie>)(categ);
+            List<CategoryDto> categoriedto = new List<CategoryDto>();
+            // mapper.Map(List<Category>, List<Categorie>)(categ);
             return categoriedto;
-            
+
         }
 
-        public async Task<CategoryDto> UpdateCategory(CategoryDto category,int id)
+        public async Task<CategoryDto> UpdateCategory(CategoryDto category, int id)
         {
             if (!CheckValues(category))
             {
@@ -95,7 +108,7 @@ namespace RRelationnelle
                 {
                     var mapper = MappingCategory.MappingCategoryL();
                     Categorie categorieDb = mapper.Map<CategoryDto, Categorie>(category);
-                    var rep = await _repos.Update(categorieDb,id);
+                    var rep = await _repos.Update(categorieDb, id);
                     if (rep != null)
                     {
                         CategoryDto Categ = mapper.Map<Categorie, CategoryDto>(rep);
@@ -115,17 +128,17 @@ namespace RRelationnelle
         }
 
 
-         async Task<IEnumerable<CategoryDto>> ICategoryService.ListCategory2()
+        async Task<IEnumerable<CategoryDto>> ICategoryService.ListCategory2()
         {
 
             List<Categorie> categorie = new List<Categorie>();
             var categ = await _repos.ListCategory2();
             categorie = categ.ToList();
             var mapper = MappingCategory.MappingCategoryL();
-            List<CategoryDto> categoriedto = mapper.Map<List<Categorie>,List<CategoryDto>>(categorie);
+            List<CategoryDto> categoriedto = mapper.Map<List<Categorie>, List<CategoryDto>>(categorie);
             return categoriedto;
         }
     }
 
-      
-    }
+
+}

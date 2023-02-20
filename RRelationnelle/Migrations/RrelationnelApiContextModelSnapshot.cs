@@ -35,6 +35,9 @@ namespace RRelationnelle.Migrations
                     b.Property<int>("idcreator")
                         .HasColumnType("int");
 
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id_Category");
 
                     b.ToTable("Category");
