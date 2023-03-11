@@ -54,32 +54,6 @@ namespace RRelationnelle.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ressource",
-                columns: table => new
-                {
-                    ID_Ressource = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    _title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Id_Category = table.Column<int>(type: "int", nullable: true),
-                    _activation = table.Column<bool>(type: "bit", nullable: false),
-                    _views = table.Column<int>(type: "int", nullable: false),
-                    _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    _url = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ressource", x => x.ID_Ressource);
-                    table.ForeignKey(
-                        name: "FK_Ressource_Role_Id_Category",
-                        column: x => x.Id_Category,
-                        principalTable: "Role",
-                        principalColumn: "id_role",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -106,6 +80,38 @@ namespace RRelationnelle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ressource",
+                columns: table => new
+                {
+                    ID_Ressource = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    _title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id_Category = table.Column<int>(type: "int", nullable: true),
+                    _activation = table.Column<bool>(type: "bit", nullable: false),
+                    _reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    _views = table.Column<int>(type: "int", nullable: false),
+                    _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    _url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    modificationId_User = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ressource", x => x.ID_Ressource);
+                    table.ForeignKey(
+                        name: "FK_Ressource_Category_Id_Category",
+                        column: x => x.Id_Category,
+                        principalTable: "Category",
+                        principalColumn: "Id_Category",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ressource_User_modificationId_User",
+                        column: x => x.modificationId_User,
+                        principalTable: "User",
+                        principalColumn: "Id_User",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -113,6 +119,7 @@ namespace RRelationnelle.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Id_User = table.Column<int>(type: "int", nullable: true),
                     ID_Ressource = table.Column<int>(type: "int", nullable: true),
+                    reference = table.Column<int>(type: "int", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     likes = table.Column<int>(type: "int", nullable: false),
                     dislikes = table.Column<int>(type: "int", nullable: false),
@@ -154,6 +161,11 @@ namespace RRelationnelle.Migrations
                 column: "Id_Category");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ressource_modificationId_User",
+                table: "Ressource",
+                column: "modificationId_User");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_id_role",
                 table: "User",
                 column: "id_role");
@@ -162,9 +174,6 @@ namespace RRelationnelle.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Category");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -172,6 +181,9 @@ namespace RRelationnelle.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ressource");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "User");

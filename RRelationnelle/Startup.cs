@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RRelationnelle.Repos;
+using RRelationnelle.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +69,10 @@ namespace RRelationnelle
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IRessourceRepo, RessourcesRepo>();
+            services.AddScoped<IRessourceService, RessourceService>();
+            services.AddScoped<IApiGouv, ApiRGouv>();
+            services.AddScoped<IUserRepo, UserRepo>();
             
             
             

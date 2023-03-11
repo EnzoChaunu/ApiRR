@@ -10,7 +10,7 @@ using RRelationnelle;
 namespace RRelationnelle.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230220214749_InitialCreate")]
+    [Migration("20230306135513_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,9 @@ namespace RRelationnelle.Migrations
                     b.Property<bool>("modified")
                         .HasColumnType("bit");
 
+                    b.Property<int>("reference")
+                        .HasColumnType("int");
+
                     b.HasKey("id_comments");
 
                     b.HasIndex("ID_Ressource");
@@ -101,13 +104,10 @@ namespace RRelationnelle.Migrations
                     b.Property<bool>("_activation")
                         .HasColumnType("bit");
 
-                    b.Property<string>("_content")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("_creationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("_description")
+                    b.Property<string>("_reference")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("_title")
@@ -119,9 +119,14 @@ namespace RRelationnelle.Migrations
                     b.Property<int>("_views")
                         .HasColumnType("int");
 
+                    b.Property<int?>("modificationId_User")
+                        .HasColumnType("int");
+
                     b.HasKey("ID_Ressource");
 
                     b.HasIndex("Id_Category");
+
+                    b.HasIndex("modificationId_User");
 
                     b.ToTable("Ressource");
                 });
@@ -223,11 +228,17 @@ namespace RRelationnelle.Migrations
 
             modelBuilder.Entity("RRelationnelle.Ressource", b =>
                 {
-                    b.HasOne("RRelationnelle.Roles", "category")
+                    b.HasOne("RRelationnelle.Categorie", "category")
                         .WithMany()
                         .HasForeignKey("Id_Category");
 
+                    b.HasOne("RRelationnelle.User", "modification")
+                        .WithMany()
+                        .HasForeignKey("modificationId_User");
+
                     b.Navigation("category");
+
+                    b.Navigation("modification");
                 });
 
             modelBuilder.Entity("RRelationnelle.User", b =>

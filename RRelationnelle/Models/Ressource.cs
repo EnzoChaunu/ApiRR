@@ -14,20 +14,39 @@ namespace RRelationnelle
 
         [Column]
         public string _title { get; set; }
-        public string _description { get; set; }
-        public string _content { get; set; }
-
+     
         [ForeignKey("Id_Category")]
-        public Roles category { get; set; }
+        public Categorie category { get; set; }
         //public Category Id_Category { get; set; }
         public bool _activation { get; set; }
         //private User _modification;
-
+        public string _reference { get; set; }
         public int _views { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
 
+        public User modification { get; set; }
 
-       // private List<Comments> _comments = new List<Comments>();
+       public List<Comments> _comments = new List<Comments>();
+
+       /* public Ressource(string id, string title, Categorie categ, bool activation, User _modification, int views, string url, List<Comments> comments)
+        {
+            ID_Ressource = id;
+            _title = title;
+            category = categ;
+            _activation = activation;
+             modification= _modification;
+            _views = views;
+            _url = url;
+            _comments = comments;
+        }
+
+
+        public Ressource(string id, string title, Categorie categ)
+        {
+            ID_Ressource = id;
+            _title = title;
+            category = categ;
+        }*/
     }
 }

@@ -15,6 +15,7 @@ namespace RRelationnelle
 
         [ForeignKey("ID_Ressource")]
         public Ressource id_ressource { get; set; }
+        public int reference { get; set; }
 
         public string content { get; set; }
         public int likes { get; set; }
