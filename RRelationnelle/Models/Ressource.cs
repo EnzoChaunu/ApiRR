@@ -17,14 +17,13 @@ namespace RRelationnelle
      
         [ForeignKey("Id_Category")]
         public Categorie category { get; set; }
-        //public Category Id_Category { get; set; }
         public bool _activation { get; set; }
-        //private User _modification;
         public string _reference { get; set; }
         public int _views { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
 
+        [ForeignKey("Id_User")]
         public User modification { get; set; }
 
        public List<Comments> _comments = new List<Comments>();
@@ -41,12 +40,14 @@ namespace RRelationnelle
             _comments = comments;
         }
 
-
-        public Ressource(string id, string title, Categorie categ)
+        */
+        public Ressource(string reference,string title, Categorie categ,string url,User user)
         {
-            ID_Ressource = id;
+            _reference = reference;
             _title = title;
             category = categ;
-        }*/
+            _url = url;
+            modification = user;
+        }
     }
 }

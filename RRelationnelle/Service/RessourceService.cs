@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
+using RRelationnelle.Models;
 using RRelationnelle.Repos;
 using System;
 using System.Collections.Generic;
@@ -31,15 +32,15 @@ namespace RRelationnelle.Service
             throw new NotImplementedException();
         }
 
-        public async Task<List<RessourceDto>> GetFormation(string rome, string romeDomain, string caller)
+        public async Task<List<AlternanceDto>> GetFormation(string rome, string romeDomain, string caller)
         {
             List<AlternanceDto> list= new List<AlternanceDto>();
             var response = await  _api.GetFormation(caller,rome,romeDomain);
             if (response != null)
             {
-                var mapper = MappingRessource.MappingRessources();
-                List<RessourceDto> Ressourcedto = new List<RessourceDto>();
-               Ressourcedto = mapper.Map<List<Ressource>, List<RessourceDto>>(response);
+                var mapper = MappingRessource.MappingAlternance();
+                List<AlternanceDto> Ressourcedto = new List<AlternanceDto>();
+               Ressourcedto = mapper.Map<List<Alternances>, List<AlternanceDto>>(response);
                 return Ressourcedto;
             }
            

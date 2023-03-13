@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,45 +33,49 @@ namespace RRelationnelle.Repos
         {
             throw new NotImplementedException();
         }
-
         
-
-
         public async Task<Ressource> GetRessourceById(string id)
         {
             Ressource ressource = await _Dbcontext.Ressource.FindAsync(id);
             return ressource;
         }
 
-        public async Task<List<Ressource>> GetFormation(JArray result)
+        public async Task<List<Alternances>> GetFormation(JArray result)
         {
-            using var transaction = await _Dbcontext.Database.BeginTransactionAsync();
+            //using var transaction = await _Dbcontext.Database.BeginTransactionAsync();
+
+            List<Alternances> _Alternances = new List<Alternances>();   
             
-                
                 foreach (JObject obj in result)
                 {
-
+                    // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
                     string id = (string)obj["id"];
-                    string name = (string)obj["title"];
+                    string name = (string)obj["longTitle"];
                     string onisepUrl = (string)obj["onisepUrl"];
-                    var categ = await _categ.GetByid(1);
+                    string Diploma = (string)obj["diploma"];
+                    string period = (string)obj["onisepUrl"];
+                    string capacity = (string)obj["capacity"];
+                    string ville = (string)obj.SelectToken("place.city");
+                    string zipcode = (string)obj.SelectToken("place.zipCode");
+                    string emailcontact = (string)obj.SelectToken("contact.email");
+
+                var categ = await _categ.GetByid(1);
                     var user = await _user.GetUserById(1);
-                var ressource = new Ressource
-                {
-                    _reference = id,
-                    _title = name,
-                    category = categ,
-                    _url = onisepUrl,
-                    modification = user
-                    };
+                    var ressource = new Ressource(id, name, categ, onisepUrl, user);
+
+                    
                     _Dbcontext.Ressource.Add(ressource);
                     int nb =  _Dbcontext.SaveChanges();
-               
-            }
-                    await transaction.CommitAsync();
 
-            
-            return await _Dbcontext.Ressource.ToListAsync();
+                    var alternance = new Alternances(id, name, categ, onisepUrl, user, Diploma, period, capacity, ville, zipcode, emailcontact);
+                    _Alternances.Add(alternance);
+                   
+
+            }
+                    //await transaction.CommitAsync();
+
+
+            return _Alternances;
         }
     }
 }

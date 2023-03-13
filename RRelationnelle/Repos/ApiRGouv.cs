@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace RRelationnelle.Repos
         {
             _repo = repo;
         }
-        public async Task<List<Ressource>> GetFormation(string caller, string rome, string romesDomain)
+        public async Task<List<Alternances>> GetFormation(string caller, string rome, string romesDomain)
         {
 
 

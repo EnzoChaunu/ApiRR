@@ -9,7 +9,7 @@ namespace RRelationnelle.Service
 {
     public interface IRessourceService
     {
-        public Task<List<RessourceDto>> GetFormation(string rome, string romeDomain, string caller);
+        public Task<List<AlternanceDto>> GetFormation(string rome, string romeDomain, string caller);
         public Task<ActionResult<RessourceDto>> Create();
         public Task<ActionResult<bool>> Delete();
 

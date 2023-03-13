@@ -31,7 +31,7 @@ namespace RRelationnelle
         }  */
         
         [HttpGet("Alternances&Formations")]
-        public async Task<List<RessourceDto>> GetFormation(string rome,string romeDomain, string caller)
+        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller)
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.GetFormation(rome,romeDomain,caller);
