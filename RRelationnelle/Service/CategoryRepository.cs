@@ -17,6 +17,28 @@ namespace RRelationnelle
             _ctx = ctx;
         }
 
+        public async Task<bool> Archive(int id)
+        {
+            var entity = await _ctx.Category.FindAsync(id);
+            entity.isActive = false;
+            _ctx.Category.Update(entity);
+            await _ctx.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<Categorie> GetByid(int id)
+        {
+            try
+            {
+                var categorie = await _ctx.Category.FindAsync(id);
+                return categorie;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<Categorie> CreateCategory(Categorie category)
         {
             try
@@ -42,6 +64,8 @@ namespace RRelationnelle
             categorie = await _ctx.Category.ToListAsync();
             return categorie;
         }
+
+       
 
         public async Task<IEnumerable<Categorie>> ListCategory2()
         {

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RRelationnelle.Repos;
+using RRelationnelle.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +57,8 @@ namespace RRelationnelle
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
-            services.AddTransient<IJwTAuthentificationService, JwtAuthentificationServices>();
-            services.AddTransient<IJwTAuthRepository, JwTAuthRepository>();
+            services.AddScoped<IJwTAuthentificationService, JwtAuthentificationServices>();
+            services.AddScoped<IJwTAuthRepository, JwTAuthRepository>();
 
 
 
@@ -65,8 +67,12 @@ namespace RRelationnelle
             services.AddMemoryCache();
             
 
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IRessourceRepo, RessourcesRepo>();
+            services.AddScoped<IRessourceService, RessourceService>();
+            services.AddScoped<IApiGouv, ApiRGouv>();
+            services.AddScoped<IUserRepo, UserRepo>();
             
             
             

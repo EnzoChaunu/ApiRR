@@ -45,8 +45,14 @@ namespace RRelationnelle
             }
 
         }
-
-
+        
+        [HttpPut("/Archive/{id}")]
+        public async Task<bool> Archive(int id)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.Archive(id);
+          
+        }
 
         [HttpPost]
         [Authorize]

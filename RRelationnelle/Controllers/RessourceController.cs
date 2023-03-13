@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RRelationnelle.dto;
+using RRelationnelle.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +15,31 @@ namespace RRelationnelle
     public class RessourceController : Controller
     {
 
-        private readonly RrelationnelApiContext _context;
+        private readonly IRessourceService _service;
 
-        public RessourceController(RrelationnelApiContext context)
+        public RessourceController(IRessourceService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        //methode de recuperation executée de facon asynchrone
+       /* //methode de recuperation executée de facon asynchrone
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Ressource>>> GetRessources()
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _context.Ressource.ToListAsync();
+        }  */
+        
+        [HttpGet("Alternances&Formations")]
+        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.GetFormation(rome,romeDomain,caller);
         }  
         
         
         //methode de recuperation executée de facon asynchrone
-        [HttpGet("{id_ressource}")]
+       /* [HttpGet("{id_ressource}")]
         public async Task<ActionResult<Ressource>> GetRessourcesById(int id_ressource)
         {
             //requete sur un id
@@ -48,6 +57,6 @@ namespace RRelationnelle
              _context.Ressource.Add(ressource);
             await _context.SaveChangesAsync();
             return ressource;
-        }
+        }*/
     }
 }

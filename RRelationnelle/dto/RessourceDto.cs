@@ -5,24 +5,22 @@ namespace RRelationnelle
 {
     public class RessourceDto
     {
-        private int _id { get; set; }
-        private string _title { get; set; }
-        private string _description { get; set; }
-        private string _content { get; set; }
-        private CategoryDto _category { get; set; }
-        private bool _activation { get; set; }
-        private Admin _modification { get; set; }
-        private int _views { get; set; }
-        private DateTime _creationDate { get; set; }
-        private string _url { get; set; }
-        private List<CommentDto> _comments { get; set; }
+        public int _id { get; set; }
 
-        public RessourceDto(int id, string title, string description, string content, CategoryDto category, bool activation, Admin modification, int views, DateTime creationDate, string url, List<CommentDto> comments)
+        public string id { get; set; }
+        public string title { get; set; }
+        public CategoryDto _category { get; set; }
+        public bool _activation { get; set; }
+        public Admin _modification { get; set; }
+        public int _views { get; set; }
+        public DateTime _creationDate { get; set; }
+        public string _url { get; set; }
+        public List<CommentDto> _comments { get; set; }
+
+      /*  public RessourceDto(string reference, string _title, CategoryDto category, bool activation, Admin modification, int views, DateTime creationDate, string url, List<CommentDto> comments)
         {
-            _id = id;
-            _title = title;
-            _description = description;
-            _content = content;
+           
+            title = _title;
             _category = category;
             _activation = activation;
             _modification = modification;
@@ -30,6 +28,15 @@ namespace RRelationnelle
             _creationDate = creationDate;
             _url = url;
             _comments = comments;
+            id = reference;
         }
+
+
+        public RessourceDto(string reference,string _title)
+        {
+            id = reference;
+            title = _title;
+            
+        }*/
     }
 }
