@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
-    public class CategoryService : ICategoryService, ICategoryValidation
+    public class CategoryService : IService<CategoryDto>
     {
 
-        private readonly ICategoryRepository _repos;
-        public CategoryService(ICategoryRepository repo)
+        private readonly CategoryRepository _repos;
+        //private readonly IRepository<Categorie> _repos;
+        public CategoryService(CategoryRepository repo)
         {
             _repos = repo;
             // _validations =validations;
@@ -47,7 +48,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<CategoryDto> CreateCategory(CategoryDto category)
+        public async Task<CategoryDto> Create(CategoryDto category)
         {
 
             if (!CheckValues(category))
@@ -60,7 +61,7 @@ namespace RRelationnelle
                 {
                     var mapper = MappingCategory.MappingCategoryL();
                     Categorie categorieDb = mapper.Map<CategoryDto, Categorie>(category);
-                    var rep = await _repos.CreateCategory(categorieDb);
+                    var rep = await _repos.Create(categorieDb);
                     if (rep != null)
                     {
                         CategoryDto Categ = mapper.Map<Categorie, CategoryDto>(rep);
@@ -80,6 +81,11 @@ namespace RRelationnelle
             }
         }
 
+        public Task<CategoryDto> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory()
         {
             List<Roles> categorie = new List<Roles>();
@@ -96,7 +102,7 @@ namespace RRelationnelle
 
         }
 
-        public async Task<CategoryDto> UpdateCategory(CategoryDto category, int id)
+        public async Task<CategoryDto> Update(CategoryDto category, int id)
         {
             if (!CheckValues(category))
             {
@@ -128,7 +134,7 @@ namespace RRelationnelle
         }
 
 
-        async Task<IEnumerable<CategoryDto>> ICategoryService.ListCategory2()
+        public async Task<IEnumerable<CategoryDto>> ListCategory2()
         {
 
             List<Categorie> categorie = new List<Categorie>();

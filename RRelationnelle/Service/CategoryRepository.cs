@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : IRepository<Categorie>
     {
         //private Categorie _entities;
         private readonly RrelationnelApiContext _ctx;
@@ -26,7 +26,7 @@ namespace RRelationnelle
             return true;
         }
 
-        public async Task<Categorie> GetByid(int id)
+        public async Task<Categorie> Get(int id)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<Categorie> CreateCategory(Categorie category)
+        public async Task<Categorie> Create(Categorie category)
         {
             try
             {

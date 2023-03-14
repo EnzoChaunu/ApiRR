@@ -13,7 +13,7 @@ namespace RRelationnelle
     public class CategoryController : Controller
     {
        
-        private readonly ICategoryService _service;
+        private readonly CategoryService _service;
         public CategoryDto categori = new CategoryDto();
        
         public CategoryController(RrelationnelApiContext context)
@@ -34,7 +34,7 @@ namespace RRelationnelle
         public async Task<CategoryDto> Update(int id,CategoryDto categ)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            var catego = await _service.UpdateCategory(categ,id);
+            var catego = await _service.Update(categ,id);
             if (categ != null)
             {
                 return categ;
@@ -58,7 +58,7 @@ namespace RRelationnelle
         [Authorize]
         public async Task<CategoryDto> CreateCategory(CategoryDto category)
         {
-            var categ = await _service.CreateCategory(category);
+            var categ = await _service.Create(category);
             if (categ!= null)
             {
                 return categ;

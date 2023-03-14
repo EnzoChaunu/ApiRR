@@ -6,7 +6,7 @@ namespace RRelationnelle
     [Route("api/[controller]")]
     public class RolesController : Controller
     {
-        private readonly IRolesService _service;
+        private readonly RolesService _service;
 
         public RolesController(RrelationnelApiContext context)
         {

@@ -67,10 +67,10 @@ namespace RRelationnelle
             services.AddMemoryCache();
             
 
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IService<CategoryDto>, CategoryService>();
+            services.AddScoped<IRepository<Categorie>, CategoryRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
-            services.AddScoped<IRessourceService, RessourceService>();
+            services.AddScoped<IService<RessourceDto>, RessourceService>();
             services.AddScoped<IApiGouv, ApiRGouv>();
             services.AddScoped<IUserRepo, UserRepo>();
             

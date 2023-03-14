@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
-    public class RolesService : IRolesService
+    public class RolesService : IService<Roles>
     {
-        private readonly IRolesRepository _repo;
+        private readonly RolesRepository _repo;
 
-        public RolesService(IRolesRepository repo)
+        public RolesService(RolesRepository repo)
         {
             _repo = repo;
             // _validations =validations;
@@ -33,6 +33,26 @@ namespace RRelationnelle
             List<Roles> rolesdto = new List<Roles>();
             // mapper.Map(List<Category>, List<Categorie>)(categ);
             return rolesdto;
+        }
+
+        public Task<Roles> Create(Roles obj)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Roles> Update(Roles obj, int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> Archive(int id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Roles> Get(int id)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

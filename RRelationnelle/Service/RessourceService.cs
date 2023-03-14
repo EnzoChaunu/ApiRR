@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle.Service
 {
-    public class RessourceService : IRessourceService
+    public class RessourceService : IService<RessourceDto>
     {
        /* private readonly IRessourceRepo _repo;*/
         private readonly IApiGouv _api;
@@ -22,12 +22,17 @@ namespace RRelationnelle.Service
             _api = api;
         }
 
-        public Task<ActionResult<RessourceDto>> Create()
+        public Task<bool> Archive(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<bool>> Delete()
+        public Task<RessourceDto> Create(RessourceDto obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RessourceDto> Get(int id)
         {
             throw new NotImplementedException();
         }
@@ -45,6 +50,11 @@ namespace RRelationnelle.Service
             }
            
             return null; 
+        }
+
+        public Task<RessourceDto> Update(RessourceDto obj, int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

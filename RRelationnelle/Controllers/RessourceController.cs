@@ -15,9 +15,9 @@ namespace RRelationnelle
     public class RessourceController : Controller
     {
 
-        private readonly IRessourceService _service;
+        private readonly RessourceService _service;
 
-        public RessourceController(IRessourceService service)
+        public RessourceController(RessourceService service)
         {
             _service = service;
         }
