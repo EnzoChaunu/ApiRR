@@ -49,5 +49,10 @@ namespace RRelationnelle
             _url = url;
             modification = user;
         }
+
+        public Ressource()
+        {
+
+        }
     }
 }

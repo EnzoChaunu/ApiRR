@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RRelationnelle
 {
@@ -7,10 +8,11 @@ namespace RRelationnelle
     {
         [Key]
         public int id_stat { get; set; }
-        public int NbSharing { get; set; }
-        public int NbLike { get; set; }
-        public DateTime DateDebut { get; set; }
-        public DateTime DateFin { get; set; }
+
+        [Column]
+        public int AcountCreated { get; set; }
+        public int commentposted { get; set; }
+        public int visits { get; set; }
         public DateTime DateStat { get; set; }
 
 
