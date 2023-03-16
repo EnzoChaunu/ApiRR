@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace RRelationnelle
 {
-    public class MappingCategory : Profile
+    public class MappingCategory : AutoMapper.Profile
     {
         public static Mapper MappingCategoryL()
         {

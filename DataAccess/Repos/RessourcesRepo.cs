@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp;
 using RRelationnelle.Models;
 using System;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
+
 
 namespace RRelationnelle.Repos
 {
@@ -38,8 +36,9 @@ namespace RRelationnelle.Repos
         {
             Ressource ressource = await _Dbcontext.Ressource.FindAsync(id);
             return ressource;
+            
         }
-
+        
         public async Task<List<Alternances>> GetFormation(JArray result)
         {
             //using var transaction = await _Dbcontext.Database.BeginTransactionAsync();

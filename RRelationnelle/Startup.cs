@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RRelationnelle.Repos;
 using RRelationnelle.Service;
+using ServiceStack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
