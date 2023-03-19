@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 
-
 namespace RRelationnelle
 {
-    public class MappingCategory : AutoMapper.Profile
+    public class MappingCategory : Profile
     {
         public static Mapper MappingCategoryL()
         {
             var config =  new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Categorie, CategoryDto>()
+                cfg.CreateMap<Category, CategoryDto>()
 
                 .ForMember(dest =>
                    dest._name,
@@ -23,12 +22,9 @@ namespace RRelationnelle
                 .ReverseMap();
 
             });
+
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         }
-
     }
 }

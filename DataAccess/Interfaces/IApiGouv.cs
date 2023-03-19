@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using RRelationnelle.Models;
-using System;
+﻿using RRelationnelle.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace RRelationnelle.Repos
+namespace DataAccess.Interfaces
 {
     public interface IApiGouv
     {

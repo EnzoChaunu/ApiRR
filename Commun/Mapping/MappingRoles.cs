@@ -19,11 +19,9 @@ namespace RRelationnelle
                 .ReverseMap();
 
             });
+
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         }
     }
 }

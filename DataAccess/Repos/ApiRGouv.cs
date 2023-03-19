@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using DataAccess.Interfaces;
+using Newtonsoft.Json.Linq;
 using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -18,8 +18,6 @@ namespace RRelationnelle.Repos
         }
         public async Task<List<Alternances>> GetFormation(string caller, string rome, string romesDomain)
         {
-
-
             using var client = new HttpClient();
 
             var uriBuilder = new UriBuilder("https://labonnealternance.apprentissage.beta.gouv.fr/api/V1/formations");
@@ -45,8 +43,6 @@ namespace RRelationnelle.Repos
             {
                 return null;
             }
-
         }
-
     }
 }

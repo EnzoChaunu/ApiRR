@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
 using RRelationnelle.Models;
-using RRelationnelle.Repos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,6 @@ namespace RRelationnelle.Service
         private readonly IApiGouv _api;
         public RessourceService( IApiGouv api)
         {
-           
             _api = api;
         }
 

@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using RRelationnelle.dto;
 using RRelationnelle.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRelationnelle.Mapping
 {
@@ -28,9 +24,6 @@ namespace RRelationnelle.Mapping
             });
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         } 
         
         public static Mapper MappingAlternance()
@@ -57,11 +50,9 @@ namespace RRelationnelle.Mapping
                 .ReverseMap();
 
             });
+
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         }
     }
 }

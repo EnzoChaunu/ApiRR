@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-// commmm
+
 namespace RRelationnelle
 {
-    public class Comments
+    public class Comment
     {
         [Key]
         public int id_comments { get; set; }
@@ -25,11 +25,5 @@ namespace RRelationnelle
         public bool activation { get; set; }
         public bool modified { get; set; }
         public DateTime creationDate { get; set; }
-      
-
-        //public int Id { get { return _id; } }
-        // public string Content { get { return _content; } set { _content = value; } }
-
-
     }
 }

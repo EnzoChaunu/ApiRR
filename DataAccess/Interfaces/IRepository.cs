@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace RRelationnelle
+namespace DataAccess.Interfaces
 {
     public interface IRepository<TType>
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices;
 
 namespace RRelationnelle
 {
@@ -22,8 +21,5 @@ namespace RRelationnelle
 
         [ForeignKey("id_role")]
         public Roles Role { get; set; }
-
-
-
     }
 }

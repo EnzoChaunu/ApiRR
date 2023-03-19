@@ -13,17 +13,6 @@ namespace RRelationnelle
         public string Login { get; set; }
         public bool Activation { get; set; }
         public DateTime CreationDate { get; set; }
-
-       /* public User(int id, string fName, string lName, string email, string password, string login, bool activation, DateTime creationDate)
-        {
-            Id = id;
-            FName = fName;
-            LName = lName;
-            Email = email;
-            Password = password;
-            Login = login;
-            Activation = activation;
-            CreationDate = creationDate;
-        }*/
+        public int IdRole { get; set;}
     }
 }

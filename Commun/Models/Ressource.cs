@@ -16,7 +16,7 @@ namespace RRelationnelle
         public string _title { get; set; }
      
         [ForeignKey("Id_Category")]
-        public Categorie category { get; set; }
+        public Category category { get; set; }
         public bool _activation { get; set; }
         public string _reference { get; set; }
         public int _views { get; set; }
@@ -26,7 +26,7 @@ namespace RRelationnelle
         [ForeignKey("Id_User")]
         public User modification { get; set; }
 
-       public List<Comments> _comments = new List<Comments>();
+       public List<Comment> _comments = new List<Comment>();
 
        /* public Ressource(string id, string title, Categorie categ, bool activation, User _modification, int views, string url, List<Comments> comments)
         {
@@ -41,7 +41,7 @@ namespace RRelationnelle
         }
 
         */
-        public Ressource(string reference,string title, Categorie categ,string url,User user)
+        public Ressource(string reference,string title, Category categ,string url,User user)
         {
             _reference = reference;
             _title = title;

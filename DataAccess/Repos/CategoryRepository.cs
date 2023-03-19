@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nest;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
-    public class CategoryRepository : IRepository<Categorie>
+    public class CategoryRepository : ICategoryRepository
     {
         //private Categorie _entities;
         private readonly RrelationnelApiContext _ctx;
@@ -27,7 +28,7 @@ namespace RRelationnelle
             return true;
         }
 
-        public async Task<Categorie> Get(int id)
+        public async Task<Category> Get(int id)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<Categorie> Create(Categorie category)
+        public async Task<Category> Create(Category category)
         {
             try
             {
@@ -54,30 +55,16 @@ namespace RRelationnelle
             }
         }
 
-        //public IEnumerable<Categorie> ListCategory()
-       // {
-                
-        //}
-
-      public async Task<ActionResult<IEnumerable<Categorie>>> ListCategory()
+        public async Task<IEnumerable<Category>> ListCategory()
         {
-             List<Categorie> categorie = new List<Categorie>();
+            List<Category> categorie = new List<Category>();
             categorie = await _ctx.Category.ToListAsync();
             return categorie;
         }
 
-       
-
-        public async Task<IEnumerable<Categorie>> ListCategory2()
+        public async Task<Category> Update(Category category,int id)
         {
-            List<Categorie> categorie = new List<Categorie>();
-            categorie = await _ctx.Category.ToListAsync();
-            return categorie;
-        }
-
-        public async Task<Categorie> Update(Categorie category,int id)
-        {
-           var entity = await _ctx.Category.FindAsync(id);
+            var entity = await _ctx.Category.FindAsync(id);
             entity.idcreator = category.idcreator;
             entity._name = category._name;
             _ctx.Category.Update(entity);

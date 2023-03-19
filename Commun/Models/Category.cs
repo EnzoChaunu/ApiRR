@@ -1,12 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace RRelationnelle
 {
-    public class Categorie
+    public class Category
     {
         [Key]
         public int Id_Category { get; set; }
@@ -18,10 +16,5 @@ namespace RRelationnelle
 
         [ForeignKey("Creator")]
         public int idcreator { get; set; }
-
-        
-        //public Admin Creator { get; set; }
-
-        
     }
 }

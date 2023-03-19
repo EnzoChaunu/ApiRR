@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
     public class MappinLog : Profile
     {
-
         public static Mapper MappingUser()
         {
             var config = new MapperConfiguration(cfg =>
@@ -33,11 +28,9 @@ namespace RRelationnelle
                .ReverseMap();
 
             });
+
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         }
     }
 }
