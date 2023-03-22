@@ -16,7 +16,7 @@ namespace RRelationnelle.Repos
         {
             _repo = repo;
         }
-        public async Task<List<Alternances>> GetFormation(string caller, string rome, string romesDomain)
+        public async Task<JArray> GetFormation(string caller, string rome, string romesDomain)
         {
             using var client = new HttpClient();
 
@@ -36,8 +36,7 @@ namespace RRelationnelle.Repos
                 client.Dispose();
                 JObject topLevel = JObject.Parse(content);
                 JArray result = (JArray)topLevel.SelectToken("results");
-                var reponse = await _repo.GetFormation(result);
-                return reponse;
+                return result;
             }
             else
             {

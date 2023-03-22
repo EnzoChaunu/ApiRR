@@ -10,13 +10,14 @@ namespace RRelationnelle
     {
         
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID_Ressource { get; set; }
 
         [Column]
         public string _title { get; set; }
      
         [ForeignKey("Id_Category")]
-        public Category category { get; set; }
+        public int _Idcategory { get; set; }
         public bool _activation { get; set; }
         public string _reference { get; set; }
         public int _views { get; set; }
@@ -24,9 +25,10 @@ namespace RRelationnelle
         public string _url { get; set; }
 
         [ForeignKey("Id_User")]
+        public int _user { get; set; }
         public User modification { get; set; }
 
-       public List<Comment> _comments = new List<Comment>();
+       public static List<Comment> _comments = new List<Comment>();
 
        /* public Ressource(string id, string title, Categorie categ, bool activation, User _modification, int views, string url, List<Comments> comments)
         {
@@ -41,13 +43,13 @@ namespace RRelationnelle
         }
 
         */
-        public Ressource(string reference,string title, Category categ,string url,User user)
+        public Ressource(string reference,string title, int categ,string url,int user)
         {
             _reference = reference;
             _title = title;
-            category = categ;
+            _Idcategory = categ;
             _url = url;
-            modification = user;
+           _user = user;
         }
 
         public Ressource()

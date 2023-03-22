@@ -45,7 +45,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<Roles> Get(int id)
+        public async Task<Roles> Get(dynamic id)
         {
             try
             {

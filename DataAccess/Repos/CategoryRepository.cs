@@ -28,7 +28,7 @@ namespace RRelationnelle
             return true;
         }
 
-        public async Task<Category> Get(int id)
+        public async Task<Category> Get(dynamic id)
         {
             try
             {

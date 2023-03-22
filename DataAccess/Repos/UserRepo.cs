@@ -32,7 +32,7 @@ namespace RRelationnelle.Repos
             }
         }
 
-        public async Task<User> Get(int id)
+        public async Task<User> Get(dynamic id)
         {
             var user = await _Dbcontext.User.FindAsync(id);
             return user;
