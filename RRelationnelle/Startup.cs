@@ -62,7 +62,7 @@ namespace RRelationnelle
                 options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
             services.AddMemoryCache();
 
-
+            services.AddScoped<RRelationnelle.Service.RessourceService>();
             services.AddScoped<RRelationnelle.CategoryRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
