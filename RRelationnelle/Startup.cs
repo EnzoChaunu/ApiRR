@@ -1,3 +1,4 @@
+using Business.Interfaces;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -60,14 +61,18 @@ namespace RRelationnelle
             services.AddDbContext<RrelationnelApiContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
             services.AddMemoryCache();
-            
 
-            services.AddScoped<IService<CategoryDto>, CategoryService>();
-            services.AddScoped<IRepository<Category>, CategoryRepository>();
+
+            services.AddScoped<RRelationnelle.CategoryRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IService<CategoryDto>, CategoryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IService<RessourceDto>, RessourceService>();
             services.AddScoped<IApiGouv, ApiRGouv>();
             services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IRolesRepository, RolesRepository>();
+            services.AddScoped<IRoleService, RolesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
