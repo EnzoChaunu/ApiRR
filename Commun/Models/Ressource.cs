@@ -15,9 +15,11 @@ namespace RRelationnelle
 
         [Column]
         public string _title { get; set; }
+        [NotMapped]
+        public int _Idcategory { get; set; }
      
         [ForeignKey("Id_Category")]
-        public int _Idcategory { get; set; }
+        public Category category { get; set; }
         public bool _activation { get; set; }
         public string _reference { get; set; }
         public int _views { get; set; }
@@ -25,8 +27,9 @@ namespace RRelationnelle
         public string _url { get; set; }
 
         [ForeignKey("Id_User")]
-        public int _user { get; set; }
         public User modification { get; set; }
+        [NotMapped]
+        public int _user { get; set; }
 
        public static List<Comment> _comments = new List<Comment>();
 

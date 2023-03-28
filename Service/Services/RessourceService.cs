@@ -57,7 +57,7 @@ namespace RRelationnelle.Service
                     string zipcode = (string)obj.SelectToken("place.zipCode");
                     string emailcontact = (string)obj.SelectToken("contact.email");
 
-                    if (_repo.Get(id) == null)
+                    if ( await _repo.Get(id) == null)
                     {
                         var ressourcedto = new RessourceDto(name, 1,id,onisepUrl,1);
                         var map = MappingRessource.MappingRessources();

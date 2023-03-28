@@ -7,26 +7,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RRelationnelle;
 
-namespace RRelationnelle.Migrations
+#nullable disable
+
+namespace Commun.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230306135513_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230328203242_initialcreate")]
+    partial class initialcreate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.12")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("RRelationnelle.Categorie", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RRelationnelle.Category", b =>
                 {
                     b.Property<int>("Id_Category")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Category"));
 
                     b.Property<DateTime>("_creationDate")
                         .HasColumnType("datetime2");
@@ -45,12 +50,13 @@ namespace RRelationnelle.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("RRelationnelle.Comments", b =>
+            modelBuilder.Entity("RRelationnelle.Comment", b =>
                 {
                     b.Property<int>("id_comments")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_comments"));
 
                     b.Property<int?>("ID_Ressource")
                         .HasColumnType("int");
@@ -73,14 +79,8 @@ namespace RRelationnelle.Migrations
                     b.Property<int>("likes")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("modificationDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("modified")
                         .HasColumnType("bit");
-
-                    b.Property<int>("reference")
-                        .HasColumnType("int");
 
                     b.HasKey("id_comments");
 
@@ -95,10 +95,14 @@ namespace RRelationnelle.Migrations
                 {
                     b.Property<int>("ID_Ressource")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID_Ressource"));
 
                     b.Property<int?>("Id_Category")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Id_User")
                         .HasColumnType("int");
 
                     b.Property<bool>("_activation")
@@ -119,14 +123,11 @@ namespace RRelationnelle.Migrations
                     b.Property<int>("_views")
                         .HasColumnType("int");
 
-                    b.Property<int?>("modificationId_User")
-                        .HasColumnType("int");
-
                     b.HasKey("ID_Ressource");
 
                     b.HasIndex("Id_Category");
 
-                    b.HasIndex("modificationId_User");
+                    b.HasIndex("Id_User");
 
                     b.ToTable("Ressource");
                 });
@@ -135,8 +136,9 @@ namespace RRelationnelle.Migrations
                 {
                     b.Property<int>("id_role")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_role"));
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
@@ -150,22 +152,20 @@ namespace RRelationnelle.Migrations
                 {
                     b.Property<int>("id_stat")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("DateDebut")
-                        .HasColumnType("datetime2");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_stat"));
 
-                    b.Property<DateTime>("DateFin")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("AcountCreated")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateStat")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NbLike")
+                    b.Property<int>("commentposted")
                         .HasColumnType("int");
 
-                    b.Property<int>("NbSharing")
+                    b.Property<int>("visits")
                         .HasColumnType("int");
 
                     b.HasKey("id_stat");
@@ -177,8 +177,9 @@ namespace RRelationnelle.Migrations
                 {
                     b.Property<int>("Id_User")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
 
                     b.Property<bool>("_activation")
                         .HasColumnType("bit");
@@ -211,7 +212,7 @@ namespace RRelationnelle.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("RRelationnelle.Comments", b =>
+            modelBuilder.Entity("RRelationnelle.Comment", b =>
                 {
                     b.HasOne("RRelationnelle.Ressource", "id_ressource")
                         .WithMany()
@@ -228,13 +229,13 @@ namespace RRelationnelle.Migrations
 
             modelBuilder.Entity("RRelationnelle.Ressource", b =>
                 {
-                    b.HasOne("RRelationnelle.Categorie", "category")
+                    b.HasOne("RRelationnelle.Category", "category")
                         .WithMany()
                         .HasForeignKey("Id_Category");
 
                     b.HasOne("RRelationnelle.User", "modification")
                         .WithMany()
-                        .HasForeignKey("modificationId_User");
+                        .HasForeignKey("Id_User");
 
                     b.Navigation("category");
 

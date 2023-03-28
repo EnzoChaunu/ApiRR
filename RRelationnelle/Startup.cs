@@ -1,6 +1,7 @@
 using Business.Interfaces;
 using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +60,9 @@ namespace RRelationnelle
 
 
             services.AddDbContext<RrelationnelApiContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun"))
+                );
+
             services.AddMemoryCache();
 
             services.AddScoped<RRelationnelle.Service.RessourceService>();

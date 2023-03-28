@@ -63,7 +63,7 @@ namespace RRelationnelle.Repos
         public async Task<Ressource> Get(dynamic id)
         {
             string _id = id; 
-            Ressource ressource =  await  _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference ==_id);
+            var ressource =  await  _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference ==_id);
             return ressource;
         }
     }
