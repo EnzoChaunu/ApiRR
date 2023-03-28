@@ -7,36 +7,33 @@ namespace RRelationnelle
     {
         public int _id { get; set; }
 
-        public string id { get; set; }
-        public string title { get; set; }
+        public string reference { get; set; }
+        public string _title { get; set; }
+        public int idCateg { get; set; }
         public CategoryDto _category { get; set; }
+        public int Idcategory { get; set; }
         public bool _activation { get; set; }
-        public Admin _modification { get; set; }
+        public User _modification { get; set; }
+        public int _user { get; set; }
         public int _views { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
         public List<CommentDto> _comments { get; set; }
 
-      /*  public RessourceDto(string reference, string _title, CategoryDto category, bool activation, Admin modification, int views, DateTime creationDate, string url, List<CommentDto> comments)
+        public RessourceDto(string title, int categoryId, string _reference, string url, int userId)
         {
            
-            title = _title;
-            _category = category;
-            _activation = activation;
-            _modification = modification;
-            _views = views;
-            _creationDate = creationDate;
+            _title = title;
+            idCateg = categoryId;
+            reference = _reference;
             _url = url;
-            _comments = comments;
-            id = reference;
+            _user = userId;
+            
         }
 
-
-        public RessourceDto(string reference,string _title)
+        public RessourceDto()
         {
-            id = reference;
-            title = _title;
-            
-        }*/
+
+        }
     }
 }

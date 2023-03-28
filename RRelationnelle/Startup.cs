@@ -1,23 +1,19 @@
+using Business.Interfaces;
+using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RRelationnelle.Repos;
 using RRelationnelle.Service;
-using ServiceStack;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -64,20 +60,22 @@ namespace RRelationnelle
 
 
             services.AddDbContext<RrelationnelApiContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection")));
-            services.AddMemoryCache();
-            
+                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun"))
+                );
 
-            services.AddScoped<IService<CategoryDto>, CategoryService>();
-            services.AddScoped<IRepository<Categorie>, CategoryRepository>();
+            services.AddMemoryCache();
+
+            services.AddScoped<RRelationnelle.Service.RessourceService>();
+            services.AddScoped<RRelationnelle.CategoryRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IService<CategoryDto>, CategoryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IService<RessourceDto>, RessourceService>();
             services.AddScoped<IApiGouv, ApiRGouv>();
             services.AddScoped<IUserRepo, UserRepo>();
-            
-            
-            
-         
+            services.AddScoped<IRolesRepository, RolesRepository>();
+            services.AddScoped<IRoleService, RolesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

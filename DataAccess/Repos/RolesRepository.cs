@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Interfaces;
+using System;
 
 namespace RRelationnelle
 {
-    public class RolesRepository : IRepository<Roles>
+    public class RolesRepository : IRolesRepository
     {
         private readonly RrelationnelApiContext _ctx;
 
@@ -15,19 +16,46 @@ namespace RRelationnelle
             _ctx = ctx;
         }
 
-        public Task<bool> Archive(int id)
+        public async Task<bool> Archive(int id)
         {
-            throw new System.NotImplementedException();
+            var entity = await _ctx.Role.FindAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                _ctx.Role.Remove(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
         }
 
-        public Task<Roles> Create(Roles obj)
+        public async Task<Roles> Create(Roles obj)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                _ctx.Role.Add(obj);
+                await _ctx.SaveChangesAsync();
+                return obj;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public Task<Roles> Get(int id)
+        public async Task<Roles> Get(dynamic id)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                var role = await _ctx.Role.FindAsync(id);
+                return role;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<ActionResult<IEnumerable<Roles>>> GetAllRolesAsync()
@@ -44,9 +72,14 @@ namespace RRelationnelle
             return UserRole;
         }
 
-        public Task<Roles> Update(Roles obj, int id)
+        public async Task<Roles> Update(Roles obj, int id)
         {
-            throw new System.NotImplementedException();
+            var entity = await _ctx.Role.FindAsync(id);
+            entity.id_role = obj.id_role;
+            entity.name = obj.name;
+            _ctx.Role.Update(entity);
+            await _ctx.SaveChangesAsync();
+            return entity;
         }
     }
 }

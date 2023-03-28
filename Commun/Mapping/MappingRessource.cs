@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using RRelationnelle.dto;
 using RRelationnelle.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRelationnelle.Mapping
 {
@@ -22,15 +18,16 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
-                    dest.title, opt => opt.MapFrom(src => src._title))
+                    dest._title, opt => opt.MapFrom(src => src._title))
+                .ForMember(dest =>
+                    dest.reference, opt => opt.MapFrom(src => src._reference))
+                .ForMember(dest =>
+                    dest._user, opt => opt.MapFrom(src => src._user))
                 .ReverseMap();
 
             });
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         } 
         
         public static Mapper MappingAlternance()
@@ -45,11 +42,11 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
-                    dest.title, opt => opt.MapFrom(src => src._title))
+                    dest._title, opt => opt.MapFrom(src => src._title))
                 .ForMember(dest =>
                     dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
                 .ForMember(dest =>
-                    dest._category, opt => opt.MapFrom(src => src.category))
+                    dest.idCateg, opt => opt.MapFrom(src => src._Idcategory))
                 .ForMember(dest =>
                     dest.Zipcode, opt => opt.MapFrom(src => src.Zipcode))
                 .ForMember(dest =>
@@ -57,11 +54,9 @@ namespace RRelationnelle.Mapping
                 .ReverseMap();
 
             });
+
             var mapper = new Mapper(config);
             return mapper;
-
-
-
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 namespace RRelationnelle.dto
 {
     public class AlternanceDto : RessourceDto
@@ -15,16 +11,20 @@ namespace RRelationnelle.dto
         public readonly string Zipcode;
         public readonly string emailContact;
 
-     /*   public AlternanceDto(string reference,string title,CategoryDto categ,string diplome,string lien,string perio,string cap,string city,string cod,string email):base(reference,title)
+        public AlternanceDto(string title, int categoryId, string _reference, string url, int userId ,string diplome, string perio, string cap, string city, string cod, string email) : base( title,categoryId,_reference,url,userId)
         {
             DiplomaLevel = diplome;
-            LienAnnonce = lien;
             Period = perio;
             Capacity = cap;
             Ville = city;
             Zipcode = cod;
             emailContact = email;
 
-        }*/
+        }
+
+        public AlternanceDto()
+        {
+
+        }
     }
 }
