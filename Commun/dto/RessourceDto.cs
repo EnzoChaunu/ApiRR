@@ -10,8 +10,6 @@ namespace RRelationnelle
         public string reference { get; set; }
         public string _title { get; set; }
         public int idCateg { get; set; }
-        public CategoryDto _category { get; set; }
-        public int Idcategory { get; set; }
         public bool _activation { get; set; }
         public User _modification { get; set; }
         public int _user { get; set; }
