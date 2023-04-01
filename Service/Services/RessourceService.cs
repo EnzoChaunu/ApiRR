@@ -17,10 +17,12 @@ namespace RRelationnelle.Service
        /* private readonly IRessourceRepo _repo;*/
         private readonly IApiGouv _api;
         private readonly IRessourceRepo _repo;
-        public RessourceService( IApiGouv api,IRessourceRepo rep)
+        private readonly ICategoryRepository _categRepo;
+        public RessourceService( IApiGouv api,IRessourceRepo rep,ICategoryRepository categRepo)
         {
             _api = api;
             _repo = rep;
+            _categRepo = categRepo;
         }
 
         public Task<bool> Archive(int id)
@@ -51,15 +53,23 @@ namespace RRelationnelle.Service
                     string name = (string)obj["longTitle"];
                     string onisepUrl = (string)obj["onisepUrl"];
                     string Diploma = (string)obj["diploma"];
-                    string period = (string)obj["onisepUrl"];
+                    string period = (string)obj["period"];
                     string capacity = (string)obj["capacity"];
-                    string ville = (string)obj.SelectToken("place.city");
-                    string zipcode = (string)obj.SelectToken("place.zipCode");
-                    string emailcontact = (string)obj.SelectToken("contact.email");
+                    string emailcontact = null;
+                    if ((string)obj["contact"] != null)
+                    {
+                         emailcontact = (string)obj["contact"]["email"];
+                    }
+                    string ville = (string)obj["place"]["city"];
+                    string zipcode = (string)obj["place"]["zipCode"];
 
                     if ( await _repo.Get(id) == null)
                     {
-                        var ressourcedto = new RessourceDto(name, 1,id,onisepUrl,1);
+                        var Category = await _categRepo.GetByName("Formation");
+                        var mapcateg = MappingCategory.MappingCategoryL();
+                        var CategDto = mapcateg.Map<Category, CategoryDto>(Category);
+
+                        var ressourcedto = new RessourceDto(name, 1,id,onisepUrl,CategDto.Id_Category);
                         var map = MappingRessource.MappingRessources();
                         var ressourceModel  = map.Map<RessourceDto, Ressource>(ressourcedto);
                         await _repo.Create(ressourceModel);
@@ -67,11 +77,6 @@ namespace RRelationnelle.Service
                     var alternance = new AlternanceDto(name,1,id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact);
                     list.Add(alternance);
                 }
-                /* var reponse = await _repo.GetFormation(response);
-                 var mapper = MappingRessource.MappingAlternance();
-                 List<AlternanceDto> Ressourcedto = new List<AlternanceDto>();
-                Ressourcedto = mapper.Map<List<Alternances>, List<AlternanceDto>>(response);
-                 return Ressourcedto;*/
                 return list;
             }
            

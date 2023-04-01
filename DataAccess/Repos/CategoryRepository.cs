@@ -71,6 +71,12 @@ namespace RRelationnelle
             await _ctx.SaveChangesAsync();
             return entity;
         }
+
+        public  async Task<Category> GetByName(string name)
+        {
+            var categ = await _ctx.Category.FirstOrDefaultAsync(p => p._name == name);
+            return categ;
+        }
     }
 
 }
