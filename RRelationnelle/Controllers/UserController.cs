@@ -17,12 +17,12 @@ namespace APIRRelationnel
         }
        
 
-        [HttpPost]
-        //[Authorize]
-        public async Task<UserDto> CreateCategory(CategoryDto category)
-        {
-            return await _service.Create(category);
+        //[HttpPost]
+        ////[Authorize]
+        //public async Task<UserDto> CreateCategory(CategoryDto category)
+        //{
+        //    return await _service.Create(category);
           
-        }
+        //}
     }
 }

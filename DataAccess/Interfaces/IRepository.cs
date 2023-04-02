@@ -8,7 +8,5 @@ namespace DataAccess.Interfaces
         public Task<TType> Update(TType obj, int id);
         public Task<bool> Archive(int id);
         public Task<TType> Get(dynamic id);
-
-
     }
 }

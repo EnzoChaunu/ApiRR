@@ -11,6 +11,7 @@ namespace RRelationnelle
     public class RolesService : IRoleService
     {
         private readonly IRolesRepository _repo;
+        private readonly IUserRepo _repoUser;
 
         public RolesService(IRolesRepository repo)
         {
@@ -20,6 +21,26 @@ namespace RRelationnelle
 
         public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)
         {
+            try
+            {
+                var mapper = MappingRoles.MappingUserLog();
+                //var userDb = mapper.Map<UserDto, User>();
+                var rep = await _repoUser.Get(id);
+                if (rep != null)
+                {
+                    var user = mapper.Map<User, UserDto>(rep);
+                    var role = await _repo.Get(user.IdRole);
+                    return role;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
             return null;
         }
 
@@ -48,30 +69,86 @@ namespace RRelationnelle
             }
         }
 
-        public Task<RolesDto> Create(RolesDto obj)
+        public async Task<RolesDto> Create(RolesDto obj)
         {
-            //if(_repo.Get(obj.id_role) == null)
-            //{
-            //    var mapper = MappingRoles.
-            //}
-            //else
-            //{
-            //    return null;
-            //}
-            throw new System.NotImplementedException();
+            if (_repo.Get(obj.id_role) == null)
+            {
+                try
+                {
+                    var mapper = MappingRoles.RolesMapper();
+                    var roleDb = mapper.Map<RolesDto, Roles>(obj);
+                    var rep = await _repo.Create(roleDb);
+                    if (rep != null)
+                    {
+                        var role = mapper.Map<Roles, RolesDto>(rep);
+                        return role;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public Task<RolesDto> Update(RolesDto obj, int id)
+        public async Task<RolesDto> Update(RolesDto obj, int id)
         {
-            throw new System.NotImplementedException();
+            if (_repo.Get(obj.id_role) == null)
+            {
+                return null;
+            }
+            else
+            {
+                try
+                {
+                    var mapper = MappingRoles.RolesMapper();
+                    var roleDb = mapper.Map<RolesDto, Roles>(obj);
+                    var rep = await _repo.Update(roleDb, id);
+                    if (rep != null)
+                    {
+                        var role = mapper.Map<Roles, RolesDto>(rep);
+                        return role;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            }
         }
 
         public async Task<RolesDto> Get(int id)
         {
-            //var role = await _repo.Get(id);
-            //return role;
-            throw new System.NotImplementedException();
-
+            try
+            {
+                var mapper = MappingRoles.RolesMapper();
+                var rep = await _repo.Get(id);
+                if (rep != null)
+                {
+                    var role = mapper.Map<Roles, RolesDto>(rep);
+                    return role;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

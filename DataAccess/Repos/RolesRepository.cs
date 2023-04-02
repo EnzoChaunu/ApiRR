@@ -25,7 +25,8 @@ namespace RRelationnelle
             }
             else
             {
-                _ctx.Role.Remove(entity);
+                entity.Activated = false;
+                _ctx.Role.Update(entity);
                 await _ctx.SaveChangesAsync();
                 return true;
             }
