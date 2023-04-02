@@ -13,9 +13,20 @@ namespace RRelationnelle.Repos
             _Dbcontext = context;
         }
 
-        public Task<bool> Archive(int id)
+        public async Task<bool> Archive(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _Dbcontext.User.FindAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                entity._activation = false;
+                _Dbcontext.User.Update(entity);
+                await _Dbcontext.SaveChangesAsync();
+                return true;
+            }
         }
 
         public async Task<User> Create(User obj)

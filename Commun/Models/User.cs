@@ -19,6 +19,9 @@ namespace RRelationnelle
         public bool _activation { get; set; }
         public DateTime _creationDate { get; set; }
 
+        [NotMapped]
+        public int IdRole { get; set; }
+
         [ForeignKey("id_role")]
         public Roles Role { get; set; }
     }

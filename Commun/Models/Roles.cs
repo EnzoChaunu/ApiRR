@@ -9,5 +9,7 @@ namespace RRelationnelle
         public int id_role { get; set; }
         [Column]
         public string name { get; set; }
+        [Column]
+        public bool Activated { get; set; }
     }
 }
