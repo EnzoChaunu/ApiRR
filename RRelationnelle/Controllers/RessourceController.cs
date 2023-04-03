@@ -31,32 +31,46 @@ namespace RRelationnelle
         }  */
         
         [HttpGet("Alternances&Formations")]
-        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller)
+        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller,string region)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetFormation(rome,romeDomain,caller);
-        }  
-        
-        
-        //methode de recuperation executée de facon asynchrone
-       /* [HttpGet("{id_ressource}")]
-        public async Task<ActionResult<Ressource>> GetRessourcesById(int id_ressource)
-        {
-            //requete sur un id
-            var ressource = await _context.Ressource.Where(c => c.ID_Ressource.Equals(id_ressource)).FirstOrDefaultAsync();
-            if(ressource==null)
-            {
-                return NotFound();
-            }
-            return ressource;
+            return await _service.GetFormation(rome,romeDomain,caller,region);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Ressource>> AddRessource(Ressource ressource)
+      /*  [HttpGet("Alternances&Formations/")]
+        public async Task<List<AlternanceDto>> GetFormationByCity(string rome, string romeDomain, string caller)
         {
-             _context.Ressource.Add(ressource);
-            await _context.SaveChangesAsync();
-            return ressource;
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.GetFormation(rome, romeDomain, caller);
         }*/
+
+      /*  [HttpGet("Alternances&Formations/")]
+        public async Task<List<AlternanceDto>> GetFormationByRomeDomain(string romeDomain)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.GetFormation(romeDomain);
+        }*/
+
+
+        //methode de recuperation executée de facon asynchrone
+        /* [HttpGet("{id_ressource}")]
+         public async Task<ActionResult<Ressource>> GetRessourcesById(int id_ressource)
+         {
+             //requete sur un id
+             var ressource = await _context.Ressource.Where(c => c.ID_Ressource.Equals(id_ressource)).FirstOrDefaultAsync();
+             if(ressource==null)
+             {
+                 return NotFound();
+             }
+             return ressource;
+         }
+
+         [HttpPost]
+         public async Task<ActionResult<Ressource>> AddRessource(Ressource ressource)
+         {
+              _context.Ressource.Add(ressource);
+             await _context.SaveChangesAsync();
+             return ressource;
+         }*/
     }
 }

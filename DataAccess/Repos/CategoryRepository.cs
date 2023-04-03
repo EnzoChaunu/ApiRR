@@ -21,11 +21,18 @@ namespace RRelationnelle
 
         public async Task<bool> Archive(int id)
         {
-            var entity = await _ctx.Category.FindAsync(id);
-            entity.isActive = false;
-            _ctx.Category.Update(entity);
-            await _ctx.SaveChangesAsync();
-            return true;
+            try
+            {
+                var entity = await _ctx.Category.FindAsync(id);
+                entity.isActive = false;
+                _ctx.Category.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
         }
 
         public async Task<Category> Get(dynamic id)
@@ -35,9 +42,9 @@ namespace RRelationnelle
                 var categorie = await _ctx.Category.FindAsync(id);
                 return categorie;
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                throw ex;
+                return null;
             }
         }
 
@@ -57,25 +64,46 @@ namespace RRelationnelle
 
         public async Task<IEnumerable<Category>> ListCategory()
         {
-            List<Category> categorie = new List<Category>();
-            categorie = await _ctx.Category.ToListAsync();
-            return categorie;
+            try
+            {
+                List<Category> categorie = new List<Category>();
+                categorie = await _ctx.Category.ToListAsync();
+                return categorie;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public async Task<Category> Update(Category category,int id)
         {
-            var entity = await _ctx.Category.FindAsync(id);
-            entity.idcreator = category.idcreator;
-            entity._name = category._name;
-            _ctx.Category.Update(entity);
-            await _ctx.SaveChangesAsync();
-            return entity;
+            try
+            {
+                var entity = await _ctx.Category.FindAsync(id);
+                entity.idcreator = category.idcreator;
+                entity._name = category._name;
+                _ctx.Category.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return entity;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public  async Task<Category> GetByName(string name)
         {
-            var categ = await _ctx.Category.FirstOrDefaultAsync(p => p._name == name);
-            return categ;
+            try
+            {
+                var categ = await _ctx.Category.FirstOrDefaultAsync(p => p._name == name);
+                return categ;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
     }
 
