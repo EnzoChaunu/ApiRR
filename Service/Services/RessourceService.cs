@@ -1,13 +1,10 @@
-﻿using AutoMapper;
+﻿
 using DataAccess.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
-using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RRelationnelle.Service
@@ -40,10 +37,10 @@ namespace RRelationnelle.Service
             throw new NotImplementedException();
         }
 
-        public async Task<List<AlternanceDto>> GetFormation(string rome, string romeDomain, string caller)
+        public async Task<List<AlternanceDto>> GetFormation(string rome, string romeDomain, string caller,string departement)
         {
             List<AlternanceDto> list= new List<AlternanceDto>();
-            var response = await  _api.GetFormation(caller,rome,romeDomain);
+            var response = await  _api.GetFormation(caller,rome,romeDomain, departement);
             if (response != null)
             {
                 foreach (JObject obj in response)
@@ -62,9 +59,9 @@ namespace RRelationnelle.Service
                     }
                     string ville = (string)obj["place"]["city"];
                     string zipcode = (string)obj["place"]["zipCode"];
-
-                    if ( await _repo.Get(id) == null)
-                    {
+                    var Ressource = await _repo.Get(id);
+                    if (Ressource== null)
+                    {  
                         var Category = await _categRepo.GetByName("Formation");
                         var mapcateg = MappingCategory.MappingCategoryL();
                         var CategDto = mapcateg.Map<Category, CategoryDto>(Category);
@@ -74,7 +71,12 @@ namespace RRelationnelle.Service
                         var ressourceModel  = map.Map<RessourceDto, Ressource>(ressourcedto);
                         await _repo.Create(ressourceModel);
                     }
-                    var alternance = new AlternanceDto(name,1,id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact);
+                    else if(Ressource._title != name)
+                    {
+                        Ressource._title = name;
+                        await _repo.Update(Ressource, Ressource.ID_Ressource);
+                    }
+                    var alternance = new AlternanceDto(name,1,id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement);
                     list.Add(alternance);
                 }
                 return list;

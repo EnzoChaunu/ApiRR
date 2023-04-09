@@ -16,15 +16,16 @@ namespace RRelationnelle.Repos
         {
             _repo = repo;
         }
-        public async Task<JArray> GetFormation(string caller, string rome, string romesDomain)
+        public async Task<JArray> GetFormation(string caller, string rome, string romesDomain,string departement)
         {
             using var client = new HttpClient();
 
-            var uriBuilder = new UriBuilder("https://labonnealternance.apprentissage.beta.gouv.fr/api/V1/formations");
+            var uriBuilder = new UriBuilder("https://labonnealternance.apprentissage.beta.gouv.fr/api/V1/formationsParRegion");
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["romeDomain"] = romesDomain;
             query["romes"] = rome;
             query["caller"] = caller;
+            query["departement"] = departement;
             uriBuilder.Query = query.ToString();
             var response = await client.GetAsync(uriBuilder.Uri);
             var content = await response.Content.ReadAsStringAsync();

@@ -46,7 +46,9 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                     dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
                 .ForMember(dest =>
-                    dest.idCateg, opt => opt.MapFrom(src => src._Idcategory))
+                    dest.idCateg, opt => opt.MapFrom(src => src._Idcategory)) 
+                .ForMember(dest =>
+                    dest.Departement, opt => opt.MapFrom(src => src.departement))
                 .ForMember(dest =>
                     dest.Zipcode, opt => opt.MapFrom(src => src.Zipcode))
                 .ForMember(dest =>
