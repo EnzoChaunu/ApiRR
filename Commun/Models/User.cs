@@ -11,13 +11,13 @@ namespace RRelationnelle
         public int Id_User { get; set; }
 
         [Column]
-        public string _fName { get; set; }
-        public string _lName { get; set; }
-        public string _email { get; set; }
-        public string _password { get; set; }
-        public string _login { get; set; }
-        public bool _activation { get; set; }
-        public DateTime _creationDate { get; set; }
+        public string FName { get; set; }
+        public string LName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Login { get; set; }
+        public bool Activation { get; set; }
+        public DateTime CreationDate { get; set; }
 
         [NotMapped]
         public int IdRole { get; set; }
