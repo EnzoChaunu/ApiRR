@@ -16,5 +16,19 @@ namespace RRelationnelle
 
         [ForeignKey("Creator")]
         public int idcreator { get; set; }
+        public User Creator { get; set; }
+
+        public Category(string name, bool isact,int creator)
+        {
+            _name = name;
+            isActive = isact;
+            idcreator = creator;
+        }
+
+
+        public Category()
+        {
+            
+        }
     }
 }

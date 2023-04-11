@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Commun.dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RRelationnelle.dto;
@@ -37,19 +38,34 @@ namespace RRelationnelle
             return await _service.GetFormation(rome,romeDomain,caller,region);
         }
 
-      /*  [HttpGet("Alternances&Formations/")]
-        public async Task<List<AlternanceDto>> GetFormationByCity(string rome, string romeDomain, string caller)
+        [HttpGet("Job")]
+        public async Task<List<JobDto>> GetJob(string secteurActivite, string departement)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetFormation(rome, romeDomain, caller);
-        }*/
+            return await _service.GetJob(secteurActivite,departement);
+        }
 
-      /*  [HttpGet("Alternances&Formations/")]
-        public async Task<List<AlternanceDto>> GetFormationByRomeDomain(string romeDomain)
+
+        [HttpPut("AddView/{id}")]
+        public async Task<bool> AddViewToRessource(int id)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetFormation(romeDomain);
-        }*/
+            return await _service.AddView(id);
+        }
+
+        /*  [HttpGet("Alternances&Formations/")]
+          public async Task<List<AlternanceDto>> GetFormationByCity(string rome, string romeDomain, string caller)
+          {
+              //await = attendre de facon asynchrone la fin d'une tache
+              return await _service.GetFormation(rome, romeDomain, caller);
+          }*/
+
+        /*  [HttpGet("Alternances&Formations/")]
+          public async Task<List<AlternanceDto>> GetFormationByRomeDomain(string romeDomain)
+          {
+              //await = attendre de facon asynchrone la fin d'une tache
+              return await _service.GetFormation(romeDomain);
+          }*/
 
 
         //methode de recuperation executée de facon asynchrone
