@@ -1,6 +1,7 @@
 ﻿using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nest;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.Models;
 using System;
@@ -97,6 +98,21 @@ namespace RRelationnelle.Repos
             catch (DbUpdateException)
             {
                 return null;
+            }
+        }
+
+        public async Task<int> AddView(int id)
+        {
+            try
+            {
+                var entity = await _Dbcontext.Ressource.FindAsync(id);
+                entity._views++;
+                _Dbcontext.Ressource.Update(entity);
+                return await _Dbcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return 0;
             }
         }
     }
