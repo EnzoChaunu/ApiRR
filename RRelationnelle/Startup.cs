@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RRelationnelle.Repos;
 using RRelationnelle.Service;
+using RRelationnelle.Services;
 using System.Linq;
 using System.Text;
 
@@ -74,6 +75,7 @@ namespace RRelationnelle
             services.AddScoped<IService<RessourceDto>, RessourceService>();
             services.AddScoped<IApiGouv, ApiRGouv>();
             services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IRoleService, RolesService>();
         }

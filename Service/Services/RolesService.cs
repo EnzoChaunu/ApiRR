@@ -71,7 +71,7 @@ namespace RRelationnelle
 
         public async Task<RolesDto> Create(RolesDto obj)
         {
-            if (_repo.Get(obj.id_role) == null)
+            if (await _repo.Get(obj.id_role) == null)
             {
                 try
                 {

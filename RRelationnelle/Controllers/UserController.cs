@@ -16,14 +16,36 @@ namespace APIRRelationnel
         {
             _service = service;
         }
-       
+
+
+
+        [HttpGet("GetUser/{id}")]
+        public async Task<UserDto> GetUser(int id)
+        {
+            return await _service.Get(id);
+        }
+
+        [HttpPost]
+        //[Authorize]
+        public async Task<UserDto> CreateUser(UserDto user)
+        {
+            var userObject = await _service.Create(user);
+            if (userObject != null)
+            {
+                return userObject;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         //[HttpPost]
         ////[Authorize]
         //public async Task<UserDto> CreateCategory(CategoryDto category)
         //{
         //    return await _service.Create(category);
-          
+
         //}
     }
 }

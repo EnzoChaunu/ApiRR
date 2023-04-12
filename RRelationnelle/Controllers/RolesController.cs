@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Commun.dto;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -14,9 +16,18 @@ namespace RRelationnelle
         }
 
         [HttpPost]
-        public IActionResult Index()
+        //[Authorize]
+        public async Task<RolesDto> CreateRole(RolesDto role)
         {
-            return View();
+            var roleObject = await _service.Create(role);
+            if (roleObject != null)
+            {
+                return roleObject;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
