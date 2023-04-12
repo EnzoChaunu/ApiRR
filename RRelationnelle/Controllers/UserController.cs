@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RRelationnelle;
+using RRelationnelle.Repos;
 using RRelationnelle.Services;
 using System.Threading.Tasks;
 
@@ -11,9 +12,9 @@ namespace APIRRelationnel
     {
         private readonly UserService _service;
 
-        public UserController()
+        public UserController(UserService service)
         {
-            _service = new UserService();
+            _service = service;
         }
        
 

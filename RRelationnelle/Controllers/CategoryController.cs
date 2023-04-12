@@ -29,8 +29,16 @@ namespace RRelationnelle
             return await _service.ListCategory2(); 
             
         }
-        
-        
+
+        [HttpGet("CategoryMabite")]
+        public async Task<IEnumerable<CategoryDto>> List2()
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.ListCategory2();
+
+        }
+
+
         [HttpPut("{id}")]
         public async Task<CategoryDto> Update(int id,CategoryDto categ)
         {
