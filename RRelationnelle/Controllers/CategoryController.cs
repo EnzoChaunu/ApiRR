@@ -17,9 +17,9 @@ namespace RRelationnelle
         private readonly CategoryService _service;
         public CategoryDto categori = new CategoryDto();
        
-        public CategoryController(RrelationnelApiContext context)
+        public CategoryController(CategoryService service)
         {
-            _service = new CategoryService(new CategoryRepository(context));
+            _service = service;
         }
 
         [HttpGet("CategoryAll")]
@@ -29,15 +29,6 @@ namespace RRelationnelle
             return await _service.ListCategory2(); 
             
         }
-
-        [HttpGet("CategoryMabite")]
-        public async Task<IEnumerable<CategoryDto>> List2()
-        {
-            //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.ListCategory2();
-
-        }
-
 
         [HttpPut("{id}")]
         public async Task<CategoryDto> Update(int id,CategoryDto categ)

@@ -41,7 +41,7 @@ namespace RRelationnelle
             {
                 return null;
             }
-            return null;
+            
         }
 
         public async Task<IEnumerable<RolesDto>> GetAllRolesAsync()
@@ -71,7 +71,7 @@ namespace RRelationnelle
 
         public async Task<RolesDto> Create(RolesDto obj)
         {
-            if (await _repo.Get(obj.id_role) == null)
+            if (await _repo.GetByName(obj.name) == null)
             {
                 try
                 {
@@ -101,7 +101,7 @@ namespace RRelationnelle
 
         public async Task<RolesDto> Update(RolesDto obj, int id)
         {
-            if (_repo.Get(obj.id_role) == null)
+            if (_repo.Get(id) == null)
             {
                 return null;
             }

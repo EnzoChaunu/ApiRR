@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Interfaces;
 using System;
+using Nest;
 
 namespace RRelationnelle
 {
@@ -55,7 +56,7 @@ namespace RRelationnelle
             }
             catch (Exception ex)
             {
-                throw ex;
+                return null;
             }
         }
 
@@ -64,6 +65,19 @@ namespace RRelationnelle
             List<Roles> roles = new List<Roles>();
             roles = await _ctx.Role.ToListAsync();
             return roles;
+        }
+
+        public async Task<Roles> GetByName(string name)
+        {
+            try
+            {
+                var Role = await _ctx.Role.FirstOrDefaultAsync(p => p.name == name);
+                return Role;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)

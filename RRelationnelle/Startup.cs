@@ -66,16 +66,21 @@ namespace RRelationnelle
 
             services.AddMemoryCache();
 
-            services.AddScoped<RRelationnelle.Service.RessourceService>();
-            services.AddScoped<RRelationnelle.CategoryRepository>();
+            services.AddScoped<RessourceService>();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<UserService>();
+            services.AddScoped<UserRepo>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IService<CategoryDto>, CategoryService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IService<RessourceDto>, RessourceService>();
+            services.AddScoped<IService<UserDto>, UserService>();
+            services.AddScoped<IRepository<User>, UserRepo>();
             services.AddScoped<IApiGouv, ApiRGouv>();
-            services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IRoleService, RolesService>();
         }
