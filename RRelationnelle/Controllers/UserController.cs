@@ -25,6 +25,20 @@ namespace APIRRelationnel
             return await _service.Get(id);
         }
 
+        [HttpPut("ArchiveUser/{id}")]
+        public async Task<bool> ArchiveUser(int id)
+        {
+            return await _service.Archive(id);
+        }
+
+        [HttpPut("UpdateUser/{id}")]
+        public async Task<UserDto> UpdateUser(UserDto user, int id)
+        {
+            if (user != null) 
+                return await _service.Update(user, id);
+            else return null;
+        }
+
         [HttpPost]
         //[Authorize]
         public async Task<UserDto> CreateUser(UserDto user)

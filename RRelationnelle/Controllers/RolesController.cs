@@ -29,5 +29,23 @@ namespace RRelationnelle
                 return null;
             }
         }
+
+        [HttpGet("GetUserRole/{id}")]
+        public async Task<ActionResult<RolesDto>> GetUserRole(int idUser)
+        {
+            return await _service.GetRoleByUserIdAsync(idUser);
+        }
+
+        [HttpPut("ArchiveRole/")]
+        public async Task<bool> ArchiveRole(int id)
+        {
+            return await _service.Archive(id);
+        }
+
+        [HttpPut("UpdateRole/{id}")]
+        public async Task<RolesDto> UpdateRole(RolesDto role, int id)
+        {
+            return await _service.Update(role, id);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace RRelationnelle
             // _validations =validations;
         }
 
-        public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)
+        public async Task<ActionResult<RolesDto>> GetRoleByUserIdAsync(int id)
         {
             try
             {
@@ -30,7 +30,8 @@ namespace RRelationnelle
                 {
                     var user = mapper.Map<User, UserDto>(rep);
                     var role = await _repo.Get(user.IdRole);
-                    return role;
+                    var roledto = mapper.Map<Roles, RolesDto>(role);
+                    return roledto;
                 }
                 else
                 {
@@ -41,7 +42,6 @@ namespace RRelationnelle
             {
                 return null;
             }
-            return null;
         }
 
         public async Task<IEnumerable<RolesDto>> GetAllRolesAsync()
