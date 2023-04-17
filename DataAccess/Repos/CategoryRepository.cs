@@ -62,13 +62,13 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<IEnumerable<Category>> ListCategory()
+        public async Task<List<Category>> ListCategory()
         {
             try
             {
                 List<Category> categorie = new List<Category>();
                 categorie = await _ctx.Category.ToListAsync();
-                return categorie;
+                return categorie.ToList();
             }
             catch (DbUpdateException)
             {

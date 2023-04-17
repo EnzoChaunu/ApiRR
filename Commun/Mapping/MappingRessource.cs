@@ -12,20 +12,22 @@ namespace RRelationnelle.Mapping
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Ressource, RessourceDto>()
+                cfg.CreateMap<RessourceDto, Ressource>()
 
                 .ForMember(dest =>
-                   dest._id,
-                   opt => opt.MapFrom(src => src.ID_Ressource))
+                   dest.ID_Ressource,
+                   opt => opt.MapFrom(src => src._id))
+                .ForMember(dest =>
+                   dest.category,
+                   opt => opt.MapFrom(src => new Category { Id_Category = src.idCateg }))
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
                     dest._title, opt => opt.MapFrom(src => src._title))
                 .ForMember(dest =>
-                    dest.reference, opt => opt.MapFrom(src => src._reference))
+                    dest._reference, opt => opt.MapFrom(src => src.reference))
                 .ForMember(dest =>
-                    dest._user, opt => opt.MapFrom(src => src._user))
-                .ReverseMap();
+                    dest._user, opt => opt.MapFrom(src => src._user));
 
             });
             var mapper = new Mapper(config);

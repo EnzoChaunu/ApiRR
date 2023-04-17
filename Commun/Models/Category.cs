@@ -30,5 +30,10 @@ namespace RRelationnelle
         {
             
         }
+
+        public Category(int id)
+        {
+            Id_Category = id;
+        }
     }
 }

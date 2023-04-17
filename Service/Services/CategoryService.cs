@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Business.Interfaces;
+using Commun.Responses;
 
 namespace RRelationnelle
 {
@@ -85,20 +86,6 @@ namespace RRelationnelle
             throw new NotImplementedException();
         }
 
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory()
-        {
-            List<Category> categorie = new List<Category>();
-            var categ = await _repos.ListCategory();
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingCategory>();
-            });
-
-            var mapper = config.CreateMapper();
-            List<CategoryDto> categoriedto = new List<CategoryDto>();
-            // mapper.Map(List<Category>, List<Categorie>)(categ);
-            return categoriedto;
-        }
 
         public async Task<CategoryDto> Update(CategoryDto category, int id)
         {
@@ -130,15 +117,29 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<IEnumerable<CategoryDto>> ListCategory2()
+        public async Task<Response<List<CategoryDto>>> ListCategory2()
         {
 
-            List<Category> categorie = new List<Category>();
-            var categ = await _repos.ListCategory();
-            categorie = categ.ToList();
+            List<Category> categorie = await _repos.ListCategory();
             var mapper = MappingCategory.MappingCategoryL();
             List<CategoryDto> categoriedto = mapper.Map<List<Category>, List<CategoryDto>>(categorie);
-            return categoriedto;
+
+            if (categoriedto != null)
+            {
+                return new Response<List<CategoryDto>> (200, categoriedto.ToList(), "Données trouvées" );
+            }
+            else if (categoriedto == null)
+            {
+                return new Response<List<CategoryDto>>(404, null, "Not found");
+
+            }
+            else
+            {
+                return new Response<List<CategoryDto>>(500, null, "Another statut code");
+
+            }
+
+
         }
     }
 }

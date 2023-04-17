@@ -65,13 +65,13 @@ namespace RRelationnelle.Service
                     var Category = await _categRepo.GetByName("Formation");
                     if (Category == null)
                     {
-                        Category = await _categRepo.Create(new Category("Formation",true,1));
+                        Category = await _categRepo.Create(new Category("Formation",true,2));
                     }
                     var mapcateg = MappingCategory.MappingCategoryL();
                     var CategDto = mapcateg.Map<Category, CategoryDto>(Category);
                     if (Ressource== null)
                     {  
-                        var ressourcedto = new RessourceDto(name, 1,id,onisepUrl,CategDto.Id_Category);
+                        var ressourcedto = new RessourceDto(name, 2,id,onisepUrl,CategDto.Id_Category);
                         var map = MappingRessource.MappingRessources();
                         var ressourceModel  = map.Map<RessourceDto, Ressource>(ressourcedto);
                         await _repo.Create(ressourceModel);
