@@ -56,20 +56,22 @@ namespace RRelationnelle
             throw new System.NotImplementedException();
         }
 
-        public async Task<bool> Archive(int id)
+        //Test OK
+        public async Task<bool> ArchiveByName(string roleName)
         {
-            var role = await _repo.Get(id);
+            var role = await _repo.GetByName(roleName);
             if (role == null)
             {
                 return false;
             }
             else
             {
-                await _repo.Archive(id);
+                await _repo.ArchiveByName(roleName);
                 return true;
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Create(RolesDto obj)
         {
             if (await _repo.GetByName(obj.name) == null)
@@ -100,9 +102,11 @@ namespace RRelationnelle
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Update(RolesDto obj, int id)
         {
-            if (_repo.Get(id) == null)
+            var roleToUpdate = await _repo.Get(id);
+            if (roleToUpdate == null)
             {
                 return null;
             }
@@ -115,7 +119,7 @@ namespace RRelationnelle
                     var rep = await _repo.Update(roleDb, id);
                     if (rep != null)
                     {
-                        var role = mapper.Map<Roles, RolesDto>(rep);
+                        var     role = mapper.Map<Roles, RolesDto>(rep);
                         return role;
                     }
                     else
@@ -130,6 +134,7 @@ namespace RRelationnelle
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Get(int id)
         {
             try
@@ -149,6 +154,21 @@ namespace RRelationnelle
             catch
             {
                 return null;
+            }
+        }
+
+        //Test OK
+        public async Task<bool> Archive(int id)
+        {
+            var role = await _repo.Get(id);
+            if (role == null)
+            {
+                return false;
+            }
+            else
+            {
+                await _repo.Get(id);
+                return true;
             }
         }
     }

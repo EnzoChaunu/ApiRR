@@ -9,6 +9,7 @@ namespace DataAccess.Interfaces
     {
        public Task<ActionResult<IEnumerable<Roles>>> GetAllRolesAsync();
        public Task<Roles> GetByName(string name);
+       public Task<bool> ArchiveByName(string name);
 
     }
 }

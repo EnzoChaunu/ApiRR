@@ -20,6 +20,23 @@ namespace RRelationnelle
         public async Task<bool> Archive(int id)
         {
             var entity = await _ctx.Role.FindAsync(id);
+            
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                entity.Activated = false;
+                _ctx.Role.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> ArchiveByName(string name)
+        {
+            var entity = await _ctx.Role.FirstOrDefaultAsync(p => p.name == name);
             if (entity == null)
             {
                 return false;
@@ -56,7 +73,7 @@ namespace RRelationnelle
             }
             catch (Exception ex)
             {
-                return null;
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -90,7 +107,7 @@ namespace RRelationnelle
         public async Task<Roles> Update(Roles obj, int id)
         {
             var entity = await _ctx.Role.FindAsync(id);
-            entity.id_role = obj.id_role;
+            entity.Activated = obj.Activated;
             entity.name = obj.name;
             _ctx.Role.Update(entity);
             await _ctx.SaveChangesAsync();

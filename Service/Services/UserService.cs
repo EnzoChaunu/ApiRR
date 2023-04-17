@@ -9,9 +9,11 @@ namespace RRelationnelle.Services
     public class UserService : IUserService
     {
         private readonly IUserRepo _repos;
-        public UserService(IUserRepo repo)
+        private readonly IRolesRepository _reposRole;
+        public UserService(IUserRepo repo, IRolesRepository repoRole)
         {
             _repos = repo;
+            _reposRole = repoRole;
         }
 
         public async Task<bool> Archive(int id)
@@ -27,29 +29,43 @@ namespace RRelationnelle.Services
             }
         }
 
+        public async Task<bool> CheckEmail(string email) 
+        {
+            var userEmail = await _repos.GetByEmail(email);
+            if (userEmail != null) { return true; }
+            else { return false; }
+        }
+
+        //TODO : Parse exception en Json
         public async Task<UserDto> Create(UserDto obj)
         {
             try
             {
                 var map = MappingUser.UserMapper();
+                var role = await _reposRole.Get(obj.IdRole);
+                obj.Role = role;
                 User userDb = map.Map<UserDto, User>(obj);
-                var rep = await _repos.Create(userDb);
-                if (rep != null)
+                if (await CheckEmail(obj.Email) == false) 
                 {
-                    UserDto user = map.Map<User, UserDto>(rep);
+                    var rep = await _repos.Create(userDb);
+                    if (rep != null)
+                    {
+                        UserDto user = map.Map<User, UserDto>(rep);
 
-                    return user;
+                        return user;
+                    }
+                    else
+                    {
+                        throw new Exception("Database operation failed");
+                    }
                 }
-                else
-                {
-                    Debug.Print("user repo is null!");
-                    return null;
-                }
+                else { throw new Exception(string.Format("User {0} already taken", obj.Email)); }
+                
             }
             catch (Exception ex)
             {
                 Debug.Print(ex.Message);
-                return null;
+                throw new Exception(ex.Message, ex);
             }
         }
 

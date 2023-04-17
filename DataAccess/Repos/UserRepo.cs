@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace RRelationnelle.Repos
 {
@@ -27,6 +28,13 @@ namespace RRelationnelle.Repos
                 await _Dbcontext.SaveChangesAsync();
                 return true;
             }
+        }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            var user = await _Dbcontext.User.FirstOrDefaultAsync(e => e.Email == email);
+            if (user == null) { return null; }
+            else { return user; }
         }
 
         public async Task<User> Create(User obj)
@@ -59,6 +67,7 @@ namespace RRelationnelle.Repos
                 user.Email = obj.Email;
                 user.Password = obj.Password;
                 user.Login = obj.Login;
+                user.IdRole = obj.IdRole;
                 user.Role = obj.Role;
                 user.CreationDate = obj.CreationDate;
                 user.FName = obj.FName;

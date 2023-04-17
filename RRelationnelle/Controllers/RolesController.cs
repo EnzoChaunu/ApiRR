@@ -36,10 +36,10 @@ namespace RRelationnelle
             return await _service.GetRoleByUserIdAsync(idUser);
         }
 
-        [HttpPut("ArchiveRole/")]
-        public async Task<bool> ArchiveRole(int id)
+        [HttpPut("ArchiveRole/{name}")]
+        public async Task<bool> ArchiveRole(string name)
         {
-            return await _service.Archive(id);
+            return await _service.ArchiveByName(name);
         }
 
         [HttpPut("UpdateRole/{id}")]
