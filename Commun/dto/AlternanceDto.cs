@@ -7,10 +7,11 @@ namespace RRelationnelle.dto
         public  string Period { get; set; }
         public  string Capacity { get; set; }
         public  string Ville { get; set; }
+        public  string Departement { get; set; }
         public  string Zipcode { get; set; }
         public  string emailContact { get; set; }
 
-        public AlternanceDto(string title, int categoryId, string _reference, string url, int userId ,string diplome, string perio, string cap, string city, string cod, string email) : base( title,categoryId,_reference,url,userId)
+        public AlternanceDto(string title, int categoryId, string _reference, string url, int userId ,string diplome, string perio, string cap, string city, string cod, string email,string Department) : base( title,categoryId,_reference,url,userId)
         {
             DiplomaLevel = diplome;
             Period = perio;
@@ -18,6 +19,7 @@ namespace RRelationnelle.dto
             Ville = city;
             Zipcode = cod;
             emailContact = email;
+            Departement = Department;
 
         }
 

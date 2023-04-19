@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Commun.dto;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -14,9 +16,36 @@ namespace RRelationnelle
         }
 
         [HttpPost]
-        public IActionResult Index()
+        //[Authorize]
+        public async Task<RolesDto> CreateRole(RolesDto role)
         {
-            return View();
+            var roleObject = await _service.Create(role);
+            if (roleObject != null)
+            {
+                return roleObject;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [HttpGet("GetUserRole/{id}")]
+        public async Task<ActionResult<RolesDto>> GetUserRole(int idUser)
+        {
+            return await _service.GetRoleByUserIdAsync(idUser);
+        }
+
+        [HttpPut("ArchiveRole/{name}")]
+        public async Task<bool> ArchiveRole(string name)
+        {
+            return await _service.ArchiveByName(name);
+        }
+
+        [HttpPut("UpdateRole/{id}")]
+        public async Task<RolesDto> UpdateRole(RolesDto role, int id)
+        {
+            return await _service.Update(role, id);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace RRelationnelle
             // _validations =validations;
         }
 
-        public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)
+        public async Task<ActionResult<RolesDto>> GetRoleByUserIdAsync(int id)
         {
             try
             {
@@ -30,7 +30,8 @@ namespace RRelationnelle
                 {
                     var user = mapper.Map<User, UserDto>(rep);
                     var role = await _repo.Get(user.IdRole);
-                    return role;
+                    var roledto = mapper.Map<Roles, RolesDto>(role);
+                    return roledto;
                 }
                 else
                 {
@@ -41,7 +42,7 @@ namespace RRelationnelle
             {
                 return null;
             }
-            return null;
+            
         }
 
         public async Task<IEnumerable<RolesDto>> GetAllRolesAsync()
@@ -55,23 +56,25 @@ namespace RRelationnelle
             throw new System.NotImplementedException();
         }
 
-        public async Task<bool> Archive(int id)
+        //Test OK
+        public async Task<bool> ArchiveByName(string roleName)
         {
-            var role = await _repo.Get(id);
+            var role = await _repo.GetByName(roleName);
             if (role == null)
             {
                 return false;
             }
             else
             {
-                await _repo.Archive(id);
+                await _repo.ArchiveByName(roleName);
                 return true;
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Create(RolesDto obj)
         {
-            if (_repo.Get(obj.id_role) == null)
+            if (await _repo.GetByName(obj.name) == null)
             {
                 try
                 {
@@ -99,9 +102,11 @@ namespace RRelationnelle
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Update(RolesDto obj, int id)
         {
-            if (_repo.Get(obj.id_role) == null)
+            var roleToUpdate = await _repo.Get(id);
+            if (roleToUpdate == null)
             {
                 return null;
             }
@@ -114,7 +119,7 @@ namespace RRelationnelle
                     var rep = await _repo.Update(roleDb, id);
                     if (rep != null)
                     {
-                        var role = mapper.Map<Roles, RolesDto>(rep);
+                        var     role = mapper.Map<Roles, RolesDto>(rep);
                         return role;
                     }
                     else
@@ -129,6 +134,7 @@ namespace RRelationnelle
             }
         }
 
+        //Test OK
         public async Task<RolesDto> Get(int id)
         {
             try
@@ -148,6 +154,21 @@ namespace RRelationnelle
             catch
             {
                 return null;
+            }
+        }
+
+        //Test OK
+        public async Task<bool> Archive(int id)
+        {
+            var role = await _repo.Get(id);
+            if (role == null)
+            {
+                return false;
+            }
+            else
+            {
+                await _repo.Get(id);
+                return true;
             }
         }
     }
