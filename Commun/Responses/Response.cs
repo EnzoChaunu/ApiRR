@@ -18,5 +18,7 @@ namespace Commun.Responses
             Data = donnee;
             Message = msg;
         }
+
+
     }
 }

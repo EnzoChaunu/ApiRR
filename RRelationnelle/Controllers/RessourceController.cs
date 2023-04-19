@@ -1,12 +1,9 @@
 ﻿using Commun.dto;
-using Microsoft.AspNetCore.Http;
+using Commun.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RRelationnelle.dto;
 using RRelationnelle.Service;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RRelationnelle
@@ -32,14 +29,14 @@ namespace RRelationnelle
         }  */
         
         [HttpGet("Alternances&Formations")]
-        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller,string region)
+        public async Task<Response<List<AlternanceDto>>> GetFormation(string rome,string romeDomain, string caller,string region)
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.GetFormation(rome,romeDomain,caller,region);
         }
 
         [HttpGet("Job")]
-        public async Task<List<JobDto>> GetJob(string secteurActivite, string departement)
+        public async Task<Response<List<JobDto>>> GetJob(string secteurActivite, string departement)
         {
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.GetJob(secteurActivite,departement);

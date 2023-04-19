@@ -40,17 +40,17 @@ namespace RRelationnelle.Mapping
                 cfg.CreateMap<Ressource, RessourceDto>()
 
                 .ForMember(dest =>
-                   dest.ID_Ressource,
-                   opt => opt.MapFrom(src => src._id))
+                   dest._id,
+                   opt => opt.MapFrom(src => src.ID_Ressource))
                 .ForMember(dest =>
-                   dest.category,
-                   opt => opt.MapFrom(src => new Category { Id_Category = src.idCateg }))
+                   dest.idCateg,
+                   opt => opt.MapFrom(src => new Category { Id_Category = src.category.Id_Category }))
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
                     dest._title, opt => opt.MapFrom(src => src._title))
                 .ForMember(dest =>
-                    dest._reference, opt => opt.MapFrom(src => src.reference))
+                    dest.reference, opt => opt.MapFrom(src => src._reference))
                 .ForMember(dest =>
                     dest._user, opt => opt.MapFrom(src => src._user));
 
