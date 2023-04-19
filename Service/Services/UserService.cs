@@ -2,6 +2,7 @@
 using DataAccess.Interfaces;
 using System;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RRelationnelle.Services
@@ -29,14 +30,14 @@ namespace RRelationnelle.Services
             }
         }
 
-        public async Task<bool> CheckEmail(string email) 
-        {
-            var userEmail = await _repos.GetByEmail(email);
-            if (userEmail != null) { return true; }
-            else { return false; }
-        }
+        //public async Task<bool> GetByEmail(string email) 
+        //{
+        //    var userEmail = await _repos.GetByEmail(email);
+        //    if (userEmail != null) { return true; }
+        //    else { return false; }
+        //}
 
-        //TODO : Parse exception en Json
+        //TODO : Parse exception en Json    
         public async Task<UserDto> Create(UserDto obj)
         {
             try
@@ -45,7 +46,7 @@ namespace RRelationnelle.Services
                 var role = await _reposRole.Get(obj.IdRole);
                 obj.Role = role;
                 User userDb = map.Map<UserDto, User>(obj);
-                if (await CheckEmail(obj.Email) == false) 
+                if (await _repos.GetByEmail(obj.Email) == null)
                 {
                     var rep = await _repos.Create(userDb);
                     if (rep != null)
@@ -119,6 +120,17 @@ namespace RRelationnelle.Services
                     return null;
                 }
             }
+        }
+
+        public bool CheckEmail(string email)
+        {
+            string strRegex = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+
+            Regex re = new Regex(strRegex);
+            if (re.IsMatch(email))
+                return true;
+            else
+                return false;
         }
     }
 }
