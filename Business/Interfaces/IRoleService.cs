@@ -5,6 +5,6 @@ namespace Business.Interfaces
 {
     public interface IRoleService : IService<RolesDto>
     {
-
+        
     }
 }

@@ -4,26 +4,26 @@ namespace RRelationnelle
 {
     public class MappinLog : Profile
     {
-        public static Mapper MappingUser()
+        public static Mapper LogMapper()
         {
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserDto, User>()
 
               .ForMember(dest =>
-                  dest._email,
+                  dest.Email,
                   opt => opt.MapFrom(src => src.Email))
              .ForMember(dest =>
-                   dest._password,
+                   dest.Password,
                     opt => opt.MapFrom(src => src.Password))
              .ForMember(dest =>
-                   dest._lName,
+                   dest.LName,
                     opt => opt.MapFrom(src => src.LName))
              .ForMember(dest =>
-                   dest._fName,
+                   dest.FName,
                     opt => opt.MapFrom(src => src.FName))
              .ForMember(dest =>
-                   dest._login,
+                   dest.Login,
                     opt => opt.MapFrom(src => src.Login))
                .ReverseMap();
 

@@ -7,6 +7,7 @@ namespace DataAccess.Interfaces
 {
     public interface IApiGouv
     {
-        public Task<JArray> GetFormation(string caller, string rome, string romesDomain);
+        public Task<JArray> GetFormation(string caller, string rome, string romesDomain,string departement);
+        public Task<JArray> GetJob(string secteurActivite, string departement);
     }
 }

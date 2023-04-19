@@ -22,7 +22,7 @@ namespace RRelationnelle
         {
             List<User> userDb = new List<User>();
             userDb = _repos.GetUsers();
-            var mapper = MappinLog.MappingUser();
+            var mapper = MappinLog.LogMapper();
             List<UserDto> UserDto = mapper.Map<List<User>, List<UserDto>>(userDb);
    
             if (UserDto != null)

@@ -44,6 +44,8 @@ namespace Commun.Migrations
 
                     b.HasKey("Id_Category");
 
+                    b.HasIndex("idcreator");
+
                     b.ToTable("Category");
                 });
 
@@ -137,6 +139,9 @@ namespace Commun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_role"));
 
+                    b.Property<bool>("Activated")
+                        .HasColumnType("bit");
+
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
@@ -178,25 +183,25 @@ namespace Commun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
 
-                    b.Property<bool>("_activation")
+                    b.Property<bool>("Activation")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("_creationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("_email")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_fName")
+                    b.Property<string>("FName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_lName")
+                    b.Property<string>("LName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_login")
+                    b.Property<string>("Login")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_password")
+                    b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("id_role")
@@ -207,6 +212,17 @@ namespace Commun.Migrations
                     b.HasIndex("id_role");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("RRelationnelle.Category", b =>
+                {
+                    b.HasOne("RRelationnelle.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("idcreator")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("RRelationnelle.Comment", b =>

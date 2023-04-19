@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace RRelationnelle.Repos
 {
@@ -13,9 +14,27 @@ namespace RRelationnelle.Repos
             _Dbcontext = context;
         }
 
-        public Task<bool> Archive(int id)
+        public async Task<bool> Archive(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _Dbcontext.User.FindAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                entity.Activation = false;
+                _Dbcontext.User.Update(entity);
+                await _Dbcontext.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            var user = await _Dbcontext.User.FirstOrDefaultAsync(e => e.Email == email);
+            if (user == null) { return null; }
+            else { return user; }
         }
 
         public async Task<User> Create(User obj)
@@ -44,14 +63,15 @@ namespace RRelationnelle.Repos
             {
                 var user = await _Dbcontext.User.FindAsync(id);
                 user.Id_User = obj.Id_User;
-                user._activation = obj._activation;
-                user._email = obj._email;
-                user._password = obj._password;
-                user._login = obj._login;
+                user.Activation = obj.Activation;
+                user.Email = obj.Email;
+                user.Password = obj.Password;
+                user.Login = obj.Login;
+                user.IdRole = obj.IdRole;
                 user.Role = obj.Role;
-                user._creationDate = obj._creationDate;
-                user._fName = obj._fName;
-                user._lName = obj._lName;
+                user.CreationDate = obj.CreationDate;
+                user.FName = obj.FName;
+                user.LName = obj.LName;
                 _Dbcontext.User.Update(user);
                 await _Dbcontext.SaveChangesAsync();
                 return user;

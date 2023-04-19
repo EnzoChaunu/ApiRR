@@ -14,10 +14,5 @@ namespace RRelationnelle
         public int commentposted { get; set; }
         public int visits { get; set; }
         public DateTime DateStat { get; set; }
-
-
-
-
-
     }
 }

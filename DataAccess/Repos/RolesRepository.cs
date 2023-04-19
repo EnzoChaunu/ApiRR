@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.Interfaces;
 using System;
+using Nest;
 
 namespace RRelationnelle
 {
@@ -19,13 +20,31 @@ namespace RRelationnelle
         public async Task<bool> Archive(int id)
         {
             var entity = await _ctx.Role.FindAsync(id);
+            
             if (entity == null)
             {
                 return false;
             }
             else
             {
-                _ctx.Role.Remove(entity);
+                entity.Activated = false;
+                _ctx.Role.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> ArchiveByName(string name)
+        {
+            var entity = await _ctx.Role.FirstOrDefaultAsync(p => p.name == name);
+            if (entity == null)
+            {
+                return false;
+            }
+            else
+            {
+                entity.Activated = false;
+                _ctx.Role.Update(entity);
                 await _ctx.SaveChangesAsync();
                 return true;
             }
@@ -54,7 +73,7 @@ namespace RRelationnelle
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message, ex);
             }
         }
 
@@ -63,6 +82,19 @@ namespace RRelationnelle
             List<Roles> roles = new List<Roles>();
             roles = await _ctx.Role.ToListAsync();
             return roles;
+        }
+
+        public async Task<Roles> GetByName(string name)
+        {
+            try
+            {
+                var Role = await _ctx.Role.FirstOrDefaultAsync(p => p.name == name);
+                return Role;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public async Task<ActionResult<Roles>> GetRoleByUserIdAsync(int id)
@@ -75,7 +107,7 @@ namespace RRelationnelle
         public async Task<Roles> Update(Roles obj, int id)
         {
             var entity = await _ctx.Role.FindAsync(id);
-            entity.id_role = obj.id_role;
+            entity.Activated = obj.Activated;
             entity.name = obj.name;
             _ctx.Role.Update(entity);
             await _ctx.SaveChangesAsync();

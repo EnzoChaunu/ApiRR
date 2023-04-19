@@ -10,5 +10,6 @@ namespace Commun.dto
     {
         public int id_role { get; set; }
         public string name { get; set; }
+        public bool activated { get; set; }
     }
 }

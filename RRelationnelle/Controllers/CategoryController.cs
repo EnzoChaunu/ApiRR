@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Commun.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RRelationnelle.Service;
@@ -17,20 +18,32 @@ namespace RRelationnelle
         private readonly CategoryService _service;
         public CategoryDto categori = new CategoryDto();
        
-        public CategoryController(RrelationnelApiContext context)
+        public CategoryController(CategoryService service)
         {
-            _service = new CategoryService(new CategoryRepository(context));
+            _service = service;
         }
 
         [HttpGet("CategoryAll")]
-        public async Task<IEnumerable<CategoryDto>> List()
+        public async Task<ActionResult<CategoryDto>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.ListCategory2(); 
+            Response<List<CategoryDto>> reponse =  await _service.ListCategory2(); 
+
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 404)
+            {
+                return NotFound(reponse);
+            }
+            else
+            {
+                return StatusCode(500, reponse);
+            }
             
         }
-        
-        
+
         [HttpPut("{id}")]
         public async Task<CategoryDto> Update(int id,CategoryDto categ)
         {
