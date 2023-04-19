@@ -8,11 +8,36 @@ namespace RRelationnelle.Mapping
 {
     public class MappingRessource : Profile
     {
-        public static Mapper MappingRessources()
+        public static Mapper MappingRessourcesDtoToModel()
         {
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<RessourceDto, Ressource>()
+
+                .ForMember(dest =>
+                   dest.ID_Ressource,
+                   opt => opt.MapFrom(src => src._id))
+                .ForMember(dest =>
+                   dest.category,
+                   opt => opt.MapFrom(src => new Category { Id_Category = src.idCateg }))
+                .ForMember(dest =>
+                    dest._url, opt => opt.MapFrom(src => src._url))
+                .ForMember(dest =>
+                    dest._title, opt => opt.MapFrom(src => src._title))
+                .ForMember(dest =>
+                    dest._reference, opt => opt.MapFrom(src => src.reference))
+                .ForMember(dest =>
+                    dest._user, opt => opt.MapFrom(src => src._user));
+
+            });
+            var mapper = new Mapper(config);
+            return mapper;
+        } 
+        public static Mapper MappingRessourcesModelToDto()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Ressource, RessourceDto>()
 
                 .ForMember(dest =>
                    dest.ID_Ressource,
