@@ -1,7 +1,7 @@
 ﻿using Business.Interfaces;
+using Commun.Responses;
 using DataAccess.Interfaces;
 using System;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -37,40 +37,54 @@ namespace RRelationnelle.Services
         //    else { return false; }
         //}
 
-        //TODO : Parse exception en Json    
-        public async Task<UserDto> Create(UserDto obj)
+        //TODO : Parse excresponeption en Json    
+        public async Task<Response<UserDto>> Create(UserDto obj)
         {
             try
             {
-                var map = MappingUser.UserMapper();
-                var role = await _reposRole.Get(obj.IdRole);
-                obj.Role = role;
-                User userDb = map.Map<UserDto, User>(obj);
-                if (await _repos.GetByEmail(obj.Email) == null)
+                if (CheckEmail(obj.Email))
                 {
-                    var rep = await _repos.Create(userDb);
-                    if (rep != null)
+                    var map = MappingUser.UserMapper();
+                    var role = await _reposRole.Get(obj.IdRole);
+                    obj.Role = role;
+                    User userDb = map.Map<UserDto, User>(obj);
+                    if (await _repos.GetByEmail(obj.Email) == null)
                     {
-                        UserDto user = map.Map<User, UserDto>(rep);
+                        var rep = await _repos.Create(userDb);
+                        if (rep != null)
+                        {
+                            UserDto user = map.Map<User, UserDto>(rep);
 
-                        return user;
+                            return new Response<UserDto>
+                                (200, user, string.Format("user {0} successfully created!", user.Email));
+                        }
+                        else
+                        {
+                            return new Response<UserDto>
+                                (400, null, "Communication failed with Database.");
+                        }
                     }
-                    else
-                    {
-                        throw new Exception("Database operation failed");
+                    else {
+                        return new Response<UserDto>
+                                (404, null, string.Format("user {0} doesn't exists", obj.Email));
                     }
                 }
-                else { throw new Exception(string.Format("User {0} already taken", obj.Email)); }
+                else
+                {
+                    return new Response<UserDto>
+                                (400, null, string.Format("email {0} invalid format.", obj.Email));
+                }
+                
                 
             }
             catch (Exception ex)
             {
-                Debug.Print(ex.Message);
-                throw new Exception(ex.Message, ex);
+                return new Response<UserDto>
+                                (400, null, ex.Message);
             }
         }
 
-        public async Task<UserDto> Get(int id)
+        public async Task<Response<UserDto>> Get(int id)
         {
             try
             {
@@ -79,7 +93,7 @@ namespace RRelationnelle.Services
                 if (rep != null)
                 {
                     var user = mapper.Map<User, UserDto>(rep);
-                    return user;
+                    return new Response<UserDto>(200, user, "");
                 }
                 else
                 {
@@ -92,33 +106,45 @@ namespace RRelationnelle.Services
             }
         }
 
-        public async Task<UserDto> Update(UserDto obj, int id)
+        public async Task<Response<UserDto>> Update(UserDto obj, int id)
         {
             if (_repos.Get(obj.Id) == null)
             {
-                return null;
+                return new Response<UserDto>
+                                (404, null, string.Format("user {0} doesn't exists", obj.Email));
             }
             else
             {
-                try
+                if(CheckEmail(obj.Email))
                 {
-                    var mapper = MappingUser.UserMapper();
-                    var userDb = mapper.Map<UserDto, User>(obj);
-                    var rep = await _repos.Update(userDb, id);
-                    if (rep != null)
+                    try
                     {
-                        var user = mapper.Map<User, UserDto>(rep);
-                        return user;
+                        var mapper = MappingUser.UserMapper();
+                        var userDb = mapper.Map<UserDto, User>(obj);
+                        var rep = await _repos.Update(userDb, id);
+                        if (rep != null)
+                        {
+                            var user = mapper.Map<User, UserDto>(rep);
+                            return new Response<UserDto>
+                                (200, user, string.Format("User {0} successfully updated!", user.Email));
+                        }
+                        else
+                        {
+                            return new Response<UserDto>
+                                (400, null, "Communication failed with Database.");
+                        }
                     }
-                    else
+                    catch
                     {
                         return null;
                     }
                 }
-                catch
+                else
                 {
-                    return null;
+                    return new Response<UserDto>
+                                (400, null, string.Format("email {0} invalid format.", obj.Email));
                 }
+                
             }
         }
 
@@ -131,6 +157,11 @@ namespace RRelationnelle.Services
                 return true;
             else
                 return false;
+        }
+
+        Task<Response<UserDto>> IService<UserDto>.Archive(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
