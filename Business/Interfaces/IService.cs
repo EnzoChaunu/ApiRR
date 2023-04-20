@@ -7,7 +7,7 @@ namespace RRelationnelle
     {
         public Task<Response<TType>> Create(TType obj);
         public Task<Response<TType>> Update(TType obj, int id);
-        public Task<Response<TType>> Archive(int id);
+        public Task<Response<bool>> Archive(int id);
         public Task<Response<TType>> Get(int id);
     }
 }

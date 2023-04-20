@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Business.Interfaces;
 using Commun.dto;
+using Commun.Responses;
+using System;
 
 namespace RRelationnelle
 {
@@ -19,7 +21,7 @@ namespace RRelationnelle
             // _validations =validations;
         }
 
-        public async Task<ActionResult<RolesDto>> GetRoleByUserIdAsync(int id)
+        public async Task<Response<RolesDto>> GetRoleByUserIdAsync(int id)
         {
             try
             {
@@ -30,12 +32,14 @@ namespace RRelationnelle
                 {
                     var user = mapper.Map<User, UserDto>(rep);
                     var role = await _repo.Get(user.IdRole);
-                    var roledto = mapper.Map<Roles, RolesDto>(role);
-                    return roledto;
+                    var roleDto = mapper.Map<Roles, RolesDto>(role);
+                    return new Response<RolesDto>
+                                    (200, roleDto, string.Format("User {0} is {1}", user.Email, roleDto));
                 }
                 else
                 {
-                    return null;
+                    return new Response<RolesDto>
+                                    (404, null, "Role not found.");
                 }
             }
             catch
@@ -45,7 +49,7 @@ namespace RRelationnelle
             
         }
 
-        public async Task<IEnumerable<RolesDto>> GetAllRolesAsync()
+        public async Task<Response<RolesDto>> GetAllRolesAsync()
         {
             //List<Roles> roles = new List<Roles>();
             //var r = await _repo.GetAllRolesAsync();
@@ -57,22 +61,32 @@ namespace RRelationnelle
         }
 
         //Test OK
-        public async Task<bool> ArchiveByName(string roleName)
+        public async Task<Response<bool>> ArchiveByName(string roleName)
         {
-            var role = await _repo.GetByName(roleName);
-            if (role == null)
+            try
             {
-                return false;
+                var role = await _repo.GetByName(roleName);
+                if (role == null)
+                {
+                    return new Response<bool>
+                        (404, false, string.Format("Role {0} doesn't exist.", roleName));
+                }
+                else
+                {
+                    await _repo.ArchiveByName(roleName);
+                    return new Response<bool>
+                        (200, true, string.Format("Role {0} archived.", roleName));
+                }
             }
-            else
+            catch(Exception ex) 
             {
-                await _repo.ArchiveByName(roleName);
-                return true;
+                return new Response<bool>
+                                    (404, false, ex.Message);
             }
         }
 
         //Test OK
-        public async Task<RolesDto> Create(RolesDto obj)
+        public async Task<Response<RolesDto>> Create(RolesDto obj)
         {
             if (await _repo.GetByName(obj.name) == null)
             {
@@ -84,31 +98,36 @@ namespace RRelationnelle
                     if (rep != null)
                     {
                         var role = mapper.Map<Roles, RolesDto>(rep);
-                        return role;
+                        return new Response<RolesDto>
+                            (200, role, string.Format("Role {0} successfully created.", role.name));
                     }
                     else
                     {
-                        return null;
+                        return new Response<RolesDto>
+                            (400, null, string.Format("Role {0} creation failed.", obj.name));
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    return null;
+                    return new Response<RolesDto>
+                        (400, null, ex.Message);
                 }
             }
             else
             {
-                return null;
+                return new Response<RolesDto>
+                    (400, null, string.Format("Role {0} already exists.", obj.name));
             }
         }
 
         //Test OK
-        public async Task<RolesDto> Update(RolesDto obj, int id)
+        public async Task<Response<RolesDto>> Update(RolesDto obj, int id)
         {
             var roleToUpdate = await _repo.Get(id);
             if (roleToUpdate == null)
             {
-                return null;
+                return new Response<RolesDto>
+                        (404, null, string.Format("Role {0} doesn't exist.", obj.name));
             }
             else
             {
@@ -120,22 +139,25 @@ namespace RRelationnelle
                     if (rep != null)
                     {
                         var     role = mapper.Map<Roles, RolesDto>(rep);
-                        return role;
+                        return new Response<RolesDto>
+                            (200, role, string.Format("Role {0} successfully.", role.name));
                     }
                     else
                     {
-                        return null;
+                        return new Response<RolesDto>
+                            (404, null, "Connection to Database failed.");
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    return null;
+                    return new Response<RolesDto>
+                        (400, null, ex.Message);
                 }
             }
         }
 
         //Test OK
-        public async Task<RolesDto> Get(int id)
+        public async Task<Response<RolesDto>> Get(int id)
         {
             try
             {
@@ -144,31 +166,36 @@ namespace RRelationnelle
                 if (rep != null)
                 {
                     var role = mapper.Map<Roles, RolesDto>(rep);
-                    return role;
+                    return new Response<RolesDto>
+                        (200, role, string.Format("Role {0} successfully loaded.", role.name));
                 }
                 else
                 {
-                    return null;
+                    return new Response<RolesDto>
+                        (404, null, "Role doesn't exist.");
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                return new Response<RolesDto>
+                    (400, null, ex.Message);
             }
         }
 
         //Test OK
-        public async Task<bool> Archive(int id)
+        public async Task<Response<bool>> Archive(int id)
         {
             var role = await _repo.Get(id);
             if (role == null)
             {
-                return false;
+                return new Response<bool>
+                        (404, false, "Role doesn't exist.");
             }
             else
             {
                 await _repo.Get(id);
-                return true;
+                return new Response<bool>
+                        (200, true, string.Format("Role {0} successfully archived.", role.name));
             }
         }
     }

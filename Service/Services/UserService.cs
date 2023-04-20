@@ -17,16 +17,27 @@ namespace RRelationnelle.Services
             _reposRole = repoRole;
         }
 
-        public async Task<bool> Archive(int id)
+        public async Task<Response<bool>> Archive(int id)
         {
-            var user = await _repos.Get(id);
-            if (user != null)
+            try
             {
-                return await _repos.Archive(id);
+                var user = await _repos.Get(id);
+                if (user != null)
+                {
+                    await _repos.Archive(user.Id_User);
+                    return new Response<bool>
+                                    (200, true, string.Format("user {0} successfully created!", user.Email));
+                }
+                else
+                {
+                    return new Response<bool>
+                                    (404, false, "User not found.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return false;
+                return new Response<bool>
+                                    (400, false, ex.Message);
             }
         }
 
@@ -97,12 +108,14 @@ namespace RRelationnelle.Services
                 }
                 else
                 {
-                    return null;
+                    return new Response<UserDto>
+                                    (404, null, string.Format("user {0} not found", id));
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                return new Response<UserDto>
+                                    (400, null, ex.Message);
             }
         }
 
@@ -157,11 +170,6 @@ namespace RRelationnelle.Services
                 return true;
             else
                 return false;
-        }
-
-        Task<Response<UserDto>> IService<UserDto>.Archive(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
