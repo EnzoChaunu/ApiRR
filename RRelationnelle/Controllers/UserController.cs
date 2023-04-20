@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Commun.Responses;
+using Microsoft.AspNetCore.Mvc;
 using RRelationnelle;
 using RRelationnelle.Services;
 using System.Threading.Tasks;
@@ -19,38 +20,29 @@ namespace APIRRelationnel
 
 
         [HttpGet("GetUser/{id}")]
-        public async Task<UserDto> GetUser(int id)
+        public async Task<Response<UserDto>> GetUser(int id)
         {
             return await _service.Get(id);
         }
 
         [HttpPut("ArchiveUser/{id}")]
-        public async Task<bool> ArchiveUser(int id)
+        public async Task<Response<bool>> ArchiveUser(int id)
         {
             return await _service.Archive(id);
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public async Task<UserDto> UpdateUser(UserDto user, int id)
+        public async Task<Response<UserDto>> UpdateUser(UserDto user, int id)
         {
-            if (user != null) 
-                return await _service.Update(user, id);
-            else return null;
+            return await _service.Update(user, id); 
         }
 
         [HttpPost]
         //[Authorize]
-        public async Task<UserDto> CreateUser(UserDto user)
+        public async Task<Response<UserDto>> CreateUser(UserDto user)
         {
-            var userObject = await _service.Create(user);
-            if (userObject != null)
-            {
-                return userObject;
-            }
-            else
-            {
-                return null;
-            }
+            return await _service.Create(user);
+           
         }
 
         //[HttpPost]

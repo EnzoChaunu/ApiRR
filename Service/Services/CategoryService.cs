@@ -26,16 +26,23 @@ namespace RRelationnelle
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Archive(int id)
+        public async Task<Response<bool>> Archive(int id)
         {
             var categ = await _repos.ListCategory();
             if (categ != null)
             {
-                return await _repos.Archive(id);
+                if(await _repos.Archive(id) != true)
+                {
+                    return new Response<bool> (200, true, "Catégorie archivée" );
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Catégorie non-archivée");
+                }
             }
             else
             {
-                return false;
+                return new Response<bool>(404, false, "Catégorie non-trouvée");
             }
         }
 
@@ -51,7 +58,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<CategoryDto> Create(CategoryDto category)
+        public async Task<Response<CategoryDto>> Create(CategoryDto category)
         {
             if (!CheckValues(category))
             {
@@ -67,27 +74,27 @@ namespace RRelationnelle
                     if (rep != null)
                     {
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
-                        return Categ;
+                       return  new Response<CategoryDto>(200, Categ, "catégorie créée");
                     }
                     else
                     {
-                        return null;
+                        return new Response<CategoryDto>(404, null, "échec création catégorie");
                     }
                 }
                 catch
                 {
-                    return null;
+                    return new Response<CategoryDto>(404, null, "échec création catégorie");
                 }
             }
         }
 
-        public Task<CategoryDto> Get(int id)
+        public Task<Response<CategoryDto>> Get(int id)
         {
             throw new NotImplementedException();
         }
 
 
-        public async Task<CategoryDto> Update(CategoryDto category, int id)
+        public async Task<Response<CategoryDto>> Update(CategoryDto category, int id)
         {
             if (!CheckValues(category))
             {
@@ -103,16 +110,19 @@ namespace RRelationnelle
                     if (rep != null)
                     {
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
-                        return Categ;
+                        return new Response<CategoryDto>(200, Categ, "Modification de catégorie réussie");
+
                     }
                     else
                     {
-                        return null;
+                        return new Response<CategoryDto>(404, null, "Echec Modification" );
+
                     }
                 }
                 catch
                 {
-                    return null;
+                    return new Response<CategoryDto>(500, null, "Echec Modification");
+
                 }
             }
         }

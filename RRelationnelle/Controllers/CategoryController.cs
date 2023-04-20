@@ -24,63 +24,39 @@ namespace RRelationnelle
         }
 
         [HttpGet("CategoryAll")]
-        public async Task<ActionResult<CategoryDto>> List()
+        public async Task<Response<List<CategoryDto>>> List()
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            Response<List<CategoryDto>> reponse =  await _service.ListCategory2(); 
-
-            if (reponse.ResponseCode == 200)
-            {
-                return Ok(reponse);
-            }
-            else if (reponse.ResponseCode == 404)
-            {
-                return NotFound(reponse);
-            }
-            else
-            {
-                return StatusCode(500, reponse);
-            }
+            var reponse =  await _service.ListCategory2();
+            return reponse;
             
         }
 
         [HttpPut("{id}")]
-        public async Task<CategoryDto> Update(int id,CategoryDto categ)
+        public async Task<Response<CategoryDto>> Update(int id,CategoryDto categ)
         {
             //await = attendre de facon asynchrone la fin d'une tache
             var catego = await _service.Update(categ,id);
-            if (categ != null)
-            {
-                return categ;
-            }
-            else
-            {
-                return null;
-            }
+            return catego;
 
         }
         
         [HttpPut("/Archive/{id}")]
-        public async Task<bool> Archive(int id)
+        public async Task<Response<bool>>Archive(int id)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.Archive(id);
-          
+            var reponse =  await _service.Archive(id);
+            return reponse;
+
         }
 
         [HttpPost]
         //[Authorize]
-        public async Task<CategoryDto> CreateCategory(CategoryDto category)
+        public async Task<Response<CategoryDto>> CreateCategory(CategoryDto category)
         {
-            var categ = await _service.Create(category);
-            if (categ!= null)
-            {
-                return categ;
-            }
-            else
-            {
-                return null;
-            }
+            var reponse = await _service.Create(category);
+            return reponse;
+
         }
 
 

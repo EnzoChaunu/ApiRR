@@ -26,17 +26,17 @@ namespace RRelationnelle.Service
             _categRepo = categRepo;
         }
 
-        public Task<bool> Archive(int id)
+        public Task<Response<bool>> Archive(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RessourceDto> Create(RessourceDto obj)
+        public Task<Response<RessourceDto>> Create(RessourceDto obj)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RessourceDto> Get(int id)
+        public Task<Response<RessourceDto>> Get(int id)
         {
             throw new NotImplementedException();
         }
@@ -111,7 +111,7 @@ namespace RRelationnelle.Service
             return new Response<List<AlternanceDto>>(404, null, "Not found");
         }
 
-        public Task<RessourceDto> Update(RessourceDto obj, int id)
+        public Task<Response<RessourceDto>> Update(RessourceDto obj, int id)
         {
             throw new NotImplementedException();
         }
@@ -119,15 +119,15 @@ namespace RRelationnelle.Service
 
        
 
-        public async Task<bool> AddView(int id)
+        public async Task<Response<bool>> AddView(int id)
         {
             if (await _repo.AddView(id) != 0)
             {
-                return true;
+                return new Response<bool>(200, true, "Vue ajoutée");
             }
             else
             {
-                return false;
+                return new Response<bool>(200, false, "Echec ajout de vue");
             }
         }
 

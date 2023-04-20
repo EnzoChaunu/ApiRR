@@ -1,4 +1,5 @@
-﻿using RRelationnelle;
+﻿using Commun.Responses;
+using RRelationnelle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace Business.Interfaces
 {
     public interface ICommentsService : IService<CommentDto>
     {
+        public Task<Response<List<CommentDto>>> GetCommentsPerRessource(int id)
+;
     }
 }
