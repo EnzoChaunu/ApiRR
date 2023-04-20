@@ -44,7 +44,7 @@ namespace RRelationnelle.Mapping
                    opt => opt.MapFrom(src => src.ID_Ressource))
                 .ForMember(dest =>
                    dest.idCateg,
-                   opt => opt.MapFrom(src => new Category { Id_Category = src.category.Id_Category }))
+                   opt => opt.MapFrom(src => src.category.Id_Category))
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
