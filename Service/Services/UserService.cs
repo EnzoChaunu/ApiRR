@@ -37,7 +37,7 @@ namespace RRelationnelle.Services
             catch (Exception ex)
             {
                 return new Response<bool>
-                                    (400, false, ex.Message);
+                                    (500, false, ex.Message);
             }
         }
 
@@ -72,7 +72,7 @@ namespace RRelationnelle.Services
                         else
                         {
                             return new Response<UserDto>
-                                (400, null, "Communication failed with Database.");
+                                (500, null, "Communication failed with Database.");
                         }
                     }
                     else {
@@ -83,7 +83,7 @@ namespace RRelationnelle.Services
                 else
                 {
                     return new Response<UserDto>
-                                (400, null, string.Format("email {0} invalid format.", obj.Email));
+                                (500, null, string.Format("email {0} invalid format.", obj.Email));
                 }
                 
                 
@@ -91,7 +91,7 @@ namespace RRelationnelle.Services
             catch (Exception ex)
             {
                 return new Response<UserDto>
-                                (400, null, ex.Message);
+                                (500, null, ex.Message);
             }
         }
 
@@ -115,7 +115,7 @@ namespace RRelationnelle.Services
             catch(Exception ex)
             {
                 return new Response<UserDto>
-                                    (400, null, ex.Message);
+                                    (500, null, ex.Message);
             }
         }
 
@@ -144,12 +144,13 @@ namespace RRelationnelle.Services
                         else
                         {
                             return new Response<UserDto>
-                                (400, null, "Communication failed with Database.");
+                                (500, null, "Communication failed with Database.");
                         }
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        return null;
+                        return new Response<UserDto>
+                                (500, null, "Communication failed with Database.");
                     }
                 }
                 else
@@ -157,7 +158,6 @@ namespace RRelationnelle.Services
                     return new Response<UserDto>
                                 (400, null, string.Format("email {0} invalid format.", obj.Email));
                 }
-                
             }
         }
 

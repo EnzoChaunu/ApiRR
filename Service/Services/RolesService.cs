@@ -81,7 +81,7 @@ namespace RRelationnelle
             catch(Exception ex) 
             {
                 return new Response<bool>
-                                    (404, false, ex.Message);
+                                    (500, false, ex.Message);
             }
         }
 
@@ -104,19 +104,19 @@ namespace RRelationnelle
                     else
                     {
                         return new Response<RolesDto>
-                            (400, null, string.Format("Role {0} creation failed.", obj.name));
+                            (500, null, string.Format("Role {0} creation failed.", obj.name));
                     }
                 }
                 catch(Exception ex)
                 {
                     return new Response<RolesDto>
-                        (400, null, ex.Message);
+                        (500, null, ex.Message);
                 }
             }
             else
             {
                 return new Response<RolesDto>
-                    (400, null, string.Format("Role {0} already exists.", obj.name));
+                    (500, null, string.Format("Role {0} already exists.", obj.name));
             }
         }
 
@@ -151,7 +151,7 @@ namespace RRelationnelle
                 catch(Exception ex)
                 {
                     return new Response<RolesDto>
-                        (400, null, ex.Message);
+                        (500, null, ex.Message);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace RRelationnelle
             catch(Exception ex)
             {
                 return new Response<RolesDto>
-                    (400, null, ex.Message);
+                    (500, null, ex.Message);
             }
         }
 
