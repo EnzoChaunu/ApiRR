@@ -38,19 +38,10 @@ namespace APIRRelationnel
         }
 
         [HttpPost]
-        //[Authorize]
         public async Task<Response<UserDto>> CreateUser(UserDto user)
         {
             return await _service.Create(user);
            
         }
-
-        //[HttpPost]
-        ////[Authorize]
-        //public async Task<UserDto> CreateCategory(CategoryDto category)
-        //{
-        //    return await _service.Create(category);
-
-        //}
     }
 }

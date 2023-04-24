@@ -17,7 +17,6 @@ namespace RRelationnelle
         }
 
         [HttpPost]
-        //[Authorize]
         public async Task<Response<RolesDto>> CreateRole(RolesDto role)
         {
             return await _service.Create(role);
