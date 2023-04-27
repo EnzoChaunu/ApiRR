@@ -8,7 +8,7 @@ namespace RRelationnelle.Mapping
 {
     public class MappingRessource : Profile
     {
-        public static Mapper MappingRessourcesDtoToModel()
+        public static Mapper MappingRessourcesDtoToModel(Category categ, User us)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -19,7 +19,7 @@ namespace RRelationnelle.Mapping
                    opt => opt.MapFrom(src => src._id))
                 .ForMember(dest =>
                    dest.category,
-                   opt => opt.MapFrom(src => new Category { Id_Category = src.idCateg }))
+                   opt => opt.MapFrom(src =>categ))
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
@@ -27,13 +27,43 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                     dest._reference, opt => opt.MapFrom(src => src.reference))
                 .ForMember(dest =>
-                    dest._user, opt => opt.MapFrom(src => src._user));
+                    dest.modification, opt => opt.MapFrom(src => us));
 
             });
             var mapper = new Mapper(config);
             return mapper;
-        } 
-        public static Mapper MappingRessourcesModelToDto()
+        }
+
+        public static Mapper MappingFavDtoToModel()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserfavoriteRessourceDto, UserFavorite>()
+                .ForMember(dest =>
+                    dest.ressource, opt => opt.MapFrom(src => src._ressource))
+                .ForMember(dest =>
+                    dest.user, opt => opt.MapFrom(src => src._IdUserFav));
+
+            });
+            var mapper = new Mapper(config);
+            return mapper;
+        }
+
+        public static Mapper MappingFavModelToDto()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<UserFavorite,UserfavoriteRessourceDto>()
+                .ForMember(dest =>
+                    dest._ressource, opt => opt.MapFrom(src => src.ressource))
+                .ForMember(dest =>
+                    dest._user, opt => opt.MapFrom(src => src.user));
+
+            });
+            var mapper = new Mapper(config);
+            return mapper;
+        }
+       /* public static Mapper MappingRessourcesModelToDto()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -58,8 +88,8 @@ namespace RRelationnelle.Mapping
             var mapper = new Mapper(config);
             return mapper;
         } 
-        
-        public static Mapper MappingAlternance()
+        */
+      /*  public static Mapper MappingAlternance()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -88,9 +118,9 @@ namespace RRelationnelle.Mapping
 
             var mapper = new Mapper(config);
             return mapper;
-        }
+        }*/
 
-        public static Mapper MappingJob()
+       /* public static Mapper MappingJob()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -123,6 +153,6 @@ namespace RRelationnelle.Mapping
 
             var mapper = new Mapper(config);
             return mapper;
-        }
+        }*/
     }
 }

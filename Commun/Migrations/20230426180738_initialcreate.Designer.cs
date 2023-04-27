@@ -12,7 +12,7 @@ using RRelationnelle;
 namespace Commun.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230415174544_initialcreate")]
+    [Migration("20230426180738_initialcreate")]
     partial class initialcreate
     {
         /// <inheritdoc />
@@ -91,6 +91,29 @@ namespace Commun.Migrations
                     b.HasIndex("Id_User");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("RRelationnelle.Models.UserFavorite", b =>
+                {
+                    b.Property<int>("IdUserFav")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUserFav"));
+
+                    b.Property<int>("ID_Ressource")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id_User")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdUserFav");
+
+                    b.HasIndex("ID_Ressource");
+
+                    b.HasIndex("Id_User");
+
+                    b.ToTable("UserFavorite");
                 });
 
             modelBuilder.Entity("RRelationnelle.Ressource", b =>
@@ -241,6 +264,25 @@ namespace Commun.Migrations
                     b.Navigation("id_ressource");
 
                     b.Navigation("id_user");
+                });
+
+            modelBuilder.Entity("RRelationnelle.Models.UserFavorite", b =>
+                {
+                    b.HasOne("RRelationnelle.Ressource", "ressource")
+                        .WithMany()
+                        .HasForeignKey("ID_Ressource")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RRelationnelle.User", "user")
+                        .WithMany()
+                        .HasForeignKey("Id_User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ressource");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("RRelationnelle.Ressource", b =>

@@ -148,6 +148,32 @@ namespace Commun.Migrations
                         principalColumn: "Id_User");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserFavorite",
+                columns: table => new
+                {
+                    IdUserFav = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ID_Ressource = table.Column<int>(type: "int", nullable: false),
+                    Id_User = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFavorite", x => x.IdUserFav);
+                    table.ForeignKey(
+                        name: "FK_UserFavorite_Ressource_ID_Ressource",
+                        column: x => x.ID_Ressource,
+                        principalTable: "Ressource",
+                        principalColumn: "ID_Ressource",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserFavorite_User_Id_User",
+                        column: x => x.Id_User,
+                        principalTable: "User",
+                        principalColumn: "Id_User",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Category_idcreator",
                 table: "Category",
@@ -177,6 +203,16 @@ namespace Commun.Migrations
                 name: "IX_User_id_role",
                 table: "User",
                 column: "id_role");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavorite_ID_Ressource",
+                table: "UserFavorite",
+                column: "ID_Ressource");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavorite_Id_User",
+                table: "UserFavorite",
+                column: "Id_User");
         }
 
         /// <inheritdoc />
@@ -187,6 +223,9 @@ namespace Commun.Migrations
 
             migrationBuilder.DropTable(
                 name: "Stats");
+
+            migrationBuilder.DropTable(
+                name: "UserFavorite");
 
             migrationBuilder.DropTable(
                 name: "Ressource");

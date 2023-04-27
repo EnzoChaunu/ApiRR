@@ -15,6 +15,7 @@ namespace Business.Interfaces
         public Task<Response<bool>> AddView(int id);
         public Task<Response<List<JobDto>>> GetJob(string secteurActivite, string departement);
         public Task<Response<List<AlternanceDto>>> GetFormation(string rome, string romeDomain, string caller, string departement);
+        public Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user,int ressource);
             
     }
 }

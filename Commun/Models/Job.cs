@@ -18,7 +18,7 @@ namespace Commun.Models
         public string _Zipcode { get; set; }
         public string _TypeContrat { get; set; }
 
-        public Job(string reference, string title, int categ, string url, int user, string descr, string exp, string ville, string salaire, string zipcod, string contrat) : base(reference, title, categ, url, user)
+        public Job(string reference, string title,Category categ,  string url, User user, string descr, string exp, string ville, string salaire, string zipcod, string contrat) : base(reference, title,categ, url, user)
         {
             _description = descr;
             _experience = exp;

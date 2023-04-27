@@ -16,7 +16,7 @@ namespace RRelationnelle
                    opt => opt.MapFrom(src => src.Id_User))
               .ForMember(dest =>
                     dest.IdRole,
-                     opt => opt.MapFrom(src => src.IdRole))
+                     opt => opt.MapFrom(src => src.Role.id_role))
                 .ReverseMap();
 
             });

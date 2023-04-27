@@ -14,6 +14,8 @@ namespace DataAccess.Interfaces
         public Task<Ressource> GetRessourceById(string id);
         public Task<ActionResult<bool>> Delete();
         public Task<int> AddView(int id);
+        public Task<UserFavorite> CheckUserFavoriteByObject(User user,Ressource ressource);
+        public Task<UserFavorite> AddUserFavorite(UserFavorite fav);
 
     }
 }
