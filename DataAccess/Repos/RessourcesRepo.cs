@@ -89,16 +89,40 @@ namespace RRelationnelle.Repos
 
         public async Task<Ressource> Get(dynamic id)
         {
-            try
-            {
-                string _id = id;
-                var ressource = await _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
-                return ressource;
-            }
-            catch (DbUpdateException)
-            {
-                return null;
-            }
+           
+                switch(id.GetType().Name)
+                {
+                    case "Int32":
+                    try
+                    {
+                        int _id = id;
+                        var ressource = await _Dbcontext.Ressource.Include(r => r.category).FirstOrDefaultAsync(r => r.ID_Ressource ==_id);
+                        return ressource;
+                    }
+                    catch (DbUpdateException)
+                    {
+                        return null;
+                    }
+                case "String":
+                    try
+                    {
+                        string _id = id;
+                        var ressource = await _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
+                        return ressource;
+                    }
+                    catch (DbUpdateException)
+                    {
+                        return null;
+                    }
+                default:
+                        return null;
+
+
+
+                }
+
+
+               
         }
 
         public async Task<int> AddView(int id)
@@ -113,6 +137,36 @@ namespace RRelationnelle.Repos
             catch (DbUpdateException)
             {
                 return 0;
+            }
+        }
+
+        public async Task<UserFavorite> CheckUserFavoriteByObject(User user, Ressource ressource)
+        {
+            try
+            {
+                var userId = user.Id_User;
+                var ressourceId = ressource.ID_Ressource;
+                var UserFav = await _Dbcontext.UserFavorite.FirstOrDefaultAsync(p => p.user == user && p.ressource == ressource);
+                return UserFav;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<UserFavorite> AddUserFavorite(UserFavorite fav)
+        {
+            try
+            {
+                await _Dbcontext.UserFavorite.AddAsync(fav);
+                _Dbcontext.SaveChanges();
+                return fav;
+                
+            }
+            catch (DbUpdateException)
+            {
+                return null;
             }
         }
     }

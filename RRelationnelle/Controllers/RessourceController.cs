@@ -41,5 +41,12 @@ namespace RRelationnelle
             //await = attendre de facon asynchrone la fin d'une tache
             return await _service.AddView(id);
         }
+
+        [HttpPost("user/{user}/ressource/{ressource}/AddToFavorites")]
+        public async Task<Response<UserfavoriteRessourceDto>> AddToFavorite(int user,int ressource)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            return await _service.AddFavorite(user,ressource);
+        }
     }
 }

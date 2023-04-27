@@ -53,7 +53,8 @@ namespace RRelationnelle.Repos
 
         public async Task<User> Get(dynamic id)
         {
-            var user = await _Dbcontext.User.FindAsync(id);
+            int _id = id;
+            var user = await _Dbcontext.User.Include(r => r.Role).FirstOrDefaultAsync(r => r.Id_User == _id); ;
             return user;
         }
 
@@ -67,7 +68,6 @@ namespace RRelationnelle.Repos
                 user.Email = obj.Email;
                 user.Password = obj.Password;
                 user.Login = obj.Login;
-                user.IdRole = obj.IdRole;
                 user.Role = obj.Role;
                 user.CreationDate = obj.CreationDate;
                 user.FName = obj.FName;

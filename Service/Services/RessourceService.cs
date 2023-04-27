@@ -6,6 +6,7 @@ using DataAccess.Interfaces;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
+using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,13 @@ namespace RRelationnelle.Service
         private readonly IApiGouv _api;
         private readonly IRessourceRepo _repo;
         private readonly ICategoryRepository _categRepo;
-        public RessourceService( IApiGouv api,IRessourceRepo rep,ICategoryRepository categRepo)
+        private readonly IUserRepo _user;
+        public RessourceService( IApiGouv api,IRessourceRepo rep,ICategoryRepository categRepo, IUserRepo user)
         {
             _api = api;
             _repo = rep;
             _categRepo = categRepo;
+            _user = user;
         }
 
         public Task<Response<bool>> Archive(int id)
@@ -68,16 +71,17 @@ namespace RRelationnelle.Service
 
                     if (Category == null)
                     {
-                        Category = await _categRepo.Create(new Category("Formation",true,2));
+                        Category = await _categRepo.Create(new Category("Formation",true,1));
                     }
 
-                    var mapcateg = MappingCategory.MappingCategoryL();
-                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);
+                  /*  var mapcateg = MappingCategory.MappingCategoryL();
+                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
 
                     if (Ressource== null)
-                    {  
-                        var ressourcedto = new RessourceDto(name, 2,id,onisepUrl,CategDto.Id_Category);
-                        var map = MappingRessource.MappingRessourcesDtoToModel();
+                    {
+                        var user =await  _user.Get(2);
+                        var ressourcedto = new RessourceDto(name, 0, id,onisepUrl,1);
+                        var map = MappingRessource.MappingRessourcesDtoToModel(Category,user);
                         var ressourceModel  = map.Map<RessourceDto, Ressource>(ressourcedto);
                         await _repo.Create(ressourceModel);
                     }
@@ -88,7 +92,7 @@ namespace RRelationnelle.Service
                     }
                     if (name != null && id != null)
                     {
-                         var alternance = new AlternanceDto(name,CategDto.Id_Category,id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement);
+                         var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement);
                          list.Add(alternance);
                     }
                 }
@@ -158,15 +162,16 @@ namespace RRelationnelle.Service
                     var Category = await _categRepo.GetByName("Job");
                     if (Category == null)
                     {
-                        Category = await _categRepo.Create(new Category("Job", true, 1));
+                        Category = await _categRepo.Create(new Category("Job", true, 2));
                     }
-                    var mapcateg = MappingCategory.MappingCategoryL();
-                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);
+                    /*var mapcateg = MappingCategory.MappingCategoryL();
+                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
 
                     if (Ressource == null)
                     {
-                        var ressourcedto = new RessourceDto(name, 1, id, url, CategDto.Id_Category);
-                        var map = MappingRessource.MappingRessourcesDtoToModel();
+                        var user = await _user.Get(2);
+                        var ressourcedto = new RessourceDto(name, 0, id, url, 2);
+                        var map = MappingRessource.MappingRessourcesDtoToModel(Category,user);
                         var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
                         await _repo.Create(ressourceModel);
                     }
@@ -177,7 +182,7 @@ namespace RRelationnelle.Service
                     }
                     if (name != null && id != null)
                     {
-                        var Job = new JobDto(name, CategDto.Id_Category, id, url, 1, description, experienceLibelle, ville, salaire, zipcode, typeContrat);
+                        var Job = new JobDto(name, Category.Id_Category, id, url, 1, description, experienceLibelle, ville, salaire, zipcode, typeContrat);
                         list.Add(Job);   
                     }
                 }
@@ -198,6 +203,54 @@ namespace RRelationnelle.Service
             }
 
             return new Response<List<JobDto>>(404, null, "Not found");
+        }
+
+        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user,int ressource)
+        {
+            try
+            {
+                var userM = await _user.Get(user);
+                if (userM!=null)
+                {
+                    var RessourceM = await _repo.Get(ressource);
+                    if (RessourceM != null)
+                    {
+                        
+                        var Model = await _repo.CheckUserFavoriteByObject(userM,RessourceM);
+                        if (Model==null)
+                        {
+                            var modelFav = new UserFavorite(RessourceM, userM);
+                            var response = _repo.AddUserFavorite(modelFav);
+                            if (response != null)
+                            {
+                                return new Response<UserfavoriteRessourceDto>(200, null, "Ressource ajoutée en favorite");
+
+                            }
+                            else
+                            {
+                                 return new Response<UserfavoriteRessourceDto>(404, null, "Echec ajout favoris");
+
+                            }
+                        }else
+                        {
+                            return new Response<UserfavoriteRessourceDto>(404, null, "Vous avez déjà cette ressource en favorite");
+
+                        }
+                    }
+                    else
+                    {
+                        return new Response<UserfavoriteRessourceDto>(404, null, "Ressource inexistante");
+                    }
+                }
+                else
+                {
+                    return new Response<UserfavoriteRessourceDto>(404, null, "User inexistant");
+                }
+            }
+            catch(Exception ex)
+            {
+                return new Response<UserfavoriteRessourceDto>(500, null, ex.Message);
+            }
         }
     }
 }
