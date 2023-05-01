@@ -1,6 +1,7 @@
 ﻿
 using DataAccess.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+using Nest;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace RRelationnelle.Repos
         public async Task<JArray> GetJob()
         {
             // J'utilise mon token fournis par pole emploi pour acceder a mon compte et m'identifier en tant que user
-
+            JArray result = new JArray();
             string url = "https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=%2Fpartenaire";
 
             var client = new HttpClient();
@@ -80,31 +81,36 @@ namespace RRelationnelle.Repos
             // Extraction du token
             var tokenJson = JObject.Parse(responseString);
             string token = tokenJson["access_token"].ToString();
-
-            var uriBuilder = new UriBuilder("https://api.pole-emploi.io/partenaire/offresdemploi/v2/offres/search");
-            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-          /*  query["secteurActivite"] = secteurActivite;
-            query["departement"] = departement;*/
-            uriBuilder.Query = query.ToString();
-            var request = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
-            response = await client.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
-
-
-            if (!string.IsNullOrEmpty(content))
+            for (int i = 1; i <= 90; i++)
             {
-                client.Dispose();
-                JObject topLevel = JObject.Parse(content);
-                JArray result = (JArray)topLevel.SelectToken("resultats");
-                return result;
+                string compteur = i.ToString("D2"); // D2 pour forcer la chaine à 2 caractères
+                                                    // faire quelque chose avec la chaîne "compteur"
+                var uriBuilder = new UriBuilder("https://api.pole-emploi.io/partenaire/offresdemploi/v2/offres/search");
+                var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["secteurActivite"] = compteur;
+                  //query["departement"] = departement;*/
+                uriBuilder.Query = query.ToString();
+                var request = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
+
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                response = await client.SendAsync(request);
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    JObject topLevel = JObject.Parse(content);
+                    result.Add((JArray)topLevel.SelectToken("resultats"));
+                    Console.WriteLine("Récuperation API pole emploie");
+                   
+                }
+                
             }
-            else
-            {
-                return null;
-            }
+            client.Dispose();
+            return result;
+          
+
+
+           
 
         }
     }

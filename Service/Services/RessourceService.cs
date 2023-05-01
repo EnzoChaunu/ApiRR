@@ -61,7 +61,7 @@ namespace RRelationnelle.Service
             throw new NotImplementedException();
         }
 
-        public async void GetFormation()
+        public async Task GetFormation()
         {
             var response = await _api.GetFormation();
             List<AlternanceDto> liste = new List<AlternanceDto>();
@@ -107,7 +107,7 @@ namespace RRelationnelle.Service
                         if (Ressource == null)
                         {
 
-                            var ressourcedto = new RessourceDto(name, 0, id, onisepUrl, 1);
+                            var ressourcedto = new RessourceDto(name, 0, id, onisepUrl, user.Id_User);
                             var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
                             var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
                             await _repo.Create(ressourceModel);
@@ -142,6 +142,7 @@ namespace RRelationnelle.Service
                     }
                 }
                 _cache.Set("Alternance", _alternancesByDomainAndDept);
+                Console.WriteLine("All alternances added");
 
 
             }
@@ -170,7 +171,7 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async void GetJob()
+        public async Task GetJob()
         {
             List<JobDto> list = new List<JobDto>();
             var response = await _api.GetJob();
@@ -184,66 +185,70 @@ namespace RRelationnelle.Service
                 }
                 if (response != null)
                 {
-                    foreach (JObject obj in response)
+                    foreach (var result in response)
                     {
-                        // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
-                        string id = (string)obj["id"];
-                        string name = (string)obj["intitule"];
-                        string description = (string)obj["description"];
-                        string typeContrat = (string)obj["typeContrat"];
-                        string CodeNaf = (string)obj["secteurActivite"];
-                        string experienceLibelle = (string)obj["experienceLibelle"];
-                        string salaire = (string)obj["salaire"]["libelle"];
-                        string url = null;
-                        if ((string)obj["origineOffre"]["urlOrigine"] != null)
+                        foreach (JObject obj in result)
                         {
-                            url = (string)obj["origineOffre"]["urlOrigine"];
-                        }
-                        string ville = (string)obj["lieuTravail"]["libelle"];
-                        string zipcode = (string)obj["lieuTravail"]["commune"];
-                        var Ressource = await _repo.Get(id);
-
-
-                        /*var mapcateg = MappingCategory.MappingCategoryL();
-                        var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
-
-                        if (Ressource == null)
-                        {
-
-                            var ressourcedto = new RessourceDto(name, 0, id, url, user.Id_User);
-                            var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
-                            var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
-                            await _repo.Create(ressourceModel);
-                        }
-                        else if (Ressource._title != name)
-                        {
-                            Ressource._title = name;
-                            await _repo.Update(Ressource, Ressource.ID_Ressource);
-                        }
-                        if (name != null && id != null)
-                        {
-                            var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
-
-
-
-                            if (!_JobByDomainAndDept.ContainsKey(CodeNaf))
+                            // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
+                            string id = (string)obj["id"];
+                            string name = (string)obj["intitule"];
+                            string description = (string)obj["description"];
+                            string typeContrat = (string)obj["typeContrat"];
+                            string CodeNaf = (string)obj["secteurActivite"];
+                            string experienceLibelle = (string)obj["experienceLibelle"];
+                            string salaire = (string)obj["salaire"]["libelle"];
+                            string url = null;
+                            if ((string)obj["origineOffre"]["urlOrigine"] != null)
                             {
-                                // Si elle n'existe pas, la créer
-                                _JobByDomainAndDept[CodeNaf] = new List<JobDto>();
+                                url = (string)obj["origineOffre"]["urlOrigine"];
                             }
+                            string ville = (string)obj["lieuTravail"]["libelle"];
+                            string zipcode = (string)obj["lieuTravail"]["commune"];
+                            var Ressource = await _repo.Get(id);
 
 
-                            // Ajouter le job à la liste correspondante
-                            _JobByDomainAndDept[CodeNaf].Add(Job);
-                            Console.WriteLine("Job add");
+                            /*var mapcateg = MappingCategory.MappingCategoryL();
+                            var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
 
+                            if (Ressource == null)
+                            {
+
+                                var ressourcedto = new RessourceDto(name, 0, id, url, user.Id_User);
+                                var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
+                                var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
+                                await _repo.Create(ressourceModel);
+                            }
+                            else if (Ressource._title != name)
+                            {
+                                Ressource._title = name;
+                                await _repo.Update(Ressource, Ressource.ID_Ressource);
+                            }
+                            if (name != null && id != null)
+                            {
+                                var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
+
+
+
+                                if (!_JobByDomainAndDept.ContainsKey(CodeNaf))
+                                {
+                                    // Si elle n'existe pas, la créer
+                                    _JobByDomainAndDept[CodeNaf] = new List<JobDto>();
+                                }
+
+
+                                // Ajouter le job à la liste correspondante
+                                _JobByDomainAndDept[CodeNaf].Add(Job);
+                                Console.WriteLine("Job add");
+
+                            }
                         }
                     }
                     _cache.Set("Job", _JobByDomainAndDept);
+                    Console.WriteLine("All jobs added");
 
                 }
             }
-           
+
 
 
         }
@@ -362,6 +367,53 @@ namespace RRelationnelle.Service
             {
                 return new Response<List<JobDto>>(500, null, "Another statut code");
 
+            }
+        }
+
+        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(int iduser)
+        {
+            var ressourceListDto = new List<RessourceDto>();
+            var user = await _user.Get(iduser);
+            if (user != null)
+            {
+                List<Ressource> ressources = await _repo.GetRessourceListUser(user.Id_User);
+                var map = MappingRessource.MappingRessourcesModelToDto();
+                if (ressources.Count > 1)
+                {
+                    ressourceListDto = map.Map<List<Ressource>, List<RessourceDto>>(ressources);
+                    if (ressourceListDto != null)
+                    {
+
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "Données trouvées");
+                    }
+                    else
+                    {
+
+                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                    }
+
+                }
+                else
+                {
+
+                    var ressourceDto = map.Map<Ressource, RessourceDto>(ressources.FirstOrDefault());
+                    if (ressourceDto != null)
+                    {
+                        ressourceListDto.Add(ressourceDto);
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "Données trouvées");
+                    }
+                    else
+                    {
+
+                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                    }
+
+                }
+
+            }
+            else
+            {
+                return new Response<List<RessourceDto>>(404, null, "Cet utilisateur n'a pas été trouvé");
             }
         }
     }

@@ -58,6 +58,9 @@ namespace RRelationnelle.Repos
             var context = CreateDbContext();
             try
             {
+                context.Entry(obj.category).State = EntityState.Unchanged;
+                context.Entry(obj.modification).State = EntityState.Unchanged;
+
                 await context.Ressource.AddAsync(obj);
                 context.SaveChanges();
                 return await Get(obj._reference);
@@ -105,12 +108,12 @@ namespace RRelationnelle.Repos
 
             var context = CreateDbContext();
             switch (id.GetType().Name)
-                {
-                    case "Int32":
+            {
+                case "Int32":
                     try
                     {
                         int _id = id;
-                        var ressource = await _Dbcontext.Ressource.Include(r => r.category).FirstOrDefaultAsync(r => r.ID_Ressource ==_id);
+                        var ressource = await _Dbcontext.Ressource.Include(r => r.category).FirstOrDefaultAsync(r => r.ID_Ressource == _id);
                         return ressource;
                     }
                     catch (DbUpdateException)
@@ -129,14 +132,14 @@ namespace RRelationnelle.Repos
                         return null;
                     }
                 default:
-                        return null;
+                    return null;
 
 
 
-                }
+            }
 
 
-               
+
         }
 
         public async Task<int> AddView(int id)
@@ -173,10 +176,30 @@ namespace RRelationnelle.Repos
         {
             try
             {
+                _Dbcontext.Entry(fav.user).State = EntityState.Unchanged;
+
                 await _Dbcontext.UserFavorite.AddAsync(fav);
                 _Dbcontext.SaveChanges();
                 return fav;
-                
+
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<Ressource>> GetRessourceListUser(int user)
+        {
+            try
+            {
+                var resources = await _Dbcontext.Ressource
+                                 .Where(r => _Dbcontext.UserFavorite
+                                     .Where(f => f.Id_User == user)
+                                     .Select(f => f.ID_Ressource)
+                                     .Contains(r.ID_Ressource))
+                                 .ToListAsync();
+                return resources;
             }
             catch (DbUpdateException)
             {

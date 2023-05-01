@@ -32,6 +32,32 @@ namespace RRelationnelle.Mapping
             });
             var mapper = new Mapper(config);
             return mapper;
+        } 
+        
+        public static Mapper MappingRessourcesModelToDto()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Ressource, RessourceDto>()
+
+                .ForMember(dest =>
+                   dest._id,
+                   opt => opt.MapFrom(src => src.ID_Ressource))
+                .ForMember(dest =>
+                   dest.Id_Category,
+                   opt => opt.MapFrom(src =>src.category.Id_Category))
+                .ForMember(dest =>
+                    dest._url, opt => opt.MapFrom(src => src._url))
+                .ForMember(dest =>
+                    dest._title, opt => opt.MapFrom(src => src._title))
+                .ForMember(dest =>
+                    dest.reference, opt => opt.MapFrom(src => src._reference))
+                .ForMember(dest =>
+                    dest.modification, opt => opt.MapFrom(src => src.modification));
+
+            });
+            var mapper = new Mapper(config);
+            return mapper;
         }
 
         public static Mapper MappingFavDtoToModel()

@@ -15,6 +15,7 @@ using RRelationnelle.Service;
 using RRelationnelle.Services;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -36,7 +37,7 @@ namespace RRelationnelle
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RRelationnelle", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
-                
+
 
             });
 
@@ -46,7 +47,8 @@ namespace RRelationnelle
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
 
-            .AddJwtBearer(options => {
+            .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
@@ -61,7 +63,7 @@ namespace RRelationnelle
 
 
             services.AddDbContext<RrelationnelApiContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun")),ServiceLifetime.Scoped
+                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun")), ServiceLifetime.Scoped
                 );
 
             services.AddMemoryCache();
@@ -84,16 +86,22 @@ namespace RRelationnelle
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IRoleService, RolesService>();
 
-            
 
-            
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService Serv)
         {
-            Serv.GetFormation();
-            Serv.GetJob();
+            var task = Task.Run(async () =>
+            {
+                await Serv.GetFormation();
+                await Serv.GetJob();
+            });
+
+            task.Wait();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

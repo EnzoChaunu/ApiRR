@@ -9,9 +9,9 @@ namespace RRelationnelle
 
         public string reference { get; set; }
         public string _title { get; set; }
-        public int idCateg { get; set; }
+        public int Id_Category { get; set; }
         public bool _activation { get; set; }
-        public User _modification { get; set; }
+        public User modification { get; set; }
         public int _user { get; set; }
         public int _views { get; set; }
         public DateTime _creationDate { get; set; }
@@ -22,7 +22,7 @@ namespace RRelationnelle
         {
            
             _title = title;
-            idCateg = categoryId;
+            Id_Category = categoryId;
             reference = _reference;
             _url = url;
             _user = userId;
