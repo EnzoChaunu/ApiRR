@@ -1,6 +1,7 @@
 ﻿using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.Models;
@@ -17,12 +18,14 @@ namespace RRelationnelle.Repos
         private readonly RrelationnelApiContext _Dbcontext;
         private readonly CategoryRepository _categ;
         private readonly IUserRepo _user;
+        private readonly IConfiguration _configuration;
 
-        public RessourcesRepo(RrelationnelApiContext ctx, CategoryRepository categ, IUserRepo user)
+        public RessourcesRepo(RrelationnelApiContext ctx, CategoryRepository categ, IUserRepo user, IConfiguration configuration)
         {
             _Dbcontext = ctx;
             _categ = categ;
             _user = user;
+            _configuration = configuration;
         }
 
         public Task<ActionResult<bool>> Delete()
@@ -52,10 +55,11 @@ namespace RRelationnelle.Repos
 
         public async Task<Ressource> Create(Ressource obj)
         {
+            var context = CreateDbContext();
             try
             {
-                await _Dbcontext.Ressource.AddAsync(obj);
-                _Dbcontext.SaveChanges();
+                await context.Ressource.AddAsync(obj);
+                context.SaveChanges();
                 return await Get(obj._reference);
             }
             catch (DbUpdateException)
@@ -87,10 +91,20 @@ namespace RRelationnelle.Repos
             throw new NotImplementedException();
         }
 
+        private RrelationnelApiContext CreateDbContext()
+        {
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
+        }
+
         public async Task<Ressource> Get(dynamic id)
         {
-           
-                switch(id.GetType().Name)
+
+            var context = CreateDbContext();
+            switch (id.GetType().Name)
                 {
                     case "Int32":
                     try
@@ -107,7 +121,7 @@ namespace RRelationnelle.Repos
                     try
                     {
                         string _id = id;
-                        var ressource = await _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
+                        var ressource = await context.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
                         return ressource;
                     }
                     catch (DbUpdateException)

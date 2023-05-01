@@ -8,6 +8,7 @@ namespace RRelationnelle
     {
      
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id_User { get; set; }
 
         [Column]

@@ -75,17 +75,16 @@ namespace Commun.Migrations
                     _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isActive = table.Column<bool>(type: "bit", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    idcreator = table.Column<int>(type: "int", nullable: false)
+                    Id_User = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id_Category);
                     table.ForeignKey(
-                        name: "FK_Category_User_idcreator",
-                        column: x => x.idcreator,
+                        name: "FK_Category_User_Id_User",
+                        column: x => x.Id_User,
                         principalTable: "User",
-                        principalColumn: "Id_User",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id_User");
                 });
 
             migrationBuilder.CreateTable(
@@ -175,9 +174,9 @@ namespace Commun.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Category_idcreator",
+                name: "IX_Category_Id_User",
                 table: "Category",
-                column: "idcreator");
+                column: "Id_User");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ID_Ressource",

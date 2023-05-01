@@ -61,7 +61,7 @@ namespace RRelationnelle
 
 
             services.AddDbContext<RrelationnelApiContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun"))
+                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun")),ServiceLifetime.Scoped
                 );
 
             services.AddMemoryCache();
@@ -83,11 +83,17 @@ namespace RRelationnelle
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IRoleService, RolesService>();
+
+            
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService Serv)
         {
+            Serv.GetFormation();
+            Serv.GetJob();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -98,7 +104,6 @@ namespace RRelationnelle
             app.UseHttpsRedirection();
             app.UseDeveloperExceptionPage();
             app.UseRouting();
-
             app.UseAuthentication();
 
             app.UseAuthorization();

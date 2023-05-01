@@ -2,16 +2,19 @@
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace RRelationnelle.Repos
 {
     public class UserRepo : IUserRepo
     {
         private readonly RrelationnelApiContext _Dbcontext;
+        private readonly IConfiguration _configuration;
 
-        public UserRepo(RrelationnelApiContext context)
+        public UserRepo(RrelationnelApiContext context,IConfiguration config)
         {
             _Dbcontext = context;
+            _configuration = config;
         }
 
         public async Task<bool> Archive(int id)
@@ -32,7 +35,8 @@ namespace RRelationnelle.Repos
 
         public async Task<User> GetByEmail(string email)
         {
-            var user = await _Dbcontext.User.FirstOrDefaultAsync(e => e.Email == email);
+            var context = CreateDbContext();
+            var user = await context.User.Include(r => r.Role).FirstOrDefaultAsync(e => e.Email == email);
             if (user == null) { return null; }
             else { return user; }
         }
@@ -51,10 +55,20 @@ namespace RRelationnelle.Repos
             }
         }
 
+        private RrelationnelApiContext CreateDbContext()
+        {
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
+        }
+
         public async Task<User> Get(dynamic id)
         {
+            var context = CreateDbContext();
             int _id = id;
-            var user = await _Dbcontext.User.Include(r => r.Role).FirstOrDefaultAsync(r => r.Id_User == _id); ;
+            var user = await context.User.Include(r => r.Role).FirstOrDefaultAsync(r => r.Id_User == _id); ;
             return user;
         }
 

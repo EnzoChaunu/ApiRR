@@ -6,6 +6,7 @@ namespace RRelationnelle.Models
     public class UserFavorite
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int  IdUserFav { get; set; }
 
         [ForeignKey("ID_Ressource")]

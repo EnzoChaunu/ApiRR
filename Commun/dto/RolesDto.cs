@@ -8,7 +8,7 @@ namespace Commun.dto
 {
     public class RolesDto
     {
-        public int id_role { get; set; }
+        public int id_role { get; private set; }
         public string name { get; set; }
         public bool activated { get; set; }
     }

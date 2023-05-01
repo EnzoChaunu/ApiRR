@@ -1,6 +1,7 @@
 ﻿using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,20 @@ namespace RRelationnelle
     {
         //private Categorie _entities;
         private readonly RrelationnelApiContext _ctx;
-
-        public CategoryRepository(RrelationnelApiContext ctx)
+        private readonly IConfiguration _configuration;
+        public CategoryRepository(RrelationnelApiContext ctx,IConfiguration config)
         {
             _ctx = ctx;
+            _configuration = config;
+        }
+
+        private RrelationnelApiContext CreateDbContext()
+        {
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
         }
 
         public async Task<bool> Archive(int id)
@@ -52,8 +63,10 @@ namespace RRelationnelle
         {
             try
             {
-                _ctx.Category.Add(category);
-               await _ctx.SaveChangesAsync();
+                var context = CreateDbContext();
+                context.Entry(category.Creator).State = EntityState.Unchanged;
+                context.Category.Add(category);
+               await context.SaveChangesAsync();
                 return category;
             }
             catch
@@ -61,7 +74,7 @@ namespace RRelationnelle
                 return null;
             }
         }
-
+       
         public async Task<List<Category>> ListCategory()
         {
             try
@@ -81,7 +94,7 @@ namespace RRelationnelle
             try
             {
                 var entity = await _ctx.Category.FindAsync(id);
-                entity.idcreator = category.idcreator;
+                entity.Creator = category.Creator;
                 entity._name = category._name;
                 _ctx.Category.Update(entity);
                 await _ctx.SaveChangesAsync();
@@ -95,9 +108,10 @@ namespace RRelationnelle
 
         public  async Task<Category> GetByName(string name)
         {
+            var context = CreateDbContext();
             try
             {
-                var categ = await _ctx.Category.FirstOrDefaultAsync(p => p._name == name);
+                var categ = await context.Category.FirstOrDefaultAsync(p => p._name == name);
                 return categ;
             }
             catch (DbUpdateException)

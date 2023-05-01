@@ -7,6 +7,7 @@ namespace RRelationnelle
     public class Category
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id_Category { get; set; }
 
         [Column]
@@ -14,15 +15,15 @@ namespace RRelationnelle
         public bool isActive { get; set; } 
         public DateTime _creationDate { get; set; }
 
-        [ForeignKey("Creator")]
-        public int idcreator { get; set; }
+        [ForeignKey("Id_User")]
         public User Creator { get; set; }
+     
 
-        public Category(string name, bool isact,int creator)
+        public Category(string name, bool isact,User _creator)
         {
             _name = name;
             isActive = isact;
-            idcreator = creator;
+            Creator = _creator;
         }
 
 

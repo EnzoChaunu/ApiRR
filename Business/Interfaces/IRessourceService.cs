@@ -13,9 +13,13 @@ namespace Business.Interfaces
     public interface IRessourceService : IService<RessourceDto>
     {
         public Task<Response<bool>> AddView(int id);
-        public Task<Response<List<JobDto>>> GetJob(string secteurActivite, string departement);
-        public Task<Response<List<AlternanceDto>>> GetFormation(string rome, string romeDomain, string caller, string departement);
+        public void GetJob();
+        public Task<Response<List<JobDto>>> GetJobForFront(string secteurActivite);
+        public void GetFormation();
         public Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user,int ressource);
-            
+        public void RefreshCache ();
+        public Task<Response<List<AlternanceDto>>> GetFormationForFront(string romeDomain,string departement);
+
+
     }
 }
