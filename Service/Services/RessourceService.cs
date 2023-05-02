@@ -18,6 +18,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace RRelationnelle.Service
 {
@@ -63,11 +66,11 @@ namespace RRelationnelle.Service
 
         public async Task GetFormation()
         {
-            var response = await _api.GetFormation();
             List<AlternanceDto> liste = new List<AlternanceDto>();
-            var user = await _user.GetByEmail("chaunu.enzo@hotmail.fr");
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
             if (user != null)
             {
+                 var response = await _api.GetFormation();
                 var Category = await _categRepo.GetByName("Formation");
 
                 if (Category == null)
@@ -174,10 +177,10 @@ namespace RRelationnelle.Service
         public async Task GetJob()
         {
             List<JobDto> list = new List<JobDto>();
-            var response = await _api.GetJob();
-            var user = await _user.GetByEmail("chaunu.enzo@hotmail.fr");
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
             if (user != null)
             {
+                var response = await _api.GetJob();
                 var Category = await _categRepo.GetByName("Job");
                 if (Category == null)
                 {
@@ -414,6 +417,87 @@ namespace RRelationnelle.Service
             else
             {
                 return new Response<List<RessourceDto>>(404, null, "Cet utilisateur n'a pas été trouvé");
+            }
+        }
+
+        public async Task<Response<bool>> ShareRessource(int ress, int expediteur, string destinataireEmail)
+        {
+            var ressource = await _repo.Get(ress);
+            var expe = await _user.Get(expediteur);
+            if (expe != null)
+            {
+                if (destinataireEmail != null)
+                {
+                    if (ressource != null)
+                    {
+                        // Extraction du domaine de l'adresse e-mail
+                        string domain = Regex.Match(expe.Email, @"(?<=@)[^.]+(?=.)").Value;
+
+                        // Détection du fournisseur de messagerie
+                        if ((domain == "gmail") || (domain == "orange") || (domain == "outlook") || (domain == "yahoo"))
+                        {
+                            SmtpClient smtp = new SmtpClient();
+                            switch (domain)
+                            {
+                                case "gmail":
+                                    smtp = new SmtpClient("smtp.gmail.com", 587);
+                                    break;
+                                case "orange":
+                                    smtp = new SmtpClient("smtp.orange.com", 587);
+                                    break;
+                                case "outlook":
+                                    smtp = new SmtpClient("smtp.outlook.com", 587);
+                                    break;
+                                case "yahoo":
+                                    smtp = new SmtpClient("smtp.yahoo.com", 587);
+                                    break;
+                                default:
+                                    return new Response<bool>(404, false, "Fournisseur de messagerie non pris en charge !");
+                            }
+
+                            // Configuration du client SMTP pour Gmail
+
+                            smtp.UseDefaultCredentials = false;
+                            smtp.Credentials = new NetworkCredential(expe.Email, "Amazir33%");
+                            smtp.EnableSsl = true;
+
+                            // Envoi du message e-mail
+                            try
+                            {
+                                MailMessage mail = new MailMessage();
+                                mail.From = new MailAddress(expe.Email);
+                                mail.To.Add(destinataireEmail);
+                                mail.Subject = "Partage de ressource de la part de "+expe.LName;
+                                mail.Body = "Hey je t'ai partagé une ressource j'espère qu'elle va t'interésser !\n"+ressource._title+"\n"+ressource._url;
+                                smtp.Send(mail);
+                                var reponse = await _repo.ShareRessource(ress);
+                                return new Response<bool>(200, true, "Email envoyé avec succès");
+                            }
+                            catch (Exception ex)
+                            {
+
+                                return new Response<bool>(500, false, ex.Message);
+                            }
+                        }
+                        else
+                        {
+                            return new Response<bool>(404, false, "Fournisseur de messagerie non pris en charge !");
+                        }
+                    }
+                    else
+                    {
+
+                        return new Response<bool>(404, false, "Ressource non trouvéee");
+                    }
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Mail du destinataire non renseigné");
+                }
+            }
+            else
+            {
+                return new Response<bool>(404, false, "Expéditeur non trouvé");
             }
         }
     }

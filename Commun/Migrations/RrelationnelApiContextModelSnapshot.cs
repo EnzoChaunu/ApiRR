@@ -136,6 +136,9 @@ namespace Commun.Migrations
                     b.Property<string>("_reference")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("_shared")
+                        .HasColumnType("int");
+
                     b.Property<string>("_title")
                         .HasColumnType("nvarchar(max)");
 

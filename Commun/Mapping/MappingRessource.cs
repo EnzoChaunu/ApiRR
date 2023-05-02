@@ -23,6 +23,10 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
+                    dest._shared, opt => opt.MapFrom(src => src.shared))
+                .ForMember(dest =>
+                    dest._views, opt => opt.MapFrom(src => src._views))
+                .ForMember(dest =>
                     dest._title, opt => opt.MapFrom(src => src._title))
                 .ForMember(dest =>
                     dest._reference, opt => opt.MapFrom(src => src.reference))
@@ -46,12 +50,16 @@ namespace RRelationnelle.Mapping
                 .ForMember(dest =>
                    dest.Id_Category,
                    opt => opt.MapFrom(src =>src.category.Id_Category))
+                 .ForMember(dest =>
+                    dest._views, opt => opt.MapFrom(src => src._views))
                 .ForMember(dest =>
                     dest._url, opt => opt.MapFrom(src => src._url))
                 .ForMember(dest =>
                     dest._title, opt => opt.MapFrom(src => src._title))
                 .ForMember(dest =>
-                    dest.reference, opt => opt.MapFrom(src => src._reference))
+                    dest.reference, opt => opt.MapFrom(src => src._reference)) 
+                .ForMember(dest =>
+                    dest.shared, opt => opt.MapFrom(src => src._shared))
                 .ForMember(dest =>
                     dest.modification, opt => opt.MapFrom(src => src.modification));
 

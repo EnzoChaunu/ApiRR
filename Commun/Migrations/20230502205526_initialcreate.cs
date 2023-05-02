@@ -98,6 +98,7 @@ namespace Commun.Migrations
                     _activation = table.Column<bool>(type: "bit", nullable: false),
                     _reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     _views = table.Column<int>(type: "int", nullable: false),
+                    _shared = table.Column<int>(type: "int", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     _url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Id_User = table.Column<int>(type: "int", nullable: true)
