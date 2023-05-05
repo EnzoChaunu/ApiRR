@@ -1,16 +1,15 @@
-﻿using Azure.Core;
+﻿
 using DataAccess.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using Nest;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
-using static System.Formats.Asn1.AsnWriter;
+
+
 
 namespace RRelationnelle.Repos
 {
@@ -22,41 +21,48 @@ namespace RRelationnelle.Repos
         {
            
         }
-        public async Task<JArray> GetFormation(string caller, string rome, string romesDomain,string departement)
+        public async Task<JArray> GetFormation()
         {
+            JArray allresult = new JArray();
+            string caller=  "chaunu.enzo@hotmail.fr";
             using var client = new HttpClient();
+            string[] romesDomainList = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", };
 
-            var uriBuilder = new UriBuilder("https://labonnealternance.apprentissage.beta.gouv.fr/api/V1/formationsParRegion");
-            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["romeDomain"] = romesDomain;
-            query["romes"] = rome;
-            query["caller"] = caller;
-            query["departement"] = departement;
-            uriBuilder.Query = query.ToString();
-            var response = await client.GetAsync(uriBuilder.Uri);
-            var content = await response.Content.ReadAsStringAsync();
-
-            // Rétablir la connexion et ouvrir le contexte
-
-            if (!string.IsNullOrEmpty(content))
+            foreach(var rome in romesDomainList)
             {
-                client.Dispose();
-                JObject topLevel = JObject.Parse(content);
-                JArray result = (JArray)topLevel.SelectToken("results");
-                return result;
+
+                var uriBuilder = new UriBuilder("https://labonnealternance.apprentissage.beta.gouv.fr/api/V1/formations");
+                var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["romeDomain"] = rome;
+           
+            
+                query["caller"] = caller;
+                /*query["departement"] = departement;*/
+                uriBuilder.Query = query.ToString();
+                var response = await client.GetAsync(uriBuilder.Uri);
+                var content = await response.Content.ReadAsStringAsync();
+
+                // Rétablir la connexion et ouvrir le contexte
+
+                if (!string.IsNullOrEmpty(content))
+                {
+                    JObject topLevel = JObject.Parse(content);
+                    allresult.Add((JArray)topLevel.SelectToken("results"));
+                
+                }
             }
-            else
-            {
-                return null;
-            }
+           client.Dispose();
+
+            return allresult;
+           
 
            
         }
 
-        public async Task<JArray> GetJob(string secteurActivite, string departement)
+        public async Task<JArray> GetJob()
         {
             // J'utilise mon token fournis par pole emploi pour acceder a mon compte et m'identifier en tant que user
-
+            JArray result = new JArray();
             string url = "https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=%2Fpartenaire";
 
             var client = new HttpClient();
@@ -75,31 +81,36 @@ namespace RRelationnelle.Repos
             // Extraction du token
             var tokenJson = JObject.Parse(responseString);
             string token = tokenJson["access_token"].ToString();
-
-            var uriBuilder = new UriBuilder("https://api.pole-emploi.io/partenaire/offresdemploi/v2/offres/search");
-            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["secteurActivite"] = secteurActivite;
-            query["departement"] = departement;
-            uriBuilder.Query = query.ToString();
-            var request = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
-            response = await client.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
-
-
-            if (!string.IsNullOrEmpty(content))
+            for (int i = 1; i <= 90; i++)
             {
-                client.Dispose();
-                JObject topLevel = JObject.Parse(content);
-                JArray result = (JArray)topLevel.SelectToken("resultats");
-                return result;
+                string compteur = i.ToString("D2"); // D2 pour forcer la chaine à 2 caractères
+                                                    // faire quelque chose avec la chaîne "compteur"
+                var uriBuilder = new UriBuilder("https://api.pole-emploi.io/partenaire/offresdemploi/v2/offres/search");
+                var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+                query["secteurActivite"] = compteur;
+                  //query["departement"] = departement;*/
+                uriBuilder.Query = query.ToString();
+                var request = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
+
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                response = await client.SendAsync(request);
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(content))
+                {
+                    JObject topLevel = JObject.Parse(content);
+                    result.Add((JArray)topLevel.SelectToken("resultats"));
+                    Console.WriteLine("Récuperation API pole emploie");
+                   
+                }
+                
             }
-            else
-            {
-                return null;
-            }
+            client.Dispose();
+            return result;
+          
+
+
+           
 
         }
     }

@@ -30,21 +30,21 @@ namespace Commun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Category"));
 
+                    b.Property<int?>("Id_User")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("_creationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("_name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("idcreator")
-                        .HasColumnType("int");
-
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
                     b.HasKey("Id_Category");
 
-                    b.HasIndex("idcreator");
+                    b.HasIndex("Id_User");
 
                     b.ToTable("Category");
                 });
@@ -135,6 +135,9 @@ namespace Commun.Migrations
 
                     b.Property<string>("_reference")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("_shared")
+                        .HasColumnType("int");
 
                     b.Property<string>("_title")
                         .HasColumnType("nvarchar(max)");
@@ -230,6 +233,9 @@ namespace Commun.Migrations
                     b.Property<int?>("id_role")
                         .HasColumnType("int");
 
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id_User");
 
                     b.HasIndex("id_role");
@@ -241,9 +247,7 @@ namespace Commun.Migrations
                 {
                     b.HasOne("RRelationnelle.User", "Creator")
                         .WithMany()
-                        .HasForeignKey("idcreator")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Id_User");
 
                     b.Navigation("Creator");
                 });

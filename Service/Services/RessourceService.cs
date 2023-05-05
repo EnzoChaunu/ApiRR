@@ -3,30 +3,58 @@ using Business.Interfaces;
 using Commun.dto;
 using Commun.Responses;
 using DataAccess.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
 using RRelationnelle.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.Extensions.Caching;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Nest;
+using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
+using System.Text.RegularExpressions;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+using System.Threading;
+using System.IO;
+using MimeKit;
+using System.Text;
+using Commun.Hash;
 
 namespace RRelationnelle.Service
 {
     public class RessourceService : IRessourceService
     {
-       /* private readonly IRessourceRepo _repo;*/
+        /* private readonly IRessourceRepo _repo;*/
         private readonly IApiGouv _api;
         private readonly IRessourceRepo _repo;
         private readonly ICategoryRepository _categRepo;
         private readonly IUserRepo _user;
-        public RessourceService( IApiGouv api,IRessourceRepo rep,ICategoryRepository categRepo, IUserRepo user)
+        private readonly IMemoryCache _cache;
+        private Dictionary<string, Dictionary<string, List<AlternanceDto>>> _alternancesByDomainAndDept;
+        private Dictionary<string, List<JobDto>> _JobByDomainAndDept;
+
+
+        public RessourceService(IApiGouv api, IRessourceRepo rep, ICategoryRepository categRepo, IUserRepo user, IMemoryCache optionsAccessor)
         {
             _api = api;
             _repo = rep;
             _categRepo = categRepo;
             _user = user;
+            _cache = optionsAccessor;
+            _alternancesByDomainAndDept = new Dictionary<string, Dictionary<string, List<AlternanceDto>>>();
+            _JobByDomainAndDept = new Dictionary<string, List<JobDto>>();
+
+
         }
 
         public Task<Response<bool>> Archive(int id)
@@ -44,75 +72,94 @@ namespace RRelationnelle.Service
             throw new NotImplementedException();
         }
 
-        public async Task<Response<List<AlternanceDto>>> GetFormation(string rome, string romeDomain, string caller,string departement)
+        public async Task GetFormation()
         {
-            List<AlternanceDto> list= new List<AlternanceDto>();
-            var response = await  _api.GetFormation(caller,rome,romeDomain, departement);
-            if (response != null)
+            List<AlternanceDto> liste = new List<AlternanceDto>();
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
+            if (user != null)
             {
-                foreach (JObject obj in response)
+                var response = await _api.GetFormation();
+                var Category = await _categRepo.GetByName("Formation");
+
+                if (Category == null)
                 {
-                    // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
-                    string id = (string)obj["id"];
-                    string name = (string)obj["longTitle"];
-                    string onisepUrl = (string)obj["onisepUrl"];
-                    string Diploma = (string)obj["diploma"];
-                    string period = (string)obj["period"];
-                    string capacity = (string)obj["capacity"];
-                    string emailcontact = null;
-                    if ((string)obj["contact"] != null)
+                    Category = await _categRepo.Create(new Category("Formation", true, user));
+                }
+                foreach (var result in response)
+                {
+                    JArray resultArray = (JArray)result;
+                    foreach (JObject obj in result)
                     {
-                         emailcontact = (string)obj["contact"]["email"];
-                    }
-                    string ville = (string)obj["place"]["city"];
-                    string zipcode = (string)obj["place"]["zipCode"];
-                    var Ressource = await _repo.Get(id);
-                    var Category = await _categRepo.GetByName("Formation");
+                        // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
+                        string id = (string)obj["id"];
+                        string name = (string)obj["longTitle"];
+                        string onisepUrl = (string)obj["onisepUrl"];
+                        string Diploma = (string)obj["diploma"];
+                        string period = (string)obj["period"];
+                        string capacity = (string)obj["capacity"];
+                        string emailcontact = null;
+                        string rome = (string)obj["romes"][0]["code"];
+                        string entreprise = (string)obj["company"]["name"];
+                        string Domain = rome.Substring(0, 1);
+                        if ((string)obj["contact"] != null)
+                        {
+                            emailcontact = (string)obj["contact"]["email"];
+                        }
+                        string ville = (string)obj["place"]["city"];
+                        string departement = (string)obj["place"]["departementNumber"];
+                        string zipcode = (string)obj["place"]["zipCode"];
 
-                    if (Category == null)
-                    {
-                        Category = await _categRepo.Create(new Category("Formation",true,1));
-                    }
 
-                  /*  var mapcateg = MappingCategory.MappingCategoryL();
-                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
+                        var Ressource = await _repo.Get(id);
 
-                    if (Ressource== null)
-                    {
-                        var user =await  _user.Get(2);
-                        var ressourcedto = new RessourceDto(name, 0, id,onisepUrl,1);
-                        var map = MappingRessource.MappingRessourcesDtoToModel(Category,user);
-                        var ressourceModel  = map.Map<RessourceDto, Ressource>(ressourcedto);
-                        await _repo.Create(ressourceModel);
-                    }
-                    else if(Ressource._title != name)
-                    {
-                        Ressource._title = name;
-                        await _repo.Update(Ressource, Ressource.ID_Ressource);
-                    }
-                    if (name != null && id != null)
-                    {
-                         var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement);
-                         list.Add(alternance);
+                        /*  var mapcateg = MappingCategory.MappingCategoryL();
+                          var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
+
+                        if (Ressource == null)
+                        {
+
+                            var ressourcedto = new RessourceDto(name, 0, id, onisepUrl, user.Id_User);
+                            var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
+                            var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
+                            await _repo.Create(ressourceModel);
+                        }
+                        else if (Ressource._title != name)
+                        {
+                            Ressource._title = name;
+                            await _repo.Update(Ressource, Ressource.ID_Ressource);
+                        }
+                        if (name != null && id != null)
+                        {
+                            var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement, Domain, entreprise);
+                            if (!_alternancesByDomainAndDept.ContainsKey(Domain))
+                            {
+                                // Si elle n'existe pas, la créer
+                                _alternancesByDomainAndDept[Domain] = new Dictionary<string, List<AlternanceDto>>();
+                            }
+
+                            // Vérifier si la sous-catégorie du département existe dans le dictionnaire
+                            if (!_alternancesByDomainAndDept[Domain].ContainsKey(departement))
+                            {
+                                // Si elle n'existe pas, la créer
+                                _alternancesByDomainAndDept[Domain][departement] = new List<AlternanceDto>();
+                            }
+
+                            // Ajouter l'objet Alternance à la sous-catégorie correspondante
+                            _alternancesByDomainAndDept[Domain][departement].Add(alternance);
+                            Console.WriteLine("ressource add");
+
+
+                        }
                     }
                 }
-                if (list != null)
-                {
-                    return new Response<List<AlternanceDto>>(200, list, "Données trouvées");
-                }
-                else if (list == null)
-                {
-                    return new Response<List<AlternanceDto>>(404, null, "Not found");
+                _cache.Set("Alternance", _alternancesByDomainAndDept);
+                Console.WriteLine("All alternances added");
 
-                }
-                else
-                {
-                    return new Response<List<AlternanceDto>>(500, null, "Another statut code");
 
-                }
             }
 
-            return new Response<List<AlternanceDto>>(404, null, "Not found");
+
+
         }
 
         public Task<Response<RessourceDto>> Update(RessourceDto obj, int id)
@@ -121,7 +168,7 @@ namespace RRelationnelle.Service
         }
 
 
-       
+
 
         public async Task<Response<bool>> AddView(int id)
         {
@@ -135,89 +182,101 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async Task<Response<List<JobDto>>> GetJob(string secteurActivite, string departement)
+        public async Task GetJob()
         {
             List<JobDto> list = new List<JobDto>();
-            var response = await _api.GetJob(secteurActivite, departement);
-            if (response != null)
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
+            if (user != null)
             {
-                foreach (JObject obj in response)
+                var response = await _api.GetJob();
+                var Category = await _categRepo.GetByName("Job");
+                if (Category == null)
                 {
-                    // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
-                    string id = (string)obj["id"];
-                    string name = (string)obj["intitule"];
-                    string description = (string)obj["description"];
-                    string typeContrat = (string)obj["typeContrat"];
-                    string experienceLibelle = (string)obj["experienceLibelle"];
-                    string salaire = (string)obj["salaire"]["libelle"];
-                    string url = null;
-                    if ((string)obj["origineOffre"]["urlOrigine"] != null)
-                    {
-                        url = (string)obj["origineOffre"]["urlOrigine"];
-                    }
-                    string ville = (string)obj["lieuTravail"]["libelle"];
-                    string zipcode = (string)obj["lieuTravail"]["commune"];
-                    var Ressource = await _repo.Get(id);
-
-                    var Category = await _categRepo.GetByName("Job");
-                    if (Category == null)
-                    {
-                        Category = await _categRepo.Create(new Category("Job", true, 2));
-                    }
-                    /*var mapcateg = MappingCategory.MappingCategoryL();
-                    var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
-
-                    if (Ressource == null)
-                    {
-                        var user = await _user.Get(2);
-                        var ressourcedto = new RessourceDto(name, 0, id, url, 2);
-                        var map = MappingRessource.MappingRessourcesDtoToModel(Category,user);
-                        var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
-                        await _repo.Create(ressourceModel);
-                    }
-                    else if (Ressource._title != name)
-                    {
-                        Ressource._title = name;
-                        await _repo.Update(Ressource, Ressource.ID_Ressource);
-                    }
-                    if (name != null && id != null)
-                    {
-                        var Job = new JobDto(name, Category.Id_Category, id, url, 1, description, experienceLibelle, ville, salaire, zipcode, typeContrat);
-                        list.Add(Job);   
-                    }
+                    Category = await _categRepo.Create(new Category("Job", true, user));
                 }
-                if (list != null)
+                if (response != null)
                 {
-                    return new Response<List<JobDto>>(200, list, "Données trouvées");
-                }
-                else if (list == null)
-                {
-                    return new Response<List<JobDto>>(404, null, "Not found");
+                    foreach (var result in response)
+                    {
+                        foreach (JObject obj in result)
+                        {
+                            // je recupere les info dont j'ai besoins dans mon tableau de resultats renvoyé par l'api
+                            string id = (string)obj["id"];
+                            string name = (string)obj["intitule"];
+                            string description = (string)obj["description"];
+                            string typeContrat = (string)obj["typeContrat"];
+                            string CodeNaf = (string)obj["secteurActivite"];
+                            string experienceLibelle = (string)obj["experienceLibelle"];
+                            string salaire = (string)obj["salaire"]["libelle"];
+                            string url = null;
+                            if ((string)obj["origineOffre"]["urlOrigine"] != null)
+                            {
+                                url = (string)obj["origineOffre"]["urlOrigine"];
+                            }
+                            string ville = (string)obj["lieuTravail"]["libelle"];
+                            string zipcode = (string)obj["lieuTravail"]["commune"];
+                            var Ressource = await _repo.Get(id);
 
-                }
-                else
-                {
-                    return new Response<List<JobDto>>(500, null, "Another statut code");
+
+                            /*var mapcateg = MappingCategory.MappingCategoryL();
+                            var CategDto = mapcateg.Map<Category, CategoryDto>(Category);*/
+
+                            if (Ressource == null)
+                            {
+
+                                var ressourcedto = new RessourceDto(name, 0, id, url, user.Id_User);
+                                var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
+                                var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
+                                await _repo.Create(ressourceModel);
+                            }
+                            else if (Ressource._title != name)
+                            {
+                                Ressource._title = name;
+                                await _repo.Update(Ressource, Ressource.ID_Ressource);
+                            }
+                            if (name != null && id != null)
+                            {
+                                var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
+
+
+
+                                if (!_JobByDomainAndDept.ContainsKey(CodeNaf))
+                                {
+                                    // Si elle n'existe pas, la créer
+                                    _JobByDomainAndDept[CodeNaf] = new List<JobDto>();
+                                }
+
+
+                                // Ajouter le job à la liste correspondante
+                                _JobByDomainAndDept[CodeNaf].Add(Job);
+                                Console.WriteLine("Job add");
+
+                            }
+                        }
+                    }
+                    _cache.Set("Job", _JobByDomainAndDept);
+                    Console.WriteLine("All jobs added");
 
                 }
             }
 
-            return new Response<List<JobDto>>(404, null, "Not found");
+
+
         }
 
-        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user,int ressource)
+        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user, int ressource)
         {
             try
             {
                 var userM = await _user.Get(user);
-                if (userM!=null)
+                if (userM != null)
                 {
                     var RessourceM = await _repo.Get(ressource);
                     if (RessourceM != null)
                     {
-                        
-                        var Model = await _repo.CheckUserFavoriteByObject(userM,RessourceM);
-                        if (Model==null)
+
+                        var Model = await _repo.CheckUserFavoriteByObject(userM, RessourceM);
+                        if (Model == null)
                         {
                             var modelFav = new UserFavorite(RessourceM, userM);
                             var response = _repo.AddUserFavorite(modelFav);
@@ -228,10 +287,11 @@ namespace RRelationnelle.Service
                             }
                             else
                             {
-                                 return new Response<UserfavoriteRessourceDto>(404, null, "Echec ajout favoris");
+                                return new Response<UserfavoriteRessourceDto>(404, null, "Echec ajout favoris");
 
                             }
-                        }else
+                        }
+                        else
                         {
                             return new Response<UserfavoriteRessourceDto>(404, null, "Vous avez déjà cette ressource en favorite");
 
@@ -247,9 +307,184 @@ namespace RRelationnelle.Service
                     return new Response<UserfavoriteRessourceDto>(404, null, "User inexistant");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new Response<UserfavoriteRessourceDto>(500, null, ex.Message);
+            }
+        }
+
+        public void RefreshCache()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Response<List<AlternanceDto>>> GetFormationForFront(string romeDomain, string departement)
+        {
+            List<AlternanceDto> liste = new List<AlternanceDto>();
+
+            // var domainDict = _alternancesByDomainAndDept;
+
+            var domainDict = await _cache.GetOrCreateAsync("Alternance", entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+                return Task.FromResult(_alternancesByDomainAndDept);
+            });
+
+            if (domainDict != null && domainDict.TryGetValue(romeDomain, out var deptDict))
+            {
+                if (deptDict.TryGetValue(departement, out var alternances))
+                {
+                    liste = alternances.ToList();
+                }
+            }
+
+            if (liste != null)
+            {
+                return new Response<List<AlternanceDto>>(200, liste, "Données trouvées");
+            }
+            else
+            {
+                return new Response<List<AlternanceDto>>(404, null, "Not found");
+
+            }
+
+        }
+
+        public async Task<Response<List<JobDto>>> GetJobForFront(string secteurActivite)
+        {
+            List<JobDto> list = new List<JobDto>();
+
+            var domainDict = await _cache.GetOrCreateAsync("Job", entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+                return Task.FromResult(_JobByDomainAndDept);
+            });
+
+            if (domainDict != null && domainDict.TryGetValue(secteurActivite, out var Job))
+            {
+                list = Job.ToList();
+            }
+
+            if (list != null)
+            {
+                return new Response<List<JobDto>>(200, list, "Données trouvées");
+            }
+            else if (list == null)
+            {
+                return new Response<List<JobDto>>(404, null, "Not found");
+
+            }
+            else
+            {
+                return new Response<List<JobDto>>(500, null, "Another statut code");
+
+            }
+        }
+
+        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(int iduser)
+        {
+            var ressourceListDto = new List<RessourceDto>();
+            var user = await _user.Get(iduser);
+            if (user != null)
+            {
+                List<Ressource> ressources = await _repo.GetRessourceListUser(user.Id_User);
+                var map = MappingRessource.MappingRessourcesModelToDto();
+                if (ressources.Count > 1)
+                {
+                    ressourceListDto = map.Map<List<Ressource>, List<RessourceDto>>(ressources);
+                    if (ressourceListDto != null)
+                    {
+
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "Données trouvées");
+                    }
+                    else
+                    {
+
+                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                    }
+
+                }
+                else
+                {
+
+                    var ressourceDto = map.Map<Ressource, RessourceDto>(ressources.FirstOrDefault());
+                    if (ressourceDto != null)
+                    {
+                        ressourceListDto.Add(ressourceDto);
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "Données trouvées");
+                    }
+                    else
+                    {
+
+                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                    }
+
+                }
+
+            }
+            else
+            {
+                return new Response<List<RessourceDto>>(404, null, "Cet utilisateur n'a pas été trouvé");
+            }
+        }
+
+        public async Task<Response<bool>> ShareRessource(int ress, string expediteur, string destinataireEmail)
+        {
+            var token = Hashing.HashToken(expediteur);
+            var expe = await _user.GetUserByToken(token);
+            if (expe != null)
+            {
+                if (destinataireEmail != null)
+                {
+                    var ressource = await _repo.Get(ress);
+                    if (ressource != null)
+                    {
+                        // Extraction du domaine de l'adresse e-mail
+                        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+
+
+                        // Configuration du client SMTP pour Gmail
+
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential(expe.Email, "sicqjbexttqxcffa");
+                        smtp.EnableSsl = true;
+
+                        // Envoi du message e-mail
+                        try
+                        {
+                            MailMessage mail = new MailMessage();
+                            mail.From = new MailAddress("chaunu.enzo@gmail.com");
+                            mail.To.Add(destinataireEmail);
+                            mail.Subject = "Partage de ressource de la part de " + expe.LName;
+                            mail.Body = "Hey je t'ai partagé une ressource j'espère qu'elle va t'interésser !\n\n" + ressource._title + "\n\n" + ressource._url + "\n\n\n\nCeci est un message autogénéré envoyé depuis l'application Rrelationnel de la part de " + expe.FName + " " + expe.LName;
+                            smtp.Send(mail);
+                            var reponse = await _repo.ShareRessource(ress);
+                            return new Response<bool>(200, true, "Email envoyé avec succès");
+                        }
+
+                        // Détection du fournisseur de messagerie
+
+                        catch (SmtpException ex)
+                        {
+
+                            return new Response<bool>(500, false, ex.Message);
+                        }
+
+                    }
+                    else
+                    {
+
+                        return new Response<bool>(404, false, "Ressource non trouvéee");
+                    }
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Mail du destinataire non renseigné");
+                }
+            }
+            else
+            {
+                return new Response<bool>(401, false, "Non-autorisé");
             }
         }
     }

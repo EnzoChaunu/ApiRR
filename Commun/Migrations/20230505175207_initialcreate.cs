@@ -51,6 +51,7 @@ namespace Commun.Migrations
                     LName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Login = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Activation = table.Column<bool>(type: "bit", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -75,17 +76,16 @@ namespace Commun.Migrations
                     _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isActive = table.Column<bool>(type: "bit", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    idcreator = table.Column<int>(type: "int", nullable: false)
+                    Id_User = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id_Category);
                     table.ForeignKey(
-                        name: "FK_Category_User_idcreator",
-                        column: x => x.idcreator,
+                        name: "FK_Category_User_Id_User",
+                        column: x => x.Id_User,
                         principalTable: "User",
-                        principalColumn: "Id_User",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id_User");
                 });
 
             migrationBuilder.CreateTable(
@@ -99,6 +99,7 @@ namespace Commun.Migrations
                     _activation = table.Column<bool>(type: "bit", nullable: false),
                     _reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     _views = table.Column<int>(type: "int", nullable: false),
+                    _shared = table.Column<int>(type: "int", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     _url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Id_User = table.Column<int>(type: "int", nullable: true)
@@ -175,9 +176,9 @@ namespace Commun.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Category_idcreator",
+                name: "IX_Category_Id_User",
                 table: "Category",
-                column: "idcreator");
+                column: "Id_User");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ID_Ressource",

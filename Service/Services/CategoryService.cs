@@ -14,10 +14,12 @@ namespace RRelationnelle
     {
 
         private readonly ICategoryRepository _repos;
+        private readonly IUserRepo _user;
         //private readonly IRepository<Categorie> _repos;
-        public CategoryService(ICategoryRepository repo)
+        public CategoryService(ICategoryRepository repo, IUserRepo user)
         {
             _repos = repo;
+            _user = user;
             // _validations =validations;
         }
 
@@ -68,11 +70,13 @@ namespace RRelationnelle
             {
                 try
                 {
-                    var mapper = MappingCategory.MappingCategoryL();
+                    User user =await _user.Get(category._creator);
+                    var mapper = MappingCategory.MappingCategoryTomodel(user);
                     Category categorieDb = mapper.Map<CategoryDto, Category>(category);
                     var rep = await _repos.Create(categorieDb);
                     if (rep != null)
                     {
+                         mapper = MappingCategory.MappingCategoryToDto();
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
                        return  new Response<CategoryDto>(200, Categ, "catégorie créée");
                     }
@@ -104,11 +108,13 @@ namespace RRelationnelle
             {
                 try
                 {
-                    var mapper = MappingCategory.MappingCategoryL();
+                    User user = await _user.Get(category._creator);
+                    var mapper = MappingCategory.MappingCategoryTomodel(user);
                     Category categorieDb = mapper.Map<CategoryDto, Category>(category);
                     var rep = await _repos.Update(categorieDb, id);
                     if (rep != null)
                     {
+                        mapper = MappingCategory.MappingCategoryToDto();
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
                         return new Response<CategoryDto>(200, Categ, "Modification de catégorie réussie");
 
@@ -131,7 +137,7 @@ namespace RRelationnelle
         {
 
             List<Category> categorie = await _repos.ListCategory();
-            var mapper = MappingCategory.MappingCategoryL();
+            var mapper = MappingCategory.MappingCategoryToDto();
             List<CategoryDto> categoriedto = mapper.Map<List<Category>, List<CategoryDto>>(categorie);
 
             if (categoriedto != null)

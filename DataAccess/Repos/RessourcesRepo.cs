@@ -1,6 +1,7 @@
 ﻿using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.Models;
@@ -17,12 +18,14 @@ namespace RRelationnelle.Repos
         private readonly RrelationnelApiContext _Dbcontext;
         private readonly CategoryRepository _categ;
         private readonly IUserRepo _user;
+        private readonly IConfiguration _configuration;
 
-        public RessourcesRepo(RrelationnelApiContext ctx, CategoryRepository categ, IUserRepo user)
+        public RessourcesRepo(RrelationnelApiContext ctx, CategoryRepository categ, IUserRepo user, IConfiguration configuration)
         {
             _Dbcontext = ctx;
             _categ = categ;
             _user = user;
+            _configuration = configuration;
         }
 
         public Task<ActionResult<bool>> Delete()
@@ -52,10 +55,14 @@ namespace RRelationnelle.Repos
 
         public async Task<Ressource> Create(Ressource obj)
         {
+            var context = CreateDbContext();
             try
             {
-                await _Dbcontext.Ressource.AddAsync(obj);
-                _Dbcontext.SaveChanges();
+                context.Entry(obj.category).State = EntityState.Unchanged;
+                context.Entry(obj.modification).State = EntityState.Unchanged;
+
+                await context.Ressource.AddAsync(obj);
+                context.SaveChanges();
                 return await Get(obj._reference);
             }
             catch (DbUpdateException)
@@ -87,16 +94,26 @@ namespace RRelationnelle.Repos
             throw new NotImplementedException();
         }
 
+        private RrelationnelApiContext CreateDbContext()
+        {
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
+        }
+
         public async Task<Ressource> Get(dynamic id)
         {
-           
-                switch(id.GetType().Name)
-                {
-                    case "Int32":
+
+            var context = CreateDbContext();
+            switch (id.GetType().Name)
+            {
+                case "Int32":
                     try
                     {
                         int _id = id;
-                        var ressource = await _Dbcontext.Ressource.Include(r => r.category).FirstOrDefaultAsync(r => r.ID_Ressource ==_id);
+                        var ressource = await _Dbcontext.Ressource.Include(r => r.category).FirstOrDefaultAsync(r => r.ID_Ressource == _id);
                         return ressource;
                     }
                     catch (DbUpdateException)
@@ -107,7 +124,7 @@ namespace RRelationnelle.Repos
                     try
                     {
                         string _id = id;
-                        var ressource = await _Dbcontext.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
+                        var ressource = await context.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
                         return ressource;
                     }
                     catch (DbUpdateException)
@@ -115,14 +132,14 @@ namespace RRelationnelle.Repos
                         return null;
                     }
                 default:
-                        return null;
+                    return null;
 
 
 
-                }
+            }
 
 
-               
+
         }
 
         public async Task<int> AddView(int id)
@@ -159,14 +176,50 @@ namespace RRelationnelle.Repos
         {
             try
             {
+                _Dbcontext.Entry(fav.user).State = EntityState.Unchanged;
+
                 await _Dbcontext.UserFavorite.AddAsync(fav);
                 _Dbcontext.SaveChanges();
                 return fav;
-                
+
             }
             catch (DbUpdateException)
             {
                 return null;
+            }
+        }
+
+        public async Task<List<Ressource>> GetRessourceListUser(int user)
+        {
+            try
+            {
+                var resources = await _Dbcontext.Ressource
+                                 .Where(r => _Dbcontext.UserFavorite
+                                     .Where(f => f.Id_User == user)
+                                     .Select(f => f.ID_Ressource)
+                                     .Contains(r.ID_Ressource))
+                                 .ToListAsync();
+                return resources;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> ShareRessource(int id)
+        {
+            try
+            {
+                var entity = await _Dbcontext.Ressource.FindAsync(id);
+                entity._shared += 1;
+                _Dbcontext.Ressource.Update(entity);
+                await _Dbcontext.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
             }
         }
     }

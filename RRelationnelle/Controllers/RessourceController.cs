@@ -1,5 +1,6 @@
 ﻿using Commun.dto;
 using Commun.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RRelationnelle.dto;
 using RRelationnelle.Service;
@@ -19,34 +20,131 @@ namespace RRelationnelle
         {
             _service = service;
         }
-        
+
         [HttpGet("Alternances&Formations")]
-        public async Task<Response<List<AlternanceDto>>> GetFormation(string rome,string romeDomain, string caller,string region)
+        public async Task<IActionResult> GetFormation(string romeDomain, string region)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetFormation(rome,romeDomain,caller,region);
+            var reponse = await _service.GetFormationForFront(romeDomain, region);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+
         }
 
         [HttpGet("Job")]
-        public async Task<Response<List<JobDto>>> GetJob(string secteurActivite, string departement)
+        public async Task<IActionResult> GetJob(string secteurActivite)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetJob(secteurActivite,departement);
+            var reponse = await _service.GetJobForFront(secteurActivite);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
 
 
         [HttpPut("AddView/{id}")]
-        public async Task<Response<bool>> AddViewToRessource(int id)
+        public async Task<IActionResult> AddViewToRessource(int id)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.AddView(id);
+            var reponse = await _service.AddView(id);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
 
         [HttpPost("user/{user}/ressource/{ressource}/AddToFavorites")]
-        public async Task<Response<UserfavoriteRessourceDto>> AddToFavorite(int user,int ressource)
+        public async Task<IActionResult> AddToFavorite(int user, int ressource)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.AddFavorite(user,ressource);
+            var reponse = await _service.AddFavorite(user, ressource);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+        }
+
+        [HttpPost("ressource/{ress}/destinataire/{destinataireEmail}/ShareRessource")]
+        [Authorize]
+        public async Task<IActionResult> ShareRessource(int ress, string destinataireEmail)
+        {
+
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+                var reponse = await _service.ShareRessource(ress, token, destinataireEmail);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+            //await = attendre de facon asynchrone la fin d'une tache
+        }
+
+        [HttpGet("{idUser}")]
+        public async Task<IActionResult> GetRessourceByUser(int idUser)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            var reponse = await _service.GetListRessourceByUser(idUser);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
     }
 }

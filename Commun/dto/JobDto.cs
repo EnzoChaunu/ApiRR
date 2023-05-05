@@ -15,8 +15,9 @@ namespace Commun.dto
         public string Salaire { get; set; }
         public string Zipcode { get; set; }
         public string TypeContrat { get; set; }
+        public string CodeNaf { get; set; }
 
-        public JobDto(string title, int categoryId, string _reference, string url, int userId,string descr, string exp, string ville,string salaire,string zipcod,string contrat) : base(title, categoryId, _reference, url, userId)
+        public JobDto(string title, int categoryId, string _reference, string url, int userId,string descr, string exp, string ville,string salaire,string zipcod,string contrat,string naf) : base(title, categoryId, _reference, url, userId)
         {
             description = descr;
             experience = exp;
@@ -24,6 +25,8 @@ namespace Commun.dto
             Salaire = salaire;
             Zipcode = zipcod;
             TypeContrat = contrat;
+            CodeNaf = naf;
+            
             
         }
 

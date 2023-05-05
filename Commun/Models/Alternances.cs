@@ -14,8 +14,12 @@ namespace RRelationnelle.Models
         public readonly string Zipcode;
         public readonly string emailContact;
         public readonly string departement;
+        public readonly string RomeDomain;
+        public readonly string entreprise;
+        
 
-        public Alternances(string reference, string title,Category categ,  string url, User user, string diplome, string perio, string cap, string city, string cod, string email,string department) : base(reference,title, categ,url,user)
+
+        public Alternances(string reference, string title,Category categ,  string url, User user, string diplome, string perio, string cap, string city, string cod, string email,string department,string rome,string enter) : base(reference,title, categ,url,user)
         {
             DiplomaLevel = diplome;
             Period = perio;
@@ -24,6 +28,8 @@ namespace RRelationnelle.Models
             Zipcode = cod;
             emailContact = email;
             departement = department;
+            RomeDomain = rome;
+            entreprise = enter;
 
         }
     }
