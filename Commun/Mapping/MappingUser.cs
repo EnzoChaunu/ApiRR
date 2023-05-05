@@ -22,7 +22,10 @@ namespace RRelationnelle
                      opt => opt.MapFrom(src => src.Role.id_role))
               .ForMember(dest => 
                     dest.FName,
-                    opt => opt.MapFrom(src => src.FName))
+                    opt => opt.MapFrom(src => src.FName)) 
+              .ForMember(dest => 
+                    dest.token,
+                    opt => opt.MapFrom(src => src.token))
               .ForMember(dest =>
                     dest.LName,
                     opt => opt.MapFrom(src => src.LName))

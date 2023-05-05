@@ -11,6 +11,7 @@ namespace RRelationnelle
         public string Email { get; set; }
         public string Password { get; set; }
         public string Login { get; set; }
+        public string token { get; set; }
         public bool Activation { get; set; }
         public DateTime CreationDate { get; set; }
         public Roles Role { get; set;}

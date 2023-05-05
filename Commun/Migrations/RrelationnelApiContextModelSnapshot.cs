@@ -233,6 +233,9 @@ namespace Commun.Migrations
                     b.Property<int?>("id_role")
                         .HasColumnType("int");
 
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id_User");
 
                     b.HasIndex("id_role");

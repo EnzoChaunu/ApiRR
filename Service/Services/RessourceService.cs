@@ -21,6 +21,14 @@ using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
 using System.Text.RegularExpressions;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+using System.Threading;
+using System.IO;
+using MimeKit;
+using System.Text;
+using Commun.Hash;
 
 namespace RRelationnelle.Service
 {
@@ -70,7 +78,7 @@ namespace RRelationnelle.Service
             var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
             if (user != null)
             {
-                 var response = await _api.GetFormation();
+                var response = await _api.GetFormation();
                 var Category = await _categRepo.GetByName("Formation");
 
                 if (Category == null)
@@ -420,69 +428,48 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async Task<Response<bool>> ShareRessource(int ress, int expediteur, string destinataireEmail)
+        public async Task<Response<bool>> ShareRessource(int ress, string expediteur, string destinataireEmail)
         {
-            var ressource = await _repo.Get(ress);
-            var expe = await _user.Get(expediteur);
+            var token = Hashing.HashToken(expediteur);
+            var expe = await _user.GetUserByToken(token);
             if (expe != null)
             {
                 if (destinataireEmail != null)
                 {
+                    var ressource = await _repo.Get(ress);
                     if (ressource != null)
                     {
                         // Extraction du domaine de l'adresse e-mail
-                        string domain = Regex.Match(expe.Email, @"(?<=@)[^.]+(?=.)").Value;
+                        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+
+
+                        // Configuration du client SMTP pour Gmail
+
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential(expe.Email, "sicqjbexttqxcffa");
+                        smtp.EnableSsl = true;
+
+                        // Envoi du message e-mail
+                        try
+                        {
+                            MailMessage mail = new MailMessage();
+                            mail.From = new MailAddress("chaunu.enzo@gmail.com");
+                            mail.To.Add(destinataireEmail);
+                            mail.Subject = "Partage de ressource de la part de " + expe.LName;
+                            mail.Body = "Hey je t'ai partagé une ressource j'espère qu'elle va t'interésser !\n\n" + ressource._title + "\n\n" + ressource._url + "\n\n\n\nCeci est un message autogénéré envoyé depuis l'application Rrelationnel de la part de " + expe.FName + " " + expe.LName;
+                            smtp.Send(mail);
+                            var reponse = await _repo.ShareRessource(ress);
+                            return new Response<bool>(200, true, "Email envoyé avec succès");
+                        }
 
                         // Détection du fournisseur de messagerie
-                        if ((domain == "gmail") || (domain == "orange") || (domain == "outlook") || (domain == "yahoo"))
+
+                        catch (SmtpException ex)
                         {
-                            SmtpClient smtp = new SmtpClient();
-                            switch (domain)
-                            {
-                                case "gmail":
-                                    smtp = new SmtpClient("smtp.gmail.com", 587);
-                                    break;
-                                case "orange":
-                                    smtp = new SmtpClient("smtp.orange.com", 587);
-                                    break;
-                                case "outlook":
-                                    smtp = new SmtpClient("smtp.outlook.com", 587);
-                                    break;
-                                case "yahoo":
-                                    smtp = new SmtpClient("smtp.yahoo.com", 587);
-                                    break;
-                                default:
-                                    return new Response<bool>(404, false, "Fournisseur de messagerie non pris en charge !");
-                            }
 
-                            // Configuration du client SMTP pour Gmail
-
-                            smtp.UseDefaultCredentials = false;
-                            smtp.Credentials = new NetworkCredential(expe.Email, "Amazir33%");
-                            smtp.EnableSsl = true;
-
-                            // Envoi du message e-mail
-                            try
-                            {
-                                MailMessage mail = new MailMessage();
-                                mail.From = new MailAddress(expe.Email);
-                                mail.To.Add(destinataireEmail);
-                                mail.Subject = "Partage de ressource de la part de "+expe.LName;
-                                mail.Body = "Hey je t'ai partagé une ressource j'espère qu'elle va t'interésser !\n"+ressource._title+"\n"+ressource._url;
-                                smtp.Send(mail);
-                                var reponse = await _repo.ShareRessource(ress);
-                                return new Response<bool>(200, true, "Email envoyé avec succès");
-                            }
-                            catch (Exception ex)
-                            {
-
-                                return new Response<bool>(500, false, ex.Message);
-                            }
+                            return new Response<bool>(500, false, ex.Message);
                         }
-                        else
-                        {
-                            return new Response<bool>(404, false, "Fournisseur de messagerie non pris en charge !");
-                        }
+
                     }
                     else
                     {
@@ -497,7 +484,7 @@ namespace RRelationnelle.Service
             }
             else
             {
-                return new Response<bool>(404, false, "Expéditeur non trouvé");
+                return new Response<bool>(401, false, "Non-autorisé");
             }
         }
     }

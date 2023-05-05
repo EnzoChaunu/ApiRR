@@ -1,5 +1,6 @@
 ﻿using Commun.dto;
 using Commun.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RRelationnelle.dto;
 using RRelationnelle.Service;
@@ -19,24 +20,25 @@ namespace RRelationnelle
         {
             _service = service;
         }
-        
+
         [HttpGet("Alternances&Formations")]
-        public async Task<IActionResult> GetFormation(string romeDomain,string region)
+        public async Task<IActionResult> GetFormation(string romeDomain, string region)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.GetFormationForFront(romeDomain,region);
-            if (reponse.ResponseCode==200)
+            var reponse = await _service.GetFormationForFront(romeDomain, region);
+            if (reponse.ResponseCode == 200)
             {
                 return Ok(reponse);
             }
-            else if (reponse.ResponseCode==500)
+            else if (reponse.ResponseCode == 500)
             {
                 return BadRequest(reponse);
-            }else
+            }
+            else
             {
                 return NotFound(reponse);
             }
-           
+
         }
 
         [HttpGet("Job")]
@@ -79,10 +81,10 @@ namespace RRelationnelle
         }
 
         [HttpPost("user/{user}/ressource/{ressource}/AddToFavorites")]
-        public async Task<IActionResult> AddToFavorite(int user,int ressource)
+        public async Task<IActionResult> AddToFavorite(int user, int ressource)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.AddFavorite(user,  ressource);
+            var reponse = await _service.AddFavorite(user, ressource);
             if (reponse.ResponseCode == 200)
             {
                 return Ok(reponse);
@@ -97,23 +99,33 @@ namespace RRelationnelle
             }
         }
 
-        [HttpPost("user/{expediteur}/ressource/{ress}/destinataire/{destinataireEmail}/ShareRessource")]
-        public async Task<IActionResult> ShareRessource(int ress, int expediteur, string destinataireEmail)
+        [HttpPost("ressource/{ress}/destinataire/{destinataireEmail}/ShareRessource")]
+        [Authorize]
+        public async Task<IActionResult> ShareRessource(int ress, string destinataireEmail)
         {
-            //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.ShareRessource(ress, expediteur,destinataireEmail);
-            if (reponse.ResponseCode == 200)
+
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
-                return Ok(reponse);
-            }
-            else if (reponse.ResponseCode == 500)
-            {
-                return BadRequest(reponse);
+                var token = authHeader.ToString().Replace("Bearer ", "");
+                var reponse = await _service.ShareRessource(ress, token, destinataireEmail);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
             }
             else
             {
-                return NotFound(reponse);
+                return Unauthorized();
             }
+            //await = attendre de facon asynchrone la fin d'une tache
         }
 
         [HttpGet("{idUser}")]

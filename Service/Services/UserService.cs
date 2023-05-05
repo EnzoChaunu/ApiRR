@@ -1,7 +1,12 @@
 ﻿using Business.Interfaces;
+using Commun.Hash;
 using Commun.Responses;
 using DataAccess.Interfaces;
+using Nest;
+using Org.BouncyCastle.Ocsp;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -75,7 +80,8 @@ namespace RRelationnelle.Services
                                 (500, null, "Communication failed with Database.");
                         }
                     }
-                    else {
+                    else
+                    {
                         return new Response<UserDto>
                                 (404, null, string.Format("user {0} doesn't exists", obj.Email));
                     }
@@ -85,8 +91,8 @@ namespace RRelationnelle.Services
                     return new Response<UserDto>
                                 (500, null, string.Format("email {0} invalid format.", obj.Email));
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {
@@ -112,7 +118,7 @@ namespace RRelationnelle.Services
                                     (404, null, string.Format("user {0} not found", id));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new Response<UserDto>
                                     (500, null, ex.Message);
@@ -128,7 +134,7 @@ namespace RRelationnelle.Services
             }
             else
             {
-                if(CheckEmail(obj.Email))
+                if (CheckEmail(obj.Email))
                 {
                     try
                     {
@@ -147,7 +153,7 @@ namespace RRelationnelle.Services
                                 (500, null, "Communication failed with Database.");
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         return new Response<UserDto>
                                 (500, null, "Communication failed with Database.");
@@ -170,6 +176,23 @@ namespace RRelationnelle.Services
                 return true;
             else
                 return false;
+        }
+
+        public async Task<Response<UserDto>> UpdateUserToken(int user, string token)
+        {
+            var hashToken = Hashing.HashToken(token);
+            var reponse = await _repos.UpdateUserToken(user, hashToken);
+            if (reponse != null)
+            {
+                var map = MappingUser.UserMapper();
+                var us = map.Map<User, UserDto>(reponse);
+                return new Response<UserDto>(200, us, "token modifié avec succès");
+            }
+            else
+            {
+                return new Response<UserDto>(400, null, "Erreur modification token");
+
+            }
         }
     }
 }

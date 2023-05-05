@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Nest;
 
 namespace RRelationnelle.Repos
 {
@@ -89,6 +90,28 @@ namespace RRelationnelle.Repos
                 _Dbcontext.User.Update(user);
                 await _Dbcontext.SaveChangesAsync();
                 return user;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<User> GetUserByToken(string token)
+        {
+            return await _Dbcontext.User.FirstOrDefaultAsync(u => u.token == token);
+        }
+
+        public async Task<User> UpdateUserToken(int user, string token)
+        {
+            try
+            {
+                var us = await _Dbcontext.User.FindAsync(user);
+                us.token = token;
+               
+                _Dbcontext.User.Update(us);
+                await _Dbcontext.SaveChangesAsync();
+                return us;
             }
             catch
             {
