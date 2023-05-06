@@ -4,7 +4,6 @@ using Commun.dto;
 using Commun.Responses;
 using DataAccess.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
@@ -13,11 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.Extensions.Caching;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Nest;
-using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -264,11 +258,11 @@ namespace RRelationnelle.Service
 
         }
 
-        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user, int ressource)
+        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(string token, int ressource)
         {
             try
             {
-                var userM = await _user.Get(user);
+                var userM = await _user.GetUserByToken(token);
                 if (userM != null)
                 {
                     var RessourceM = await _repo.Get(ressource);
@@ -304,7 +298,7 @@ namespace RRelationnelle.Service
                 }
                 else
                 {
-                    return new Response<UserfavoriteRessourceDto>(404, null, "User inexistant");
+                    return new Response<UserfavoriteRessourceDto>(401, null, "Unauthorize");
                 }
             }
             catch (Exception ex)
@@ -381,10 +375,10 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(int iduser)
+        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(string token)
         {
             var ressourceListDto = new List<RessourceDto>();
-            var user = await _user.Get(iduser);
+            var user = await _user.GetUserByToken(token);
             if (user != null)
             {
                 List<Ressource> ressources = await _repo.GetRessourceListUser(user.Id_User);
@@ -424,7 +418,7 @@ namespace RRelationnelle.Service
             }
             else
             {
-                return new Response<List<RessourceDto>>(404, null, "Cet utilisateur n'a pas été trouvé");
+                return new Response<List<RessourceDto>>(401, null, "Unauthorize");
             }
         }
 

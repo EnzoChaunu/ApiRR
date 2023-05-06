@@ -80,22 +80,35 @@ namespace RRelationnelle
             }
         }
 
-        [HttpPost("user/{user}/ressource/{ressource}/AddToFavorites")]
-        public async Task<IActionResult> AddToFavorite(int user, int ressource)
+        [HttpPost("ressource/{ressource}/AddToFavorites")]
+        public async Task<IActionResult> AddToFavorite(int ressource)
         {
-            //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.AddFavorite(user, ressource);
-            if (reponse.ResponseCode == 200)
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
-                return Ok(reponse);
-            }
-            else if (reponse.ResponseCode == 500)
-            {
-                return BadRequest(reponse);
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.AddFavorite(token, ressource);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
             }
             else
             {
-                return NotFound(reponse);
+                return Unauthorized();
             }
         }
 
@@ -116,6 +129,10 @@ namespace RRelationnelle
                 {
                     return BadRequest(reponse);
                 }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
                 else
                 {
                     return NotFound(reponse);
@@ -128,22 +145,36 @@ namespace RRelationnelle
             //await = attendre de facon asynchrone la fin d'une tache
         }
 
-        [HttpGet("{idUser}")]
-        public async Task<IActionResult> GetRessourceByUser(int idUser)
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetRessourceByUser()
         {
-            //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.GetListRessourceByUser(idUser);
-            if (reponse.ResponseCode == 200)
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
-                return Ok(reponse);
-            }
-            else if (reponse.ResponseCode == 500)
-            {
-                return BadRequest(reponse);
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.GetListRessourceByUser(token);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
             }
             else
             {
-                return NotFound(reponse);
+                return Unauthorized();
             }
         }
     }
