@@ -14,7 +14,6 @@ namespace RRelationnelle
         public string token { get; set; }
         public bool Activation { get; set; }
         public DateTime CreationDate { get; set; }
-        public Roles Role { get; set;}
         public int IdRole { get; set;}
     }
 }

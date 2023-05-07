@@ -73,6 +73,8 @@ namespace RRelationnelle
             services.AddScoped<CategoryRepository>();
             services.AddScoped<UserService>();
             services.AddScoped<UserRepo>();
+            services.AddScoped<RolesService>();
+            services.AddScoped<RolesRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IService<CategoryDto>, CategoryService>();
@@ -92,15 +94,21 @@ namespace RRelationnelle
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService Serv)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService serv, RolesRepository roleRepo)
         {
-            /* var task = Task.Run(async () =>
-             {
-                 await Serv.GetFormation();
-                 await Serv.GetJob();
-             });
+            //var task = Task.Run(async () =>
+            //{
+            //    await serv.GetFormation();
+            //    await serv.GetJob();
+            //});
 
-             task.Wait();*/
+            //task.Wait();
+            var task = Task.Run(async () =>
+            {
+                await roleRepo.AddRolesAtStartUp();
+            });
+
+            task.Wait();
 
             app.UseCors(builder =>
             {

@@ -12,8 +12,8 @@ using RRelationnelle;
 namespace Commun.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230505175207_initialcreate")]
-    partial class initialcreate
+    [Migration("20230507144906_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
