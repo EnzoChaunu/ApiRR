@@ -4,7 +4,6 @@ using Commun.dto;
 using Commun.Responses;
 using DataAccess.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RRelationnelle.dto;
 using RRelationnelle.Mapping;
@@ -13,11 +12,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using Microsoft.Extensions.Caching;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Nest;
-using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
+using System.Text.RegularExpressions;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+using System.Threading;
+using System.IO;
+using MimeKit;
+using System.Text;
+using Commun.Hash;
 
 namespace RRelationnelle.Service
 {
@@ -63,11 +68,11 @@ namespace RRelationnelle.Service
 
         public async Task GetFormation()
         {
-            var response = await _api.GetFormation();
             List<AlternanceDto> liste = new List<AlternanceDto>();
-            var user = await _user.GetByEmail("chaunu.enzo@hotmail.fr");
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
             if (user != null)
             {
+                var response = await _api.GetFormation();
                 var Category = await _categRepo.GetByName("Formation");
 
                 if (Category == null)
@@ -174,10 +179,10 @@ namespace RRelationnelle.Service
         public async Task GetJob()
         {
             List<JobDto> list = new List<JobDto>();
-            var response = await _api.GetJob();
-            var user = await _user.GetByEmail("chaunu.enzo@hotmail.fr");
+            var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
             if (user != null)
             {
+                var response = await _api.GetJob();
                 var Category = await _categRepo.GetByName("Job");
                 if (Category == null)
                 {
@@ -253,11 +258,11 @@ namespace RRelationnelle.Service
 
         }
 
-        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user, int ressource)
+        public async Task<Response<UserfavoriteRessourceDto>> AddFavorite(string token, int ressource)
         {
             try
             {
-                var userM = await _user.Get(user);
+                var userM = await _user.GetUserByToken(token);
                 if (userM != null)
                 {
                     var RessourceM = await _repo.Get(ressource);
@@ -293,7 +298,7 @@ namespace RRelationnelle.Service
                 }
                 else
                 {
-                    return new Response<UserfavoriteRessourceDto>(404, null, "User inexistant");
+                    return new Response<UserfavoriteRessourceDto>(401, null, "Unauthorize");
                 }
             }
             catch (Exception ex)
@@ -370,10 +375,10 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(int iduser)
+        public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(string token)
         {
             var ressourceListDto = new List<RessourceDto>();
-            var user = await _user.Get(iduser);
+            var user = await _user.GetUserByToken(token);
             if (user != null)
             {
                 List<Ressource> ressources = await _repo.GetRessourceListUser(user.Id_User);
@@ -413,7 +418,67 @@ namespace RRelationnelle.Service
             }
             else
             {
-                return new Response<List<RessourceDto>>(404, null, "Cet utilisateur n'a pas été trouvé");
+                return new Response<List<RessourceDto>>(401, null, "Unauthorize");
+            }
+        }
+
+        public async Task<Response<bool>> ShareRessource(int ress, string expediteur, string destinataireEmail)
+        {
+            var token = Hashing.HashToken(expediteur);
+            var expe = await _user.GetUserByToken(token);
+            if (expe != null)
+            {
+                if (destinataireEmail != null)
+                {
+                    var ressource = await _repo.Get(ress);
+                    if (ressource != null)
+                    {
+                        // Extraction du domaine de l'adresse e-mail
+                        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+
+
+                        // Configuration du client SMTP pour Gmail
+
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = new NetworkCredential(expe.Email, "sicqjbexttqxcffa");
+                        smtp.EnableSsl = true;
+
+                        // Envoi du message e-mail
+                        try
+                        {
+                            MailMessage mail = new MailMessage();
+                            mail.From = new MailAddress("chaunu.enzo@gmail.com");
+                            mail.To.Add(destinataireEmail);
+                            mail.Subject = "Partage de ressource de la part de " + expe.LName;
+                            mail.Body = "Hey je t'ai partagé une ressource j'espère qu'elle va t'interésser !\n\n" + ressource._title + "\n\n" + ressource._url + "\n\n\n\nCeci est un message autogénéré envoyé depuis l'application Rrelationnel de la part de " + expe.FName + " " + expe.LName;
+                            smtp.Send(mail);
+                            var reponse = await _repo.ShareRessource(ress);
+                            return new Response<bool>(200, true, "Email envoyé avec succès");
+                        }
+
+                        // Détection du fournisseur de messagerie
+
+                        catch (SmtpException ex)
+                        {
+
+                            return new Response<bool>(500, false, ex.Message);
+                        }
+
+                    }
+                    else
+                    {
+
+                        return new Response<bool>(404, false, "Ressource non trouvéee");
+                    }
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Mail du destinataire non renseigné");
+                }
+            }
+            else
+            {
+                return new Response<bool>(401, false, "Non-autorisé");
             }
         }
     }

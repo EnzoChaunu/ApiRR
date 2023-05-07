@@ -21,6 +21,7 @@ namespace RRelationnelle
         public bool _activation { get; set; }
         public string _reference { get; set; }
         public int _views { get; set; }
+        public int _shared { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
 

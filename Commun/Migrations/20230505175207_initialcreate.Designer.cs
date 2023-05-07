@@ -12,7 +12,7 @@ using RRelationnelle;
 namespace Commun.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230501101111_initialcreate")]
+    [Migration("20230505175207_initialcreate")]
     partial class initialcreate
     {
         /// <inheritdoc />
@@ -139,6 +139,9 @@ namespace Commun.Migrations
                     b.Property<string>("_reference")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("_shared")
+                        .HasColumnType("int");
+
                     b.Property<string>("_title")
                         .HasColumnType("nvarchar(max)");
 
@@ -232,6 +235,9 @@ namespace Commun.Migrations
 
                     b.Property<int?>("id_role")
                         .HasColumnType("int");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id_User");
 

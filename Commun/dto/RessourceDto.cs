@@ -14,6 +14,7 @@ namespace RRelationnelle
         public User modification { get; set; }
         public int _user { get; set; }
         public int _views { get; set; }
+        public int shared { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
         public List<CommentDto> _comments { get; set; }

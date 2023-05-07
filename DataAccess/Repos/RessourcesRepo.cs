@@ -206,5 +206,21 @@ namespace RRelationnelle.Repos
                 return null;
             }
         }
+
+        public async Task<bool> ShareRessource(int id)
+        {
+            try
+            {
+                var entity = await _Dbcontext.Ressource.FindAsync(id);
+                entity._shared += 1;
+                _Dbcontext.Ressource.Update(entity);
+                await _Dbcontext.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
+        }
     }
 }
