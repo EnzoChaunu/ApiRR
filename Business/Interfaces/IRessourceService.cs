@@ -17,10 +17,10 @@ namespace Business.Interfaces
         public Task GetJob();
         public Task<Response<List<JobDto>>> GetJobForFront(string secteurActivite);
         public Task GetFormation();
-        public Task<Response<UserfavoriteRessourceDto>> AddFavorite(int user,int ressource);
+        public Task<Response<UserfavoriteRessourceDto>> AddFavorite(string token,int ressource);
         public void RefreshCache ();
         public Task<Response<List<AlternanceDto>>> GetFormationForFront(string romeDomain,string departement);
-        public Task<Response<List<RessourceDto>>> GetListRessourceByUser(int iduser);
+        public Task<Response<List<RessourceDto>>> GetListRessourceByUser(string token);
 
 
     }
