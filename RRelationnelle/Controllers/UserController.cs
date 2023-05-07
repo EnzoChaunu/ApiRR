@@ -20,28 +20,76 @@ namespace APIRRelationnel
 
 
         [HttpGet("GetUser/{id}")]
-        public async Task<Response<UserDto>> GetUser(int id)
+        public async Task<IActionResult> GetUser(int id)
         {
-            return await _service.Get(id);
+            var reponse = await _service.Get(id);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
 
         [HttpPut("ArchiveUser/{id}")]
-        public async Task<Response<bool>> ArchiveUser(int id)
+        public async Task<IActionResult> ArchiveUser(int id)
         {
-            return await _service.Archive(id);
+            var reponse = await _service.Archive(id);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public async Task<Response<UserDto>> UpdateUser(UserDto user, int id)
+        public async Task<IActionResult> UpdateUser(UserDto user, int id)
         {
-            return await _service.Update(user, id); 
+            var reponse = await _service.Update(user, id);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
         }
 
         [HttpPost]
-        public async Task<Response<UserDto>> CreateUser(UserDto user)
+        public async Task<IActionResult> CreateUser(UserDto user)
         {
-            return await _service.Create(user);
-           
+            var reponse = await _service.Create(user);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+
         }
     }
 }
