@@ -94,13 +94,20 @@ namespace RRelationnelle
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService Serv)
         {
-           /* var task = Task.Run(async () =>
-            {
-                await Serv.GetFormation();
-                await Serv.GetJob();
-            });
+            /* var task = Task.Run(async () =>
+             {
+                 await Serv.GetFormation();
+                 await Serv.GetJob();
+             });
 
-            task.Wait();*/
+             task.Wait();*/
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+            });
 
             if (env.IsDevelopment())
             {
