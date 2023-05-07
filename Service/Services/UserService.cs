@@ -48,16 +48,18 @@ namespace RRelationnelle.Services
         //    else { return false; }
         //}
 
-        //TODO : Parse excresponeption en Json    
         public async Task<Response<UserDto>> Create(UserDto obj)
         {
             try
             {
                 if (CheckEmail(obj.Email))
                 {
-                    var map = MappingUser.UserMapper();
                     var role = await _reposRole.Get(obj.IdRole);
-                    obj.Role = role;
+                    var map = MappingUser.UserMapper();
+                    
+                    obj.IdRole = role.id_role;
+                    obj.CreationDate= DateTime.Now;
+                    obj.Activation = true;
                     User userDb = map.Map<UserDto, User>(obj);
                     if (await _repos.GetByEmail(obj.Email) == null)
                     {
@@ -161,6 +163,7 @@ namespace RRelationnelle.Services
             }
         }
 
+        //Can be tested
         public bool CheckEmail(string email)
         {
             string strRegex = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";

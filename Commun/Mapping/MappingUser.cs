@@ -5,7 +5,7 @@ namespace RRelationnelle
 {
     public class MappingUser : Profile
     {
-        public static Mapper UserMapper()
+        public static Mapper UserMapper(/*RolesDto role*/)
         {
             var config = new MapperConfiguration(cfg =>
             {
