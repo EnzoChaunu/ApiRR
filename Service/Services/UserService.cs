@@ -53,17 +53,18 @@ namespace RRelationnelle.Services
         //    else { return false; }
         //}
 
-        //TODO : Parse excresponeption en Json    
         public async Task<Response<UserDto>> Create(UserDto obj)
         {
             try
             {
-                if (CheckEmail(obj.Email))
+                    if (CheckEmail(obj.Email))
                 {
-                    var map = MappingUser.UserMapper();
                     var role = await _reposRole.Get(obj.IdRole);
-                    obj.Role = role;
+                    var map = MappingUser.UserMapperModelToDto();
+                    obj.CreationDate= DateTime.Now;
+                    obj.Activation = true;
                     User userDb = map.Map<UserDto, User>(obj);
+                    userDb.Role= role;
                     if (await _repos.GetByEmail(obj.Email) == null)
                     {
                         var rep = await _repos.Create(userDb);
@@ -83,13 +84,13 @@ namespace RRelationnelle.Services
                     else
                     {
                         return new Response<UserDto>
-                                (404, null, string.Format("user {0} doesn't exists", obj.Email));
+                                (500, null, string.Format("user {0} already exists", obj.Email));
                     }
                 }
                 else
                 {
                     return new Response<UserDto>
-                                (500, null, string.Format("email {0} invalid format.", obj.Email));
+                                (400, null, string.Format("email {0} invalid format.", obj.Email));
                 }
 
 
@@ -105,7 +106,7 @@ namespace RRelationnelle.Services
         {
             try
             {
-                var mapper = MappingUser.UserMapper();
+                var mapper = MappingUser.UserMapperDtoToModel();
                 var rep = await _repos.Get(id);
                 if (rep != null)
                 {
@@ -138,7 +139,8 @@ namespace RRelationnelle.Services
                 {
                     try
                     {
-                        var mapper = MappingUser.UserMapper();
+                        var role = await _reposRole.Get(obj.IdRole);
+                        var mapper = MappingUser.UserMapperModelToDto();
                         var userDb = mapper.Map<UserDto, User>(obj);
                         var rep = await _repos.Update(userDb, id);
                         if (rep != null)
@@ -156,7 +158,7 @@ namespace RRelationnelle.Services
                     catch (Exception ex)
                     {
                         return new Response<UserDto>
-                                (500, null, "Communication failed with Database.");
+                                (500, null, ex.Message);
                     }
                 }
                 else
@@ -167,6 +169,7 @@ namespace RRelationnelle.Services
             }
         }
 
+        //Can be tested
         public bool CheckEmail(string email)
         {
             string strRegex = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
@@ -184,7 +187,7 @@ namespace RRelationnelle.Services
             var reponse = await _repos.UpdateUserToken(user, hashToken);
             if (reponse != null)
             {
-                var map = MappingUser.UserMapper();
+                var map = MappingUser.UserMapperDtoToModel();
                 var us = map.Map<User, UserDto>(reponse);
                 return new Response<UserDto>(200, us, "token modifié avec succès");
             }

@@ -17,6 +17,18 @@ namespace RRelationnelle
             _ctx = ctx;
         }
 
+        public async Task AddRolesAtStartUp()
+        {
+            string[] Roles = { "SupAdmin", "Admin", "Moderator", "Citizen" };
+            foreach (var role in Roles)
+            {
+                Roles obj = new Roles();
+                obj.name = role;
+                if(await _ctx.Role.FirstOrDefaultAsync(p => p.name == role) == null)
+                    await Create(obj);
+            }
+        }
+
         public async Task<bool> Archive(int id)
         {
             var entity = await _ctx.Role.FindAsync(id);
