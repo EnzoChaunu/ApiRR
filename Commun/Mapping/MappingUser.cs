@@ -6,7 +6,7 @@ namespace RRelationnelle
 {
     public class MappingUser : Profile
     {
-        public static Mapper UserMapperModelToDto(/*Roles role*/)
+        public static Mapper UserMapperModelToDto()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -19,12 +19,9 @@ namespace RRelationnelle
                     dest.IdRole,
                      opt => opt.MapFrom(src => src.Role.id_role))
               .ForMember(dest =>
-                    dest.IdRole,
-                     opt => opt.MapFrom(src => src.Role.id_role))
-              .ForMember(dest => 
                     dest.FName,
-                    opt => opt.MapFrom(src => src.FName)) 
-              .ForMember(dest => 
+                    opt => opt.MapFrom(src => src.FName))
+              .ForMember(dest =>
                     dest.token,
                     opt => opt.MapFrom(src => src.token))
               .ForMember(dest =>
@@ -44,8 +41,8 @@ namespace RRelationnelle
                     opt => opt.MapFrom(src => src.Activation))
               .ForMember(dest =>
                     dest.CreationDate,
-                    opt => opt.MapFrom(src => src.CreationDate))
-                .ReverseMap();
+                    opt => opt.MapFrom(src => src.CreationDate));
+               
 
             });
 
@@ -88,8 +85,7 @@ namespace RRelationnelle
                     opt => opt.MapFrom(src => src.Activation))
               .ForMember(dest =>
                     dest.CreationDate,
-                    opt => opt.MapFrom(src => src.CreationDate))
-                .ReverseMap();
+                    opt => opt.MapFrom(src => src.CreationDate));
 
             });
 

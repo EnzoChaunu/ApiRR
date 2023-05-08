@@ -20,11 +20,11 @@ namespace RRelationnelle
             _repos = repos;
         }
 
-        public UserDto Authenticate(string email, string pswd)
+        public async Task<UserDto> Authenticate(string email, string pswd)
         {
             List<User> userDb = new List<User>();
-            userDb = _repos.GetUsers();
-            var mapper = MappinLog.LogMapper();
+            userDb = await _repos.GetUsers();
+            var mapper = MappingUser.UserMapperModelToDto();
             List<UserDto> UserDto = mapper.Map<List<User>, List<UserDto>>(userDb);
    
             if (UserDto != null)
