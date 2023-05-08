@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace RRelationnelle
 {
@@ -12,12 +14,12 @@ namespace RRelationnelle
             this._ctx = ctx;
         }
 
-        public List<User> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
             List<User> users = new List<User>();
             if (_ctx != null)
             {
-                users = _ctx.User.ToList();
+                users = await _ctx.User.Include(r => r.Role).ToListAsync();
                 return users;
             }
             else

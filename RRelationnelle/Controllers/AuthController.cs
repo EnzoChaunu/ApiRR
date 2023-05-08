@@ -27,7 +27,7 @@ namespace RRelationnelle
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
-            var user = _JwtAuthService.Authenticate(model.Email, model.Password);
+            var user =  await _JwtAuthService.Authenticate(model.Email, model.Password);
             if(user != null)
             {
                 var claims = new List<Claim>
