@@ -60,16 +60,17 @@ namespace RRelationnelle.Services
                     if (CheckEmail(obj.Email))
                 {
                     var role = await _reposRole.Get(obj.IdRole);
-                    var map = MappingUser.UserMapperModelToDto();
+                    var map = MappingUser.UserMapperDtoToModel(role);
                     obj.CreationDate= DateTime.Now;
                     obj.Activation = true;
                     User userDb = map.Map<UserDto, User>(obj);
-                    userDb.Role= role;
+                    
                     if (await _repos.GetByEmail(obj.Email) == null)
                     {
                         var rep = await _repos.Create(userDb);
                         if (rep != null)
                         {
+                            map = MappingUser.UserMapperModelToDto();
                             UserDto user = map.Map<User, UserDto>(rep);
 
                             return new Response<UserDto>
