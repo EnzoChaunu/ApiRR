@@ -53,7 +53,7 @@ namespace RRelationnelle
             return mapper;
         }
 
-        public static Mapper UserMapperDtoToModel()
+        public static Mapper UserMapperDtoToModel(Roles role)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -63,8 +63,8 @@ namespace RRelationnelle
                    dest.Id_User,
                    opt => opt.MapFrom(src => src.Id))
               .ForMember(dest =>
-                    dest.Role.id_role,
-                     opt => opt.MapFrom(src => src.IdRole))
+                    dest.Role,
+                     opt => opt.MapFrom(src => role))
               .ForMember(dest =>
                     dest.FName,
                     opt => opt.MapFrom(src => src.FName))

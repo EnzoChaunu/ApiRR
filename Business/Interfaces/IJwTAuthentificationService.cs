@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Commun.Responses;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
     public interface IJwTAuthentificationService
     {
         UserDto Authenticate(string email, string pswd);
-        string GenerateToken(string secretKey, List<Claim> claim);
+        Task<Response<string>> GenerateToken(string secretKey, List<Claim> claim);
 
     }
 }

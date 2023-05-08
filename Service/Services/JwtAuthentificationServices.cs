@@ -1,4 +1,5 @@
-﻿using DataAccess.Interfaces;
+﻿using Commun.Responses;
+using DataAccess.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -44,7 +46,7 @@ namespace RRelationnelle
             }
         }
 
-        public string GenerateToken(string secretKey, List<Claim> claim)
+        public async Task<Response<string>> GenerateToken(string secretKey, List<Claim> claim)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -55,7 +57,8 @@ namespace RRelationnelle
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return await Task.FromResult(new Response<string>(200, tokenHandler.WriteToken(token), "new token"));
+            
         }
     }
 }
