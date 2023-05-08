@@ -106,7 +106,7 @@ namespace RRelationnelle.Services
         {
             try
             {
-                var mapper = MappingUser.UserMapperDtoToModel();
+                var mapper = MappingUser.UserMapperModelToDto();
                 var rep = await _repos.Get(id);
                 if (rep != null)
                 {
@@ -140,7 +140,7 @@ namespace RRelationnelle.Services
                     try
                     {
                         var role = await _reposRole.Get(obj.IdRole);
-                        var mapper = MappingUser.UserMapperModelToDto();
+                        var mapper = MappingUser.UserMapperDtoToModel(role);
                         var userDb = mapper.Map<UserDto, User>(obj);
                         var rep = await _repos.Update(userDb, id);
                         if (rep != null)
@@ -181,13 +181,14 @@ namespace RRelationnelle.Services
                 return false;
         }
 
-        public async Task<Response<UserDto>> UpdateUserToken(int user, string token)
+        public async Task<Response<UserDto>> UpdateUserToken(int user, Response<string> token)
         {
-            var hashToken = Hashing.HashToken(token);
+            var hashToken = Hashing.HashToken(token.Data);
             var reponse = await _repos.UpdateUserToken(user, hashToken);
             if (reponse != null)
             {
-                var map = MappingUser.UserMapperDtoToModel();
+               
+                var map = MappingUser.UserMapperModelToDto();
                 var us = map.Map<User, UserDto>(reponse);
                 return new Response<UserDto>(200, us, "token modifié avec succès");
             }
