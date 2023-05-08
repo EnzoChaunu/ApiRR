@@ -145,7 +145,7 @@ namespace RRelationnelle
             //await = attendre de facon asynchrone la fin d'une tache
         }
 
-        [HttpGet]
+        [HttpGet("RessourceByUser")]
         [Authorize]
         public async Task<IActionResult> GetRessourceByUser()
         {
