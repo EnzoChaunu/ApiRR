@@ -7,7 +7,7 @@ namespace RRelationnelle
 {
     public interface IJwTAuthentificationService
     {
-        Task<UserDto> Authenticate(string email, string pswd);
+        Task<Response<UserDto>> Authenticate(string email, string pswd);
         Task<Response<string>> GenerateToken(string secretKey, List<Claim> claim);
 
     }
