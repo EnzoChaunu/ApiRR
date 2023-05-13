@@ -14,8 +14,17 @@ namespace Commun.Mapping
         {
             var config = new MapperConfiguration(cfg =>
             {
-            cfg.CreateMap<Comment, CommentDto>()
-            );
+                cfg.CreateMap<Comment, CommentDto>()
+
+                .ForMember(dest =>
+                dest.Id,
+                opt => opt.MapFrom(src => src.id_comments))
+                .ForMember(dest => 
+                dest.Content,
+                opt => opt.MapFrom(src => src.content))
+                .ForMember(dest =>
+                dest.)
+            }
         }
 
     }
