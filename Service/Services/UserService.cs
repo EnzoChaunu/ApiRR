@@ -5,6 +5,7 @@ using DataAccess.Interfaces;
 using Nest;
 using Org.BouncyCastle.Ocsp;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -198,6 +199,34 @@ namespace RRelationnelle.Services
                 return new Response<UserDto>(400, null, "Erreur modification token");
 
             }
+        }
+
+        public async Task<Response<List<UserDto>>> GetUserListByRole(string role)
+        {
+            try
+            {
+                if (await _reposRole.GetByName(role) != null)
+                {
+                    var response = await _repos.GetUserListByRole(role);
+                    var mapper = MappingUser.UserMapperModelToDto();
+                    var list = mapper.Map<List<User>, List<UserDto>>(response);
+                    if (list.Count < 0)
+                        return new Response<List<UserDto>>(200, list, string.Format("Voici la liste de {0}", role));
+                    else
+                        return new Response<List<UserDto>>(500, list, string.Format("Aucune occurence pour Role {0}", role));
+                }
+                else
+                {
+                    return new Response<List<UserDto>>(500, null, string.Format("Erreur ! Role {0} n'existe pas", role));
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                return new Response<List<UserDto>>
+                                (500, null, ex.Message);
+            }
+            
         }
     }
 }

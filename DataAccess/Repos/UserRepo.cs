@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +13,13 @@ namespace RRelationnelle.Repos
     {
         private readonly RrelationnelApiContext _Dbcontext;
         private readonly IConfiguration _configuration;
+        private IRolesRepository _rolesRepository;
 
-        public UserRepo(RrelationnelApiContext context,IConfiguration config)
+        public UserRepo(RrelationnelApiContext context,IConfiguration config, IRolesRepository roleRepo)
         {
             _Dbcontext = context;
             _configuration = config;
+            _rolesRepository = roleRepo;
         }
 
         public async Task<bool> Archive(int id)
@@ -116,6 +120,19 @@ namespace RRelationnelle.Repos
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task<List<User>> GetUserListByRole(string role)
+        {
+            try
+            {
+                    var users = await _Dbcontext.User.Where(u => u.Role.name == role).ToListAsync();
+                    return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }
