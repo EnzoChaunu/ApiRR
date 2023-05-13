@@ -14,14 +14,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Net.Mail;
 using System.Net;
-using System.Text.RegularExpressions;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Services;
-using Google.Apis.Auth.OAuth2;
-using System.Threading;
-using System.IO;
-using MimeKit;
-using System.Text;
 using Commun.Hash;
 
 namespace RRelationnelle.Service

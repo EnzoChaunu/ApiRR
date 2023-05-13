@@ -28,20 +28,24 @@ namespace RRelationnelle
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user =  await _JwtAuthService.Authenticate(model.Email, model.Password);
-            if(user != null)
+            if(user.ResponseCode != 404 || user.ResponseCode != 500)
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email,user.Email),
-                    new Claim(ClaimTypes.Name,user.FName),
-                    new Claim("Idrole",user.IdRole.ToString())
+                    new Claim(ClaimTypes.Email,user.Data.Email),
+                    new Claim(ClaimTypes.Name,user.Data.FName),
+                    new Claim("Idrole",user.Data.IdRole.ToString())
 
                 };
                 var token = await _JwtAuthService.GenerateToken(_config["Jwt:Key"],claims);
-                var reponse  = await  _user.UpdateUserToken(user.Id,token);
+                var reponse  = await _user.UpdateUserToken(user.Data.Id,token);
                 return Ok(token);
             }
-            return Unauthorized();
+            else
+            {
+                return Unauthorized(user);
+
+            }
         }
     }
 }

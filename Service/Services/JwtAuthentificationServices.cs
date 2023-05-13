@@ -20,7 +20,7 @@ namespace RRelationnelle
             _repos = repos;
         }
 
-        public async Task<UserDto> Authenticate(string email, string pswd)
+        public async Task<Response<UserDto>> Authenticate(string email, string pswd)
         {
             List<User> userDb = new List<User>();
             userDb = await _repos.GetUsers();
@@ -32,17 +32,32 @@ namespace RRelationnelle
                 try
                 {
 
-                    return UserDto.Where(u => u.Email.ToUpper().Equals(email.ToUpper())
+                   var user = UserDto.Where(u => u.Email.ToUpper().Equals(email.ToUpper())
                    && u.Password.Equals(pswd)).FirstOrDefault();
+                    if(user != null)
+                    {
+                        if (user.Activation == false)
+                        {
+                            return new Response<UserDto>(404, user, "Votre compte a été banni");
+                        }
+                        else
+                        {
+                            return new Response<UserDto>(200, user, "Connexion réussie");
+                        }
+                    }
+                    else
+                    {
+                        return new Response<UserDto>(404, null, "Votre compte n'existe pas");
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return null;
+                    return new Response<UserDto>(500, null, ex.Message);
                 }
             }
             else
             {
-                return null;
+                return new Response<UserDto>(404, null, "Aucun utilisateur trouvé");
             }
         }
 
