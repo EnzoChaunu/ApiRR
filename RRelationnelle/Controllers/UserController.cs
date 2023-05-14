@@ -37,6 +37,24 @@ namespace APIRRelationnel
             }
         }
 
+        //[HttpGet("GetUserByEmail/{email}")]
+        //public async Task<IActionResult> GetUserByEmail(string email)
+        //{
+        //    var reponse = await _service.GetByEmail(email);
+        //    if (reponse.ResponseCode == 200)
+        //    {
+        //        return Ok(reponse);
+        //    }
+        //    else if (reponse.ResponseCode == 500)
+        //    {
+        //        return BadRequest(reponse);
+        //    }
+        //    else
+        //    {
+        //        return NotFound(reponse);
+        //    }
+        //}
+
         [HttpPut("ArchiveUser/{id}")]
         public async Task<IActionResult> ArchiveUser(int id)
         {
@@ -88,6 +106,25 @@ namespace APIRRelationnel
             else
             {
                 return NotFound(reponse);
+            }
+
+        }
+
+        [HttpGet("GetUserListByRole/{role}")]
+        public async Task<IActionResult> GetUserListByRole(string role)
+        {
+            var response = await _service.GetUserListByRole(role);
+            if (response.ResponseCode == 200)
+            {
+                return Ok(response);
+            }
+            else if (response.ResponseCode == 500)
+            {
+                return BadRequest(response);
+            }
+            else
+            {
+                return NotFound(response);
             }
 
         }
