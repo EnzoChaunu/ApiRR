@@ -124,7 +124,7 @@ namespace RRelationnelle.Repos
                     try
                     {
                         string _id = id;
-                        var ressource = await context.Ressource.FirstOrDefaultAsync(p => p._reference == _id);
+                        var ressource = await context.Ressource.Include(r => r.category).FirstOrDefaultAsync(p => p._reference == _id);
                         return ressource;
                     }
                     catch (DbUpdateException)
