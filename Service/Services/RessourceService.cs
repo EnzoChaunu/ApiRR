@@ -156,7 +156,7 @@ namespace RRelationnelle.Service
 
 
 
-        public async Task<Response<bool>> AddView(int id)
+        public async Task<Response<bool>> AddView(string id)
         {
             if (await _repo.AddView(id) != 0)
             {

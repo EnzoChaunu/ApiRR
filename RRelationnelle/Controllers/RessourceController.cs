@@ -47,6 +47,7 @@ namespace RRelationnelle
             var reponse = await _service.GetRessource(reference);
             if (reponse.ResponseCode == 200)
             {
+                await _service.AddView(reference);
                 return Ok(reponse);
             }
             else if (reponse.ResponseCode == 500)
@@ -81,7 +82,7 @@ namespace RRelationnelle
 
 
         [HttpPut("AddView/{id}")]
-        public async Task<IActionResult> AddViewToRessource(int id)
+        public async Task<IActionResult> AddViewToRessource(string id)
         {
             //await = attendre de facon asynchrone la fin d'une tache
             var reponse = await _service.AddView(id);

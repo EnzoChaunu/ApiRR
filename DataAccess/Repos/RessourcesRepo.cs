@@ -142,11 +142,11 @@ namespace RRelationnelle.Repos
 
         }
 
-        public async Task<int> AddView(int id)
+        public async Task<int> AddView(string id)
         {
             try
             {
-                var entity = await _Dbcontext.Ressource.FindAsync(id);
+                var entity = await _Dbcontext.Ressource.Where(p=>p._reference==id).FirstOrDefaultAsync();
                 entity._views++;
                 _Dbcontext.Ressource.Update(entity);
                 return await _Dbcontext.SaveChangesAsync();

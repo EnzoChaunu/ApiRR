@@ -12,7 +12,7 @@ namespace Business.Interfaces
 {
     public interface IRessourceService : IService<RessourceDto>
     {
-        public Task<Response<bool>> AddView(int id);
+        public Task<Response<bool>> AddView(string id);
         public Task<Response<bool>> ShareRessource(int ress,string token,string destinataireEmail);
         public Task GetJob();
         public Task<Response<List<JobDto>>> GetJobForFront(string secteurActivite);
