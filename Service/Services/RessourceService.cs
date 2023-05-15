@@ -473,5 +473,73 @@ namespace RRelationnelle.Service
                 return new Response<bool>(401, false, "Non-autorisé");
             }
         }
+
+        public async Task<Response<dynamic>> GetRessource(string reference)
+        {
+            if (reference != null)
+            {
+                var ressource = await _repo.Get(reference);
+                if (ressource != null)
+                {
+                    switch(ressource.category.Id_Category)
+                    {
+                        case 1:
+                            var alter = await _cache.GetOrCreateAsync("Alternance", entry =>
+                            {
+                                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+                                return Task.FromResult(_alternancesByDomainAndDept);
+                            });
+                            var alternance = alter.Values
+                                .SelectMany(domaine => domaine.Values.SelectMany(departement => departement))
+                                .FirstOrDefault(alternance => alternance.reference == reference);
+
+                            if (alternance!=null)
+                            {
+                                return new Response<dynamic>(200, alternance, "Alternance trouvée");
+
+                            }
+                            else
+                            {
+                                return new Response<dynamic>(404, null, "Cette alternance n'existe pas");
+
+                            }
+
+
+                        case 2:
+                            var job = await _cache.GetOrCreateAsync("Job", entry =>
+                            {
+                                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+                                return Task.FromResult(_JobByDomainAndDept);
+                            });
+
+                            var travail = job.Values
+                                    .SelectMany(CodeNaf => CodeNaf)
+                                    .FirstOrDefault(taff => taff.reference == reference);
+
+                            if (travail!=null)
+                            {
+                                return new Response<dynamic>(200, travail, "Job trouvé");
+                                
+                            }
+                            else
+                            {
+                                return new Response<dynamic>(404, null, "Ce Job n'existe pas");
+                               
+                            }
+                            
+
+                        default: return new Response<dynamic>(404, null, "Cette ressource n'existe pas");
+                    }
+                }
+                else
+                {
+                    return new Response<dynamic>(404, null, "Cette ressource n'existe pas");
+                }
+            }
+            else
+            {
+                return new Response<dynamic>(404, null, "reference nulle");
+            }
+        }
     }
 }
