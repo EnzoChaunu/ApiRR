@@ -19,7 +19,7 @@ namespace RRelationnelle
         public string _url { get; set; }
         public List<CommentDto> _comments { get; set; }
 
-        public RessourceDto(string title, int categoryId, string _reference, string url, int userId)
+        public RessourceDto(string title, int categoryId, string _reference, string url, int userId,int id)
         {
            
             _title = title;
@@ -27,6 +27,7 @@ namespace RRelationnelle
             reference = _reference;
             _url = url;
             _user = userId;
+            _id = id;
             
         }
 

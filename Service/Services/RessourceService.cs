@@ -62,6 +62,7 @@ namespace RRelationnelle.Service
         {
             List<AlternanceDto> liste = new List<AlternanceDto>();
             var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
+            int idress = 0;
             if (user != null)
             {
                 var response = await _api.GetFormation();
@@ -104,19 +105,21 @@ namespace RRelationnelle.Service
                         if (Ressource == null)
                         {
 
-                            var ressourcedto = new RessourceDto(name, 0, id, onisepUrl, user.Id_User);
+                            var ressourcedto = new RessourceDto(name, 0, id, onisepUrl, user.Id_User,0);
                             var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
                             var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
-                            await _repo.Create(ressourceModel);
+                            var ressource = await _repo.Create(ressourceModel);
+                            idress = ressource.ID_Ressource;
                         }
                         else if (Ressource._title != name)
                         {
                             Ressource._title = name;
                             await _repo.Update(Ressource, Ressource.ID_Ressource);
+                            idress = Ressource.ID_Ressource;
                         }
                         if (name != null && id != null)
                         {
-                            var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, 1, Diploma, period, capacity, ville, zipcode, emailcontact, departement, Domain, entreprise);
+                            var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, user.Id_User, idress, Diploma, period, capacity, ville, zipcode, emailcontact, departement, Domain, entreprise);
                             if (!_alternancesByDomainAndDept.ContainsKey(Domain))
                             {
                                 // Si elle n'existe pas, la créer
@@ -156,7 +159,7 @@ namespace RRelationnelle.Service
 
 
 
-        public async Task<Response<bool>> AddView(string id)
+        public async Task<Response<bool>> AddView(int id)
         {
             if (await _repo.AddView(id) != 0)
             {
@@ -172,6 +175,7 @@ namespace RRelationnelle.Service
         {
             List<JobDto> list = new List<JobDto>();
             var user = await _user.GetByEmail("chaunu.enzo@gmail.com");
+            int idress = 0;
             if (user != null)
             {
                 var response = await _api.GetJob();
@@ -210,19 +214,21 @@ namespace RRelationnelle.Service
                             if (Ressource == null)
                             {
 
-                                var ressourcedto = new RessourceDto(name, 0, id, url, user.Id_User);
+                                var ressourcedto = new RessourceDto(name, 0, id, url, user.Id_User,0);
                                 var map = MappingRessource.MappingRessourcesDtoToModel(Category, user);
                                 var ressourceModel = map.Map<RessourceDto, Ressource>(ressourcedto);
-                                await _repo.Create(ressourceModel);
+                               var ressource =  await _repo.Create(ressourceModel);
+                                idress = ressource.ID_Ressource;
                             }
                             else if (Ressource._title != name)
                             {
                                 Ressource._title = name;
                                 await _repo.Update(Ressource, Ressource.ID_Ressource);
+                                idress = Ressource.ID_Ressource;
                             }
                             if (name != null && id != null)
                             {
-                                var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
+                                var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User,idress, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
 
 
 
@@ -474,11 +480,11 @@ namespace RRelationnelle.Service
             }
         }
 
-        public async Task<Response<dynamic>> GetRessource(string reference)
+        public async Task<Response<dynamic>> GetRessource(int id)
         {
-            if (reference != null)
+            if (id != 0)
             {
-                var ressource = await _repo.Get(reference);
+                var ressource = await _repo.Get(id);
                 if (ressource != null)
                 {
                     switch(ressource.category.Id_Category)
@@ -491,7 +497,7 @@ namespace RRelationnelle.Service
                             });
                             var alternance = alter.Values
                                 .SelectMany(domaine => domaine.Values.SelectMany(departement => departement))
-                                .FirstOrDefault(alternance => alternance.reference == reference);
+                                .FirstOrDefault(alternance => alternance._id == id);
 
                             if (alternance!=null)
                             {
@@ -514,7 +520,7 @@ namespace RRelationnelle.Service
 
                             var travail = job.Values
                                     .SelectMany(CodeNaf => CodeNaf)
-                                    .FirstOrDefault(taff => taff.reference == reference);
+                                    .FirstOrDefault(taff => taff._id == id);
 
                             if (travail!=null)
                             {
