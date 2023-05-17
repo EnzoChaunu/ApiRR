@@ -129,7 +129,6 @@ namespace APIRRelationnel.Controllers
             {
                 return StatusCode(500, reponse);
             }
-
         }
 
         [HttpGet("GetCommentsPerRessource/{idUser}")]
@@ -150,7 +149,6 @@ namespace APIRRelationnel.Controllers
             {
                 return StatusCode(500, reponse);
             }
-
         }
 
     }
