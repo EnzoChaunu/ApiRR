@@ -40,13 +40,15 @@ namespace RRelationnelle
             }
 
         }
-          [HttpGet("GetRessource/{reference}")]
-        public async Task<IActionResult> GetRessource(string reference)
+          [HttpGet("GetRessource/{id}")]
+        public async Task<IActionResult> GetRessource(int id)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            var reponse = await _service.GetRessource(reference);
+            var reponse = await _service.GetRessource(id);
             if (reponse.ResponseCode == 200)
             {
+                
+                await _service.AddView(id);
                 return Ok(reponse);
             }
             else if (reponse.ResponseCode == 500)

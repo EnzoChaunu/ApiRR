@@ -16,7 +16,7 @@ namespace Business.Interfaces
         public Task<Response<bool>> ShareRessource(int ress,string token,string destinataireEmail);
         public Task GetJob();
         public Task<Response<List<JobDto>>> GetJobForFront(string secteurActivite);
-        public Task<Response<dynamic>> GetRessource(string reference);
+        public Task<Response<dynamic>> GetRessource(int id);
         public Task GetFormation();
         public Task<Response<UserfavoriteRessourceDto>> AddFavorite(string token,int ressource);
         public void RefreshCache ();

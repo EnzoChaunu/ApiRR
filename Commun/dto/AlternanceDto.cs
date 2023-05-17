@@ -13,7 +13,7 @@ namespace RRelationnelle.dto
         public  string RomeDomain { get; set; }
         public  string entreprise { get; set; }
 
-        public AlternanceDto(string title, int categoryId, string _reference, string url, int userId ,string diplome, string perio, string cap, string city, string cod, string email,string Department, string rome,string enter) : base( title,categoryId,_reference,url,userId)
+        public AlternanceDto(string title, int categoryId, string _reference, string url, int userId,int id ,string diplome, string perio, string cap, string city, string cod, string email,string Department, string rome,string enter) : base(title,categoryId,_reference,url,userId,id)
         {
             DiplomaLevel = diplome;
             Period = perio;
