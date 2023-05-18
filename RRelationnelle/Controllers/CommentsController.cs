@@ -57,7 +57,7 @@ namespace APIRRelationnel.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("PostCommentWithToken/{expediteur}")]
         public async Task<IActionResult> CreateCommentWithToken(CommentDto comment, string expediteur)
         {
             var reponse = await _service.CreateWithToken(comment, expediteur);

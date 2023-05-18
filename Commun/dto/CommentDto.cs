@@ -4,7 +4,7 @@ namespace RRelationnelle
 {
     public class CommentDto
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public int UserId { get; set; }
         public int RessourceId { get; set; }
         public string Content { get; set; }
