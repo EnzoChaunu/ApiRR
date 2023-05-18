@@ -117,6 +117,10 @@ namespace RRelationnelle.Service
                             await _repo.Update(Ressource, Ressource.ID_Ressource);
                             idress = Ressource.ID_Ressource;
                         }
+                        else
+                        {
+                            idress = Ressource.ID_Ressource;
+                        }
                         if (name != null && id != null)
                         {
                             var alternance = new AlternanceDto(name, Category.Id_Category, id, onisepUrl, user.Id_User, idress, Diploma, period, capacity, ville, zipcode, emailcontact, departement, Domain, entreprise);
@@ -226,6 +230,10 @@ namespace RRelationnelle.Service
                                 await _repo.Update(Ressource, Ressource.ID_Ressource);
                                 idress = Ressource.ID_Ressource;
                             }
+                            else
+                            {
+                                idress = Ressource.ID_Ressource;
+                            }
                             if (name != null && id != null)
                             {
                                 var Job = new JobDto(name, Category.Id_Category, id, url, user.Id_User,idress, description, experienceLibelle, ville, salaire, zipcode, typeContrat, CodeNaf);
@@ -260,7 +268,8 @@ namespace RRelationnelle.Service
         {
             try
             {
-                var userM = await _user.GetUserByToken(token);
+                var HashToken = Hashing.HashToken(token);
+                var userM = await _user.GetUserByToken(HashToken);
                 if (userM != null)
                 {
                     var RessourceM = await _repo.Get(ressource);
@@ -376,7 +385,8 @@ namespace RRelationnelle.Service
         public async Task<Response<List<RessourceDto>>> GetListRessourceByUser(string token)
         {
             var ressourceListDto = new List<RessourceDto>();
-            var user = await _user.GetUserByToken(token);
+            var HashToken = Hashing.HashToken(token);
+            var user = await _user.GetUserByToken(HashToken);
             if (user != null)
             {
                 List<Ressource> ressources = await _repo.GetRessourceListUser(user.Id_User);
@@ -501,6 +511,9 @@ namespace RRelationnelle.Service
 
                             if (alternance!=null)
                             {
+                                var Bddress = await _repo.Get(alternance._id);
+                                alternance._views = Bddress._views;
+                                alternance.shared = Bddress._shared;
                                 return new Response<dynamic>(200, alternance, "Alternance trouvée");
 
                             }
@@ -524,6 +537,9 @@ namespace RRelationnelle.Service
 
                             if (travail!=null)
                             {
+                                var Bddress = await _repo.Get(travail._id);
+                                travail._views = Bddress._views;
+                                travail.shared = Bddress._shared;
                                 return new Response<dynamic>(200, travail, "Job trouvé");
                                 
                             }
