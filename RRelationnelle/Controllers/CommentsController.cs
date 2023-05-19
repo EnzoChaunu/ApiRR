@@ -57,21 +57,29 @@ namespace APIRRelationnel.Controllers
             }
         }
 
-        [HttpPost("PostCommentWithToken/{expediteur}")]
-        public async Task<IActionResult> CreateCommentWithToken(CommentDto comment, string expediteur)
+        [HttpPost("PostCommentWithToken")]
+        public async Task<IActionResult> CreateCommentWithToken(CommentDto comment)
         {
-            var reponse = await _service.CreateWithToken(comment, expediteur);
-            if (reponse.ResponseCode == 200)
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
-                return Ok(reponse);
-            }
-            else if (reponse.ResponseCode == 404)
-            {
-                return NotFound(reponse);
+                var token = authHeader.ToString().Replace("Bearer ", "");
+                var reponse = await _service.CreateWithToken(comment, token);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 404)
+                {
+                    return NotFound(reponse);
+                }
+                else
+                {
+                    return StatusCode(500, reponse);
+                }
             }
             else
             {
-                return StatusCode(500, reponse);
+                return Unauthorized();
             }
         }
 
@@ -112,10 +120,10 @@ namespace APIRRelationnel.Controllers
         }
 
         [HttpGet("GetCommentsPerRessource/{idRessource}")]
-        public async Task<ActionResult<CommentDto>> ListPerResources(int id)
+        public async Task<ActionResult<CommentDto>> ListPerResources(int idRessource)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            Response<List<CommentDto>> reponse = await _service.GetCommentsPerRessource(id);
+            Response<List<CommentDto>> reponse = await _service.GetCommentsPerRessource(idRessource);
 
             if (reponse.ResponseCode == 200)
             {
@@ -131,7 +139,7 @@ namespace APIRRelationnel.Controllers
             }
         }
 
-        [HttpGet("GetCommentsPerRessource/{idUser}")]
+        [HttpGet("GetCommentsPerUser/{idUser}")]
         public async Task<ActionResult<CommentDto>> ListPerUser(int id)
         {
             //await = attendre de facon asynchrone la fin d'une tache

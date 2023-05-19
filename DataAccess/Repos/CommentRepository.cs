@@ -48,10 +48,10 @@ namespace DataAccess.Repos
         {
             try
             {
-                var context = CreateDbContext();
+                
                 //context.Entry(obj.id_user).State = EntityState.Unchanged;
-                context.Comments.Add(obj);
-                await context.SaveChangesAsync();
+                await  _ctx.Comments.AddAsync(obj);
+                await _ctx.SaveChangesAsync();
                 return obj;
             }
             catch
@@ -84,7 +84,6 @@ namespace DataAccess.Repos
                 entity.likes = obj.likes;
                 entity.dislikes = obj.dislikes;
                 entity.creationDate = obj.creationDate;
-                entity.modificationDate = DateTime.Now;
                 entity.id_ressource = obj.id_ressource;
                 entity.id_user= obj.id_user;
                 _ctx.Comments.Update(entity);

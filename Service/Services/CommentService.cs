@@ -74,13 +74,14 @@ namespace Service.Services
         {
             var token = Hashing.HashToken(expediteur);
             var expe = await _user.GetUserByToken(token);
-            var ress = await _ressource.Get(obj.RessourceId);
             if(expe != null)
             {
+                var ress = await _ressource.Get(obj.RessourceId);
                 var map = MappingComment.CommentMapperDtoToModel(expe, ress);
                 obj.CreationDate = DateTime.Now;
                 obj.Activation = true;
                 obj.Modified = false;
+                obj.UserId= expe.Id_User;
                 var commentDb = map.Map<CommentDto, Comment>(obj);
 
                 var rep = await _repos.Create(commentDb);

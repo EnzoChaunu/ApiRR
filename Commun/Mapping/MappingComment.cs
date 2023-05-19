@@ -36,12 +36,9 @@ namespace Commun.Mapping
                 dest.Modified,
                 opt => opt.MapFrom(src => src.modified))
                 .ForMember(dest =>
-                dest.ModificationDate,
-                opt => opt.MapFrom(src => src.modificationDate))
-                .ForMember(dest =>
                 dest.CreationDate,
-                opt => opt.MapFrom(src => src.creationDate))
-                .ReverseMap();
+                opt => opt.MapFrom(src => src.creationDate));
+                
             });
 
             var mapper = new Mapper(config);
@@ -66,25 +63,22 @@ namespace Commun.Mapping
                 .ForMember(dest =>
                 dest.id_ressource,
                 opt => opt.MapFrom(src => ress))
-                .ForMember(dest => 
-                dest.likes, 
+                .ForMember(dest =>
+                dest.likes,
                 opt => opt.MapFrom(src => src.Likes))
-                .ForMember(dest => 
-                dest.dislikes, 
+                .ForMember(dest =>
+                dest.dislikes,
                 opt => opt.MapFrom(src => src.Dislikes))
-                .ForMember(dest => 
-                dest.activation, 
+                .ForMember(dest =>
+                dest.activation,
                 opt => opt.MapFrom(src => src.Activation))
-                .ForMember(dest => 
-                dest.modified, 
+                .ForMember(dest =>
+                dest.modified,
                 opt => opt.MapFrom(src => src.Modified))
-                .ForMember(dest => 
-                dest.modificationDate, 
-                opt => opt.MapFrom(src => src.ModificationDate))
-                .ForMember(dest => 
-                dest.creationDate, 
-                opt => opt.MapFrom(src => src.CreationDate))
-                .ReverseMap();
+                .ForMember(dest =>
+                dest.creationDate,
+                opt => opt.MapFrom(src => src.CreationDate));
+               
             });
 
             var mapper = new Mapper(config);
