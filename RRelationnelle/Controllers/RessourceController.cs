@@ -131,6 +131,34 @@ namespace RRelationnelle
             {
                 return Unauthorized();
             }
+        } 
+        
+        [HttpDelete("UserFav/{IdUserFavorite}/Deletefavorite")]
+        public async Task<IActionResult> DeleteFavorite(int IdUserFavorite)
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.DeleteFavorite(token, IdUserFavorite);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost("ressource/{ress}/destinataire/{destinataireEmail}/ShareRessource")]

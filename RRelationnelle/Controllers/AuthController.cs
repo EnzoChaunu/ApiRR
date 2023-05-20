@@ -34,6 +34,7 @@ namespace RRelationnelle
                 {
                     new Claim(ClaimTypes.Email,user.Data.Email),
                     new Claim(ClaimTypes.Name,user.Data.FName),
+                    new Claim(ClaimTypes.Surname,user.Data.LName),
                     new Claim("Idrole",user.Data.IdRole.ToString())
 
                 };
