@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Net;
 using Commun.Hash;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RRelationnelle.Service
 {
@@ -561,6 +562,28 @@ namespace RRelationnelle.Service
             else
             {
                 return new Response<dynamic>(404, null, "reference nulle");
+            }
+        }
+
+        public async Task<Response<bool>> DeleteFavorite(string token, int ressource)
+        {
+            var hash = Hashing.HashToken(token);
+            var expe = await _user.GetUserByToken(hash);
+            if(expe != null)
+            {
+                var delete = await _repo.DeleteFavorite(ressource);
+                if(delete == 1 )
+                {
+                    return new Response<bool>(200, true, "Favoris supprimé");
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Echec suppression");
+                }
+            }
+            else
+            {
+                return new Response<bool>(401, false, "User introuvable");
             }
         }
     }

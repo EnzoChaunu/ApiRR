@@ -19,6 +19,7 @@ namespace Business.Interfaces
         public Task<Response<dynamic>> GetRessource(int id);
         public Task GetFormation();
         public Task<Response<UserfavoriteRessourceDto>> AddFavorite(string token,int ressource);
+        public Task<Response<bool>> DeleteFavorite(string token,int ressource);
         public void RefreshCache ();
         public Task<Response<List<AlternanceDto>>> GetFormationForFront(string romeDomain,string departement);
         public Task<Response<List<RessourceDto>>> GetListRessourceByUser(string token);

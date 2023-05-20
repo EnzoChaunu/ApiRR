@@ -222,5 +222,19 @@ namespace RRelationnelle.Repos
                 return false;
             }
         }
+
+        public async Task<int> DeleteFavorite(int fav)
+        {
+            try
+            {
+                var UserFav = await _Dbcontext.UserFavorite.FirstOrDefaultAsync(p=>p.IdUserFav==fav);
+                _Dbcontext.UserFavorite.Remove(UserFav);
+                return await _Dbcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateException) 
+            {
+                return 0;
+            }
+        }
     }
 }
