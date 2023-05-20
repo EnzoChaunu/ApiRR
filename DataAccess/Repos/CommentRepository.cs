@@ -1,10 +1,10 @@
 ﻿using DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RRelationnelle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess.Repos
@@ -19,24 +19,108 @@ namespace DataAccess.Repos
             _configuration = config;
         }
 
-        public Task<bool> Archive(int id)
+        public async Task<bool> Archive(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var entity = await _ctx.Comments.FindAsync(id);
+                entity.activation = false;
+                _ctx.Comments.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
         }
 
-        public Task<Comment> Create(Comment obj)
+        private RrelationnelApiContext CreateDbContext()
         {
-            throw new NotImplementedException();
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
         }
 
-        public Task<Comment> Get(dynamic id)
+        public async Task<Comment> Create(Comment obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                
+                //context.Entry(obj.id_user).State = EntityState.Unchanged;
+                await  _ctx.Comments.AddAsync(obj);
+                await _ctx.SaveChangesAsync();
+                return obj;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public Task<Comment> Update(Comment obj, int id)
+        public async Task<Comment> Get(dynamic id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var comment = await _ctx.Comments.FindAsync(id);
+                return comment;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Comment> Update(Comment obj, int id)
+        {
+            try
+            {
+                var entity = await _ctx.Comments.FindAsync(id);
+                entity.content = obj.content;
+                entity.activation = obj.activation;
+                entity.modified = true;
+                entity.likes = obj.likes;
+                entity.dislikes = obj.dislikes;
+                entity.creationDate = obj.creationDate;
+                entity.id_ressource = obj.id_ressource;
+                entity.id_user= obj.id_user;
+                _ctx.Comments.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return entity;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<Comment>> GetCommentListPerResource(int id)
+        {
+            try
+            {
+                var comments = await _ctx.Comments.Where(c => c.id_ressource.ID_Ressource == id).ToListAsync();
+                return comments;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
+        }
+
+        public async Task<List<Comment>> GetCommentListPerUser(int id)
+        {
+            try
+            {
+                var comments = await _ctx.Comments.Where(c => c.id_user.Id_User == id).ToListAsync();
+                return comments;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

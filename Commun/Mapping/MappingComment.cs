@@ -1,10 +1,5 @@
 ﻿using AutoMapper;
 using RRelationnelle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Commun.Mapping
 {
@@ -41,12 +36,49 @@ namespace Commun.Mapping
                 dest.Modified,
                 opt => opt.MapFrom(src => src.modified))
                 .ForMember(dest =>
-                dest.ModificationDate,
-                opt => opt.MapFrom(src => src.modificationDate))
-                .ForMember(dest =>
                 dest.CreationDate,
-                opt => opt.MapFrom(src => src.creationDate))
-                .ReverseMap();
+                opt => opt.MapFrom(src => src.creationDate));
+                
+            });
+
+            var mapper = new Mapper(config);
+            return mapper;
+        }
+
+        public static Mapper CommentMapperDtoToModel(User user, Ressource ress)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CommentDto, Comment>()
+
+                .ForMember(dest =>
+                dest.id_comments,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest =>
+                dest.content,
+                opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest =>
+                dest.id_user,
+                opt => opt.MapFrom(src => user))
+                .ForMember(dest =>
+                dest.id_ressource,
+                opt => opt.MapFrom(src => ress))
+                .ForMember(dest =>
+                dest.likes,
+                opt => opt.MapFrom(src => src.Likes))
+                .ForMember(dest =>
+                dest.dislikes,
+                opt => opt.MapFrom(src => src.Dislikes))
+                .ForMember(dest =>
+                dest.activation,
+                opt => opt.MapFrom(src => src.Activation))
+                .ForMember(dest =>
+                dest.modified,
+                opt => opt.MapFrom(src => src.Modified))
+                .ForMember(dest =>
+                dest.creationDate,
+                opt => opt.MapFrom(src => src.CreationDate));
+               
             });
 
             var mapper = new Mapper(config);

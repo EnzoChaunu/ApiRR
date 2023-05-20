@@ -58,7 +58,7 @@ namespace RRelationnelle.Services
         {
             try
             {
-                    if (CheckEmail(obj.Email))
+                if (CheckEmail(obj.Email))
                 {
                     var role = await _reposRole.Get(4);
                     var map = MappingUser.UserMapperDtoToModel(role);

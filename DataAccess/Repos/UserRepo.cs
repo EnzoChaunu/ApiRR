@@ -103,7 +103,7 @@ namespace RRelationnelle.Repos
 
         public async Task<User> GetUserByToken(string token)
         {
-            return await _Dbcontext.User.FirstOrDefaultAsync(u => u.token == token);
+            return await _Dbcontext.User.Include(r => r.Role).FirstOrDefaultAsync(u => u.token == token);
         }
 
         public async Task<User> UpdateUserToken(int user, string token)

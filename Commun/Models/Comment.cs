@@ -25,6 +25,6 @@ namespace RRelationnelle
         public bool activation { get; set; }
         public bool modified { get; set; }
         public DateTime creationDate { get; set; }
-        public DateTime modificationDate { get; set; }
+        
     }
 }

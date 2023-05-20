@@ -143,7 +143,7 @@ namespace RRelationnelle
                     var rep = await _repo.Update(roleDb, id);
                     if (rep != null)
                     {
-                        var     role = mapper.Map<Roles, RolesDto>(rep);
+                        var role = mapper.Map<Roles, RolesDto>(rep);
                         return new Response<RolesDto>
                             (200, role, string.Format("Role {0} successfully.", role.name));
                     }
@@ -198,7 +198,7 @@ namespace RRelationnelle
             }
             else
             {
-                await _repo.Get(id);
+                await _repo.Archive(id);
                 return new Response<bool>
                         (200, true, string.Format("Role {0} successfully archived.", role.name));
             }
