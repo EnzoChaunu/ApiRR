@@ -419,7 +419,7 @@ namespace RRelationnelle.Service
                     else
                     {
 
-                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "pas de favoris");
                     }
 
                 }
