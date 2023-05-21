@@ -13,6 +13,7 @@ namespace RRelationnelle
         [Column]
         public int AcountCreated { get; set; }
         public int commentposted { get; set; }
+        public int shared { get; set; }
         public int visits { get; set; }
         public DateTime DateStat { get; set; }
     }
