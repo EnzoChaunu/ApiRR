@@ -18,7 +18,7 @@ namespace DataAccess.Interfaces
         public Task<UserFavorite> CheckUserFavoriteByObject(User user,Ressource ressource);
         public Task<List<Ressource>> GetRessourceListUser(int user);
         public Task<UserFavorite> AddUserFavorite(UserFavorite fav);
-        public Task<int> DeleteFavorite(int fav);
+        public Task<int> DeleteFavorite(int fav,int iduser);
 
     }
 }

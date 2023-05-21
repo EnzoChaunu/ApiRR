@@ -133,15 +133,15 @@ namespace RRelationnelle
             }
         } 
         
-        [HttpDelete("UserFav/{IdUserFavorite}/Deletefavorite")]
-        public async Task<IActionResult> DeleteFavorite(int IdUserFavorite)
+        [HttpDelete("UserFav/{IdRessource}/Deletefavorite")]
+        public async Task<IActionResult> DeleteFavorite(int IdRessource)
         {
             if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
                 var token = authHeader.ToString().Replace("Bearer ", "");
 
                 //await = attendre de facon asynchrone la fin d'une tache
-                var reponse = await _service.DeleteFavorite(token, IdUserFavorite);
+                var reponse = await _service.DeleteFavorite(token, IdRessource);
                 if (reponse.ResponseCode == 200)
                 {
                     return Ok(reponse);
