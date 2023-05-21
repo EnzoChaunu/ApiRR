@@ -122,5 +122,18 @@ namespace DataAccess.Repos
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<int> CountComments()
+        {
+            try
+            {
+                return await _ctx.Comments.CountAsync();
+            }
+            catch
+
+            {
+                return 0;
+            }
+        }
     }
 }

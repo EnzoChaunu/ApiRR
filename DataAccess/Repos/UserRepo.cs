@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
@@ -133,6 +134,19 @@ namespace RRelationnelle.Repos
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> CountAccounts()
+        {
+            try
+            {
+                return await _Dbcontext.User.CountAsync();
+            }
+            catch 
+            
+            {
+                return 0;
             }
         }
     }

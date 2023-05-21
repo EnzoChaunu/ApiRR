@@ -4,10 +4,12 @@ namespace RRelationnelle
 {
     public class StatsDto
     {
-        private int _id;
-        private int _visits;
-        private int _accountsCreated;
-        private int _commentPosted;
-        private DateTime _createdAt;
+        public int _id { get; set; }
+        public int _visits { get; set; }
+        public int _accountsCreated { get; set; }
+        public int _Shared { get; set; }
+        public int _favorite { get; set; }
+        public int _commentPosted { get; set; }
+        public DateTime _createdAt { get; set; }
     }
 }

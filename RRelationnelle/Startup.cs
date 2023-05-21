@@ -72,6 +72,8 @@ namespace RRelationnelle
             services.AddMemoryCache();
 
             services.AddScoped<RessourceService>();
+            services.AddScoped<StatsService>();
+            services.AddScoped<StatRepository>();
             services.AddScoped<CategoryService>();
             services.AddScoped<CategoryRepository>();
             services.AddScoped<UserService>();

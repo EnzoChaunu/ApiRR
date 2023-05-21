@@ -236,5 +236,41 @@ namespace RRelationnelle.Repos
                 return 0;
             }
         }
+
+        public async Task<int> CountView()
+        {
+            try
+            {
+                return await _Dbcontext.Ressource.SumAsync(r => r._views);
+            }
+            catch (DbUpdateException)
+            {
+                return 0;
+            }
+        }
+
+        public async Task<int> CountShared()
+        {
+            try
+            {
+                return await _Dbcontext.Ressource.SumAsync(r => r._shared);
+            }
+            catch (DbUpdateException)
+            {
+                return 0;
+            }
+        }
+
+        public async Task<int> CountFavorites()
+        {
+            try
+            {
+                return await _Dbcontext.UserFavorite.CountAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return 0;
+            }
+        }
     }
 }
