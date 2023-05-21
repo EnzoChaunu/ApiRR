@@ -100,7 +100,7 @@ namespace DataAccess.Repos
         {
             try
             {
-                var comments = await _ctx.Comments.Where(c => c.id_ressource.ID_Ressource == id).ToListAsync();
+                var comments = await _ctx.Comments.Include(c => c.id_user).Where(c => c.id_ressource.ID_Ressource == id).ToListAsync();
                 return comments;
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace DataAccess.Repos
         {
             try
             {
-                var comments = await _ctx.Comments.Where(c => c.id_user.Id_User == id).ToListAsync();
+                var comments = await _ctx.Comments.Include(c => c.id_user).Where(c => c.id_user.Id_User == id).ToListAsync();
                 return comments;
             }
             catch (Exception ex)
