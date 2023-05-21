@@ -38,7 +38,7 @@ namespace RRelationnelle
                     {
                         if (user.Activation == false)
                         {
-                            return new Response<UserDto>(404, user, "Votre compte a été banni");
+                            return new Response<UserDto>(404, null, "Votre compte a été banni");
                         }
                         else
                         {

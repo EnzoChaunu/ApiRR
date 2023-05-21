@@ -28,7 +28,7 @@ namespace RRelationnelle
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user =  await _JwtAuthService.Authenticate(model.Email, model.Password);
-            if(user.ResponseCode != 404 || user.ResponseCode != 500)
+            if(user.ResponseCode == 200)
             {
                 var claims = new List<Claim>
                 {
