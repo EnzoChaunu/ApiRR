@@ -373,7 +373,7 @@ namespace RRelationnelle.Service
             }
             else if (list == null)
             {
-                return new Response<List<JobDto>>(404, null, "Not found");
+                return new Response<List<JobDto>>(200, list, "Not found");
 
             }
             else
@@ -403,7 +403,7 @@ namespace RRelationnelle.Service
                     else
                     {
 
-                        return new Response<List<RessourceDto>>(404, null, "Not found");
+                        return new Response<List<RessourceDto>>(200, ressourceListDto, "pas de données");
                     }
 
                 }
