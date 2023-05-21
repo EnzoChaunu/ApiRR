@@ -240,7 +240,7 @@ namespace RRelationnelle.Services
                     if (list.Count > 0)
                         return new Response<List<UserDto>>(200, list, string.Format("Voici la liste de user"));
                     else
-                        return new Response<List<UserDto>>(404, null, string.Format("Aucune occurence "));
+                        return new Response<List<UserDto>>(200, list, string.Format("Aucune occurence "));
                
             }
             catch (Exception ex)
