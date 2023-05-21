@@ -571,7 +571,7 @@ namespace RRelationnelle.Service
             var expe = await _user.GetUserByToken(hash);
             if(expe != null)
             {
-                var delete = await _repo.DeleteFavorite(ressource);
+                var delete = await _repo.DeleteFavorite(ressource,expe.Id_User);
                 if(delete == 1 )
                 {
                     return new Response<bool>(200, true, "Favoris supprimé");

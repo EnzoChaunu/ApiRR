@@ -35,7 +35,9 @@ namespace RRelationnelle
                     new Claim(ClaimTypes.Email,user.Data.Email),
                     new Claim(ClaimTypes.Name,user.Data.FName),
                     new Claim(ClaimTypes.Surname,user.Data.LName),
-                    new Claim("Idrole",user.Data.IdRole.ToString())
+                    new Claim("Idrole",user.Data.IdRole.ToString()),
+                    new Claim("Login",user.Data.Login),
+                    new Claim(ClaimTypes.Email,user.Data.Email)
 
                 };
                 var token = await _JwtAuthService.GenerateToken(_config["Jwt:Key"],claims);

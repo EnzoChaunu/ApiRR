@@ -223,11 +223,11 @@ namespace RRelationnelle.Repos
             }
         }
 
-        public async Task<int> DeleteFavorite(int fav)
+        public async Task<int> DeleteFavorite(int fav,int iduser)
         {
             try
             {
-                var UserFav = await _Dbcontext.UserFavorite.FirstOrDefaultAsync(p=>p.IdUserFav==fav);
+                var UserFav = await _Dbcontext.UserFavorite.FirstOrDefaultAsync(p=>p.ID_Ressource==fav&&p.Id_User==iduser);
                 _Dbcontext.UserFavorite.Remove(UserFav);
                 return await _Dbcontext.SaveChangesAsync();
             }
