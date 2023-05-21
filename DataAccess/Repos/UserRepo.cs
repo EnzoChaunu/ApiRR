@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -147,6 +148,19 @@ namespace RRelationnelle.Repos
             
             {
                 return 0;
+            }
+        }
+
+        public  async Task<List<User>> GetAll()
+        {
+            try
+            {
+                var users = await _Dbcontext.User.Include(r => r.Role).ToListAsync();
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

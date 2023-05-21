@@ -11,6 +11,7 @@ namespace DataAccess.Interfaces
         public Task<User> UpdateUserToken(int user,string token);
         public Task<int> CountAccounts();
         public Task<List<User>> GetUserListByRole(string role);
+        public Task<List<User>> GetAll();
 
     }
 }

@@ -6,6 +6,7 @@ using Nest;
 using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -227,6 +228,26 @@ namespace RRelationnelle.Services
                                 (500, null, ex.Message);
             }
             
+        }
+
+        public async Task<Response<List<UserDto>>> GetAll()
+        {
+            try
+            {
+                    var user = await _repos.GetAll();
+                    var mapper = MappingUser.UserMapperModelToDto();
+                    var list = mapper.Map<List<User>, List<UserDto>>(user);
+                    if (list.Count > 0)
+                        return new Response<List<UserDto>>(200, list, string.Format("Voici la liste de user"));
+                    else
+                        return new Response<List<UserDto>>(404, null, string.Format("Aucune occurence "));
+               
+            }
+            catch (Exception ex)
+            {
+                return new Response<List<UserDto>>
+                                (500, null, ex.Message);
+            }
         }
     }
 }

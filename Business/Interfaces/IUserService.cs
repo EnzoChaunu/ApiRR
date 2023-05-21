@@ -10,5 +10,6 @@ namespace Business.Interfaces
         public bool CheckEmail(string email);
         public Task<Response<UserDto>> UpdateUserToken(int user, Response<string> token);
         public Task<Response<List<UserDto>>> GetUserListByRole(string role);
+        public Task<Response<List<UserDto>>> GetAll();
     }
 }

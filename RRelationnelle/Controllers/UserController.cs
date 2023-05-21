@@ -36,24 +36,25 @@ namespace APIRRelationnel
                 return NotFound(reponse);
             }
         }
+        
+        [HttpGet("GetAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var reponse = await _service.GetAll();
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+        }
 
-        //[HttpGet("GetUserByEmail/{email}")]
-        //public async Task<IActionResult> GetUserByEmail(string email)
-        //{
-        //    var reponse = await _service.GetByEmail(email);
-        //    if (reponse.ResponseCode == 200)
-        //    {
-        //        return Ok(reponse);
-        //    }
-        //    else if (reponse.ResponseCode == 500)
-        //    {
-        //        return BadRequest(reponse);
-        //    }
-        //    else
-        //    {
-        //        return NotFound(reponse);
-        //    }
-        //}
 
         [HttpPut("ArchiveUser/{id}")]
         public async Task<IActionResult> ArchiveUser(int id)
