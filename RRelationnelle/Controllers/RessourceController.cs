@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Commun.dto;
+using Commun.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RRelationnelle.dto;
 using RRelationnelle.Service;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RRelationnelle
@@ -22,41 +21,210 @@ namespace RRelationnelle
             _service = service;
         }
 
-       /* //methode de recuperation executée de facon asynchrone
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<Ressource>>> GetRessources()
-        {
-            //await = attendre de facon asynchrone la fin d'une tache
-            return await _context.Ressource.ToListAsync();
-        }  */
-        
         [HttpGet("Alternances&Formations")]
-        public async Task<List<AlternanceDto>> GetFormation(string rome,string romeDomain, string caller)
+        public async Task<IActionResult> GetFormation(string romeDomain, string region)
         {
             //await = attendre de facon asynchrone la fin d'une tache
-            return await _service.GetFormation(rome,romeDomain,caller);
-        }  
-        
-        
-        //methode de recuperation executée de facon asynchrone
-       /* [HttpGet("{id_ressource}")]
-        public async Task<ActionResult<Ressource>> GetRessourcesById(int id_ressource)
-        {
-            //requete sur un id
-            var ressource = await _context.Ressource.Where(c => c.ID_Ressource.Equals(id_ressource)).FirstOrDefaultAsync();
-            if(ressource==null)
+            var reponse = await _service.GetFormationForFront(romeDomain, region);
+            if (reponse.ResponseCode == 200)
             {
-                return NotFound();
+                return Ok(reponse);
             }
-            return ressource;
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+
+        }
+          [HttpGet("GetRessource/{id}")]
+        public async Task<IActionResult> GetRessource(int id)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            var reponse = await _service.GetRessource(id);
+            if (reponse.ResponseCode == 200)
+            {
+                
+                await _service.AddView(id);
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Ressource>> AddRessource(Ressource ressource)
+        [HttpGet("Job")]
+        public async Task<IActionResult> GetJob(string secteurActivite)
         {
-             _context.Ressource.Add(ressource);
-            await _context.SaveChangesAsync();
-            return ressource;
-        }*/
+            //await = attendre de facon asynchrone la fin d'une tache
+            var reponse = await _service.GetJobForFront(secteurActivite);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+        }
+
+
+        [HttpPut("AddView/{id}")]
+        public async Task<IActionResult> AddViewToRessource(int id)
+        {
+            //await = attendre de facon asynchrone la fin d'une tache
+            var reponse = await _service.AddView(id);
+            if (reponse.ResponseCode == 200)
+            {
+                return Ok(reponse);
+            }
+            else if (reponse.ResponseCode == 500)
+            {
+                return BadRequest(reponse);
+            }
+            else
+            {
+                return NotFound(reponse);
+            }
+        }
+
+        [HttpPost("ressource/{ressource}/AddToFavorites")]
+        public async Task<IActionResult> AddToFavorite(int ressource)
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.AddFavorite(token, ressource);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        } 
+        
+        [HttpDelete("UserFav/{IdRessource}/Deletefavorite")]
+        public async Task<IActionResult> DeleteFavorite(int IdRessource)
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.DeleteFavorite(token, IdRessource);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost("ressource/{ress}/destinataire/{destinataireEmail}/ShareRessource")]
+        [Authorize]
+        public async Task<IActionResult> ShareRessource(int ress, string destinataireEmail)
+        {
+
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+                var reponse = await _service.ShareRessource(ress, token, destinataireEmail);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+            //await = attendre de facon asynchrone la fin d'une tache
+        }
+
+        [HttpGet("RessourceByUser")]
+        [Authorize]
+        public async Task<IActionResult> GetRessourceByUser()
+        {
+            if (HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                var token = authHeader.ToString().Replace("Bearer ", "");
+
+                //await = attendre de facon asynchrone la fin d'une tache
+                var reponse = await _service.GetListRessourceByUser(token);
+                if (reponse.ResponseCode == 200)
+                {
+                    return Ok(reponse);
+                }
+                else if (reponse.ResponseCode == 500)
+                {
+                    return BadRequest(reponse);
+                }
+                else if (reponse.ResponseCode == 401)
+                {
+                    return Unauthorized();
+                }
+                else
+                {
+                    return NotFound(reponse);
+                }
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
     }
 }

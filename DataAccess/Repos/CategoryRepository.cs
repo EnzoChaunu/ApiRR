@@ -1,6 +1,7 @@
 ﻿using DataAccess.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,36 @@ namespace RRelationnelle
     {
         //private Categorie _entities;
         private readonly RrelationnelApiContext _ctx;
-
-        public CategoryRepository(RrelationnelApiContext ctx)
+        private readonly IConfiguration _configuration;
+        public CategoryRepository(RrelationnelApiContext ctx,IConfiguration config)
         {
             _ctx = ctx;
+            _configuration = config;
+        }
+
+        private RrelationnelApiContext CreateDbContext()
+        {
+            var connectionString = _configuration.GetConnectionString("ApiRessourceConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<RrelationnelApiContext>()
+                .UseSqlServer(connectionString);
+
+            return new RrelationnelApiContext(optionsBuilder.Options);
         }
 
         public async Task<bool> Archive(int id)
         {
-            var entity = await _ctx.Category.FindAsync(id);
-            entity.isActive = false;
-            _ctx.Category.Update(entity);
-            await _ctx.SaveChangesAsync();
-            return true;
+            try
+            {
+                var entity = await _ctx.Category.FindAsync(id);
+                entity.isActive = false;
+                _ctx.Category.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
         }
 
         public async Task<Category> Get(dynamic id)
@@ -35,9 +53,9 @@ namespace RRelationnelle
                 var categorie = await _ctx.Category.FindAsync(id);
                 return categorie;
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                throw ex;
+                return null;
             }
         }
 
@@ -45,8 +63,10 @@ namespace RRelationnelle
         {
             try
             {
-                _ctx.Category.Add(category);
-               await _ctx.SaveChangesAsync();
+                var context = CreateDbContext();
+                context.Entry(category.Creator).State = EntityState.Unchanged;
+                context.Category.Add(category);
+               await context.SaveChangesAsync();
                 return category;
             }
             catch
@@ -54,28 +74,50 @@ namespace RRelationnelle
                 return null;
             }
         }
-
-        public async Task<IEnumerable<Category>> ListCategory()
+       
+        public async Task<List<Category>> ListCategory()
         {
-            List<Category> categorie = new List<Category>();
-            categorie = await _ctx.Category.ToListAsync();
-            return categorie;
+            try
+            {
+                List<Category> categorie = new List<Category>();
+                categorie = await _ctx.Category.ToListAsync();
+                return categorie.ToList();
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public async Task<Category> Update(Category category,int id)
         {
-            var entity = await _ctx.Category.FindAsync(id);
-            entity.idcreator = category.idcreator;
-            entity._name = category._name;
-            _ctx.Category.Update(entity);
-            await _ctx.SaveChangesAsync();
-            return entity;
+            try
+            {
+                var entity = await _ctx.Category.FindAsync(id);
+                entity.Creator = category.Creator;
+                entity._name = category._name;
+                _ctx.Category.Update(entity);
+                await _ctx.SaveChangesAsync();
+                return entity;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
 
         public  async Task<Category> GetByName(string name)
         {
-            var categ = await _ctx.Category.FirstOrDefaultAsync(p => p._name == name);
-            return categ;
+            var context = CreateDbContext();
+            try
+            {
+                var categ = await context.Category.FirstOrDefaultAsync(p => p._name == name);
+                return categ;
+            }
+            catch (DbUpdateException)
+            {
+                return null;
+            }
         }
     }
 

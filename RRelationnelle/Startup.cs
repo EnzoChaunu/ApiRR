@@ -1,5 +1,6 @@
 using Business.Interfaces;
 using DataAccess.Interfaces;
+using DataAccess.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,8 +13,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RRelationnelle.Repos;
 using RRelationnelle.Service;
+using RRelationnelle.Services;
+using Service.Services;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -35,7 +39,7 @@ namespace RRelationnelle
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RRelationnelle", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
-                
+
 
             });
 
@@ -45,7 +49,8 @@ namespace RRelationnelle
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
 
-            .AddJwtBearer(options => {
+            .AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
@@ -60,27 +65,61 @@ namespace RRelationnelle
 
 
             services.AddDbContext<RrelationnelApiContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun"))
+                options.UseSqlServer(Configuration.GetConnectionString("ApiRessourceConnection"), b => b.MigrationsAssembly("Commun")), ServiceLifetime.Scoped
                 );
 
             services.AddMemoryCache();
 
-            services.AddScoped<RRelationnelle.Service.RessourceService>();
-            services.AddScoped<RRelationnelle.CategoryRepository>();
+            services.AddScoped<RessourceService>();
+            services.AddScoped<StatsService>();
+            services.AddScoped<StatRepository>();
+            services.AddScoped<CategoryService>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<UserService>();
+            services.AddScoped<CommentService>();
+            services.AddScoped<CommentRepository>();
+            services.AddScoped<UserRepo>();
+            services.AddScoped<RolesService>();
+            services.AddScoped<RolesRepository>();
             services.AddScoped<IRessourceRepo, RessourcesRepo>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ICommentsService, CommentService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IService<CategoryDto>, CategoryService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IService<RessourceDto>, RessourceService>();
+            services.AddScoped<IService<UserDto>, UserService>();
+            services.AddScoped<IRepository<User>, UserRepo>();
             services.AddScoped<IApiGouv, ApiRGouv>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IRoleService, RolesService>();
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RessourceService serv, RolesRepository roleRepo)
         {
+            var task = Task.Run(async () =>
+            {
+                await serv.GetFormation();
+               await serv.GetJob();
+                await roleRepo.AddRolesAtStartUp();
+            });
+
+            task.Wait();
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -91,7 +130,6 @@ namespace RRelationnelle
             app.UseHttpsRedirection();
             app.UseDeveloperExceptionPage();
             app.UseRouting();
-
             app.UseAuthentication();
 
             app.UseAuthorization();

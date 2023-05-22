@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
+
 
 namespace RRelationnelle
 {
@@ -15,21 +15,19 @@ namespace RRelationnelle
 
         [Column]
         public string _title { get; set; }
-        [NotMapped]
-        public int _Idcategory { get; set; }
-     
+      
         [ForeignKey("Id_Category")]
         public Category category { get; set; }
         public bool _activation { get; set; }
         public string _reference { get; set; }
         public int _views { get; set; }
+        public int _shared { get; set; }
         public DateTime _creationDate { get; set; }
         public string _url { get; set; }
 
         [ForeignKey("Id_User")]
         public User modification { get; set; }
-        [NotMapped]
-        public int _user { get; set; }
+      
 
        public static List<Comment> _comments = new List<Comment>();
 
@@ -46,13 +44,13 @@ namespace RRelationnelle
         }
 
         */
-        public Ressource(string reference,string title, int categ,string url,int user)
+        public Ressource(string reference,string title,Category categ , string url,User user)
         {
             _reference = reference;
             _title = title;
-            _Idcategory = categ;
+            category = categ;
             _url = url;
-           _user = user;
+           modification = user;
         }
 
         public Ressource()

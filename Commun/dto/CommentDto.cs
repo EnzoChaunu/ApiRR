@@ -4,20 +4,17 @@ namespace RRelationnelle
 {
     public class CommentDto
     {
-        private int _id { get; set; }
-        private User _user { get; set; }
-        private Ressource _ressource { get; set; }
-        private string _content { get; set; }
-        private int _likes { get; set; }
-        private int _dislikes { get; set; }
-        private bool _activation { get; set; }
-        private bool _modified { get; set; }
-        private DateTime _creationDate { get; set; }
-        private DateTime _modificationDate { get; set; }
+        public int Id { get; private set; }
+        public int UserId { get; set; }
+        public int RessourceId { get; set; }
+        public string Content { get; set; }
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
+        public bool Activation { get; set; }
+        public bool Modified { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime ModificationDate { get; set; }
 
-        public string Content { get { return _content; } set { _content = value; } }
-
-        public int Id { get { return _id; } set { _id = value; } }
 
     }
 }

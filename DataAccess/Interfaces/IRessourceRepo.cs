@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Commun.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using RRelationnelle;
 using RRelationnelle.Models;
@@ -9,9 +10,18 @@ namespace DataAccess.Interfaces
 {
     public interface IRessourceRepo : IRepository<Ressource>
     {
-        public Task<List<Alternances>> GetFormation(JArray result);
+      
         public Task<Ressource> GetRessourceById(string id);
+        public Task<bool> ShareRessource(int id);
         public Task<ActionResult<bool>> Delete();
+        public Task<int> AddView(int id);
+        public Task<int> CountView();
+        public Task<int> CountShared();
+        public Task<int> CountFavorites();
+        public Task<UserFavorite> CheckUserFavoriteByObject(User user,Ressource ressource);
+        public Task<List<Ressource>> GetRessourceListUser(int user);
+        public Task<UserFavorite> AddUserFavorite(UserFavorite fav);
+        public Task<int> DeleteFavorite(int fav,int iduser);
 
     }
 }

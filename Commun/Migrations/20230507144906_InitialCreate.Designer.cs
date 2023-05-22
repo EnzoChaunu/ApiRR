@@ -12,8 +12,8 @@ using RRelationnelle;
 namespace Commun.Migrations
 {
     [DbContext(typeof(RrelationnelApiContext))]
-    [Migration("20230328203242_initialcreate")]
-    partial class initialcreate
+    [Migration("20230507144906_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,19 +33,21 @@ namespace Commun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Category"));
 
+                    b.Property<int?>("Id_User")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("_creationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("_name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("idcreator")
-                        .HasColumnType("int");
-
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
                     b.HasKey("Id_Category");
+
+                    b.HasIndex("Id_User");
 
                     b.ToTable("Category");
                 });
@@ -91,6 +93,29 @@ namespace Commun.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("RRelationnelle.Models.UserFavorite", b =>
+                {
+                    b.Property<int>("IdUserFav")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUserFav"));
+
+                    b.Property<int>("ID_Ressource")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id_User")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdUserFav");
+
+                    b.HasIndex("ID_Ressource");
+
+                    b.HasIndex("Id_User");
+
+                    b.ToTable("UserFavorite");
+                });
+
             modelBuilder.Entity("RRelationnelle.Ressource", b =>
                 {
                     b.Property<int>("ID_Ressource")
@@ -113,6 +138,9 @@ namespace Commun.Migrations
 
                     b.Property<string>("_reference")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("_shared")
+                        .HasColumnType("int");
 
                     b.Property<string>("_title")
                         .HasColumnType("nvarchar(max)");
@@ -139,6 +167,9 @@ namespace Commun.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_role"));
+
+                    b.Property<bool>("Activated")
+                        .HasColumnType("bit");
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
@@ -181,35 +212,47 @@ namespace Commun.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
 
-                    b.Property<bool>("_activation")
+                    b.Property<bool>("Activation")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("_creationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("_email")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_fName")
+                    b.Property<string>("FName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_lName")
+                    b.Property<string>("LName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_login")
+                    b.Property<string>("Login")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("_password")
+                    b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("id_role")
                         .HasColumnType("int");
+
+                    b.Property<string>("token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id_User");
 
                     b.HasIndex("id_role");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("RRelationnelle.Category", b =>
+                {
+                    b.HasOne("RRelationnelle.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("Id_User");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("RRelationnelle.Comment", b =>
@@ -225,6 +268,25 @@ namespace Commun.Migrations
                     b.Navigation("id_ressource");
 
                     b.Navigation("id_user");
+                });
+
+            modelBuilder.Entity("RRelationnelle.Models.UserFavorite", b =>
+                {
+                    b.HasOne("RRelationnelle.Ressource", "ressource")
+                        .WithMany()
+                        .HasForeignKey("ID_Ressource")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RRelationnelle.User", "user")
+                        .WithMany()
+                        .HasForeignKey("Id_User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ressource");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("RRelationnelle.Ressource", b =>

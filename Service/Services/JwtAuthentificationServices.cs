@@ -1,4 +1,5 @@
-﻿using DataAccess.Interfaces;
+﻿using Commun.Responses;
+using DataAccess.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RRelationnelle
 {
@@ -18,11 +20,11 @@ namespace RRelationnelle
             _repos = repos;
         }
 
-        public UserDto Authenticate(string email, string pswd)
+        public async Task<Response<UserDto>> Authenticate(string email, string pswd)
         {
             List<User> userDb = new List<User>();
-            userDb = _repos.GetUsers();
-            var mapper = MappinLog.MappingUser();
+            userDb = await _repos.GetUsers();
+            var mapper = MappingUser.UserMapperModelToDto();
             List<UserDto> UserDto = mapper.Map<List<User>, List<UserDto>>(userDb);
    
             if (UserDto != null)
@@ -30,21 +32,36 @@ namespace RRelationnelle
                 try
                 {
 
-                    return UserDto.Where(u => u.Email.ToUpper().Equals(email.ToUpper())
+                   var user = UserDto.Where(u => u.Email.ToUpper().Equals(email.ToUpper())
                    && u.Password.Equals(pswd)).FirstOrDefault();
+                    if(user != null)
+                    {
+                        if (user.Activation == false)
+                        {
+                            return new Response<UserDto>(404, null, "Votre compte a été banni");
+                        }
+                        else
+                        {
+                            return new Response<UserDto>(200, user, "Connexion réussie");
+                        }
+                    }
+                    else
+                    {
+                        return new Response<UserDto>(404, null, "Votre compte n'existe pas");
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return null;
+                    return new Response<UserDto>(500, null, ex.Message);
                 }
             }
             else
             {
-                return null;
+                return new Response<UserDto>(404, null, "Aucun utilisateur trouvé");
             }
         }
 
-        public string GenerateToken(string secretKey, List<Claim> claim)
+        public async Task<Response<string>> GenerateToken(string secretKey, List<Claim> claim)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -55,7 +72,8 @@ namespace RRelationnelle
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return await Task.FromResult(new Response<string>(200, tokenHandler.WriteToken(token), "new token"));
+            
         }
     }
 }

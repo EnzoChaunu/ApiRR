@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.Interfaces;
 using Business.Interfaces;
+using Commun.Responses;
 
 namespace RRelationnelle
 {
@@ -13,10 +14,12 @@ namespace RRelationnelle
     {
 
         private readonly ICategoryRepository _repos;
+        private readonly IUserRepo _user;
         //private readonly IRepository<Categorie> _repos;
-        public CategoryService(ICategoryRepository repo)
+        public CategoryService(ICategoryRepository repo, IUserRepo user)
         {
             _repos = repo;
+            _user = user;
             // _validations =validations;
         }
 
@@ -25,16 +28,23 @@ namespace RRelationnelle
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Archive(int id)
+        public async Task<Response<bool>> Archive(int id)
         {
             var categ = await _repos.ListCategory();
             if (categ != null)
             {
-                return await _repos.Archive(id);
+                if(await _repos.Archive(id) != true)
+                {
+                    return new Response<bool> (200, true, "Catégorie archivée" );
+                }
+                else
+                {
+                    return new Response<bool>(404, false, "Catégorie non-archivée");
+                }
             }
             else
             {
-                return false;
+                return new Response<bool>(404, false, "Catégorie non-trouvée");
             }
         }
 
@@ -50,7 +60,7 @@ namespace RRelationnelle
             }
         }
 
-        public async Task<CategoryDto> Create(CategoryDto category)
+        public async Task<Response<CategoryDto>> Create(CategoryDto category)
         {
             if (!CheckValues(category))
             {
@@ -60,47 +70,35 @@ namespace RRelationnelle
             {
                 try
                 {
-                    var mapper = MappingCategory.MappingCategoryL();
+                    User user =await _user.Get(category._creator);
+                    var mapper = MappingCategory.MappingCategoryTomodel(user);
                     Category categorieDb = mapper.Map<CategoryDto, Category>(category);
                     var rep = await _repos.Create(categorieDb);
                     if (rep != null)
                     {
+                         mapper = MappingCategory.MappingCategoryToDto();
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
-                        return Categ;
+                       return  new Response<CategoryDto>(200, Categ, "catégorie créée");
                     }
                     else
                     {
-                        return null;
+                        return new Response<CategoryDto>(404, null, "échec création catégorie");
                     }
                 }
                 catch
                 {
-                    return null;
+                    return new Response<CategoryDto>(404, null, "échec création catégorie");
                 }
             }
         }
 
-        public Task<CategoryDto> Get(int id)
+        public Task<Response<CategoryDto>> Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> ListCategory()
-        {
-            List<Category> categorie = new List<Category>();
-            var categ = await _repos.ListCategory();
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingCategory>();
-            });
 
-            var mapper = config.CreateMapper();
-            List<CategoryDto> categoriedto = new List<CategoryDto>();
-            // mapper.Map(List<Category>, List<Categorie>)(categ);
-            return categoriedto;
-        }
-
-        public async Task<CategoryDto> Update(CategoryDto category, int id)
+        public async Task<Response<CategoryDto>> Update(CategoryDto category, int id)
         {
             if (!CheckValues(category))
             {
@@ -110,35 +108,54 @@ namespace RRelationnelle
             {
                 try
                 {
-                    var mapper = MappingCategory.MappingCategoryL();
+                    User user = await _user.Get(category._creator);
+                    var mapper = MappingCategory.MappingCategoryTomodel(user);
                     Category categorieDb = mapper.Map<CategoryDto, Category>(category);
                     var rep = await _repos.Update(categorieDb, id);
                     if (rep != null)
                     {
+                        mapper = MappingCategory.MappingCategoryToDto();
                         CategoryDto Categ = mapper.Map<Category, CategoryDto>(rep);
-                        return Categ;
+                        return new Response<CategoryDto>(200, Categ, "Modification de catégorie réussie");
+
                     }
                     else
                     {
-                        return null;
+                        return new Response<CategoryDto>(404, null, "Echec Modification" );
+
                     }
                 }
                 catch
                 {
-                    return null;
+                    return new Response<CategoryDto>(500, null, "Echec Modification");
+
                 }
             }
         }
 
-        public async Task<IEnumerable<CategoryDto>> ListCategory2()
+        public async Task<Response<List<CategoryDto>>> ListCategory2()
         {
 
-            List<Category> categorie = new List<Category>();
-            var categ = await _repos.ListCategory();
-            categorie = categ.ToList();
-            var mapper = MappingCategory.MappingCategoryL();
+            List<Category> categorie = await _repos.ListCategory();
+            var mapper = MappingCategory.MappingCategoryToDto();
             List<CategoryDto> categoriedto = mapper.Map<List<Category>, List<CategoryDto>>(categorie);
-            return categoriedto;
+
+            if (categoriedto != null)
+            {
+                return new Response<List<CategoryDto>> (200, categoriedto.ToList(), "Données trouvées" );
+            }
+            else if (categoriedto == null)
+            {
+                return new Response<List<CategoryDto>>(404, null, "Not found");
+
+            }
+            else
+            {
+                return new Response<List<CategoryDto>>(500, null, "Another statut code");
+
+            }
+
+
         }
     }
 }

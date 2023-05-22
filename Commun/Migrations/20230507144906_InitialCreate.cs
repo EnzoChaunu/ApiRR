@@ -6,34 +6,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Commun.Migrations
 {
     /// <inheritdoc />
-    public partial class initialcreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Category",
-                columns: table => new
-                {
-                    Id_Category = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isActive = table.Column<bool>(type: "bit", nullable: false),
-                    _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    idcreator = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Category", x => x.Id_Category);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
                     id_role = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Activated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,13 +47,14 @@ namespace Commun.Migrations
                 {
                     Id_User = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    _fName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _lName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _login = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    _activation = table.Column<bool>(type: "bit", nullable: false),
-                    _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Login = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Activation = table.Column<bool>(type: "bit", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     id_role = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -82,6 +68,27 @@ namespace Commun.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    Id_Category = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id_User = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.Id_Category);
+                    table.ForeignKey(
+                        name: "FK_Category_User_Id_User",
+                        column: x => x.Id_User,
+                        principalTable: "User",
+                        principalColumn: "Id_User");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ressource",
                 columns: table => new
                 {
@@ -92,6 +99,7 @@ namespace Commun.Migrations
                     _activation = table.Column<bool>(type: "bit", nullable: false),
                     _reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     _views = table.Column<int>(type: "int", nullable: false),
+                    _shared = table.Column<int>(type: "int", nullable: false),
                     _creationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     _url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Id_User = table.Column<int>(type: "int", nullable: true)
@@ -141,6 +149,37 @@ namespace Commun.Migrations
                         principalColumn: "Id_User");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserFavorite",
+                columns: table => new
+                {
+                    IdUserFav = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ID_Ressource = table.Column<int>(type: "int", nullable: false),
+                    Id_User = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserFavorite", x => x.IdUserFav);
+                    table.ForeignKey(
+                        name: "FK_UserFavorite_Ressource_ID_Ressource",
+                        column: x => x.ID_Ressource,
+                        principalTable: "Ressource",
+                        principalColumn: "ID_Ressource",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserFavorite_User_Id_User",
+                        column: x => x.Id_User,
+                        principalTable: "User",
+                        principalColumn: "Id_User",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Category_Id_User",
+                table: "Category",
+                column: "Id_User");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ID_Ressource",
                 table: "Comments",
@@ -165,6 +204,16 @@ namespace Commun.Migrations
                 name: "IX_User_id_role",
                 table: "User",
                 column: "id_role");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavorite_ID_Ressource",
+                table: "UserFavorite",
+                column: "ID_Ressource");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavorite_Id_User",
+                table: "UserFavorite",
+                column: "Id_User");
         }
 
         /// <inheritdoc />
@@ -175,6 +224,9 @@ namespace Commun.Migrations
 
             migrationBuilder.DropTable(
                 name: "Stats");
+
+            migrationBuilder.DropTable(
+                name: "UserFavorite");
 
             migrationBuilder.DropTable(
                 name: "Ressource");

@@ -8,6 +8,7 @@ namespace RRelationnelle.Models
     {
 
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Idressourcestat { get; set; }
 
         [Column]

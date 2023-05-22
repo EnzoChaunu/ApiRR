@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using RRelationnelle.Models;
 
 namespace RRelationnelle
 {
@@ -11,6 +11,7 @@ namespace RRelationnelle
         }
         
         public DbSet<Ressource> Ressource { get; set; }
+        public DbSet<UserFavorite> UserFavorite { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Roles> Role { get; set; }
