@@ -449,7 +449,7 @@ namespace RRelationnelle.Service
                         // Configuration du client SMTP pour Gmail
 
                         smtp.UseDefaultCredentials = false;
-                        smtp.Credentials = new NetworkCredential(expe.Email, "sicqjbexttqxcffa");
+                        smtp.Credentials = new NetworkCredential("chaunu.enzo@gmail.com", "sicqjbexttqxcffa");
                         smtp.EnableSsl = true;
 
                         // Envoi du message e-mail
